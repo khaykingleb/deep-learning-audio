@@ -1,0 +1,13 @@
+# Environment variables
+.env
+.envrc
+
+# Python files
+__pycache__/
+*.egg-info/
+dist/
+.coverage
+.venv
+.pytest_cache
+.mypy_cache
+pytest-coverage.txt

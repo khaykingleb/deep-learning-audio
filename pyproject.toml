@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "deep-learning-for-audio"
+version = "0.1.0"
+description = "Neural networks used for digital signal processing, speech analysis, and speech synthesis."
+authors = ["Gleb Khaykin <khaykingleb@gmail.com>"]
+repository = "https://github.com/khaykingleb/Deep-Learning-for-Audio"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+hydra-core = "^1.2.0"
+
+[tool.poetry.dev-dependencies]
+commitizen = "^2.29.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,5 +1,8 @@
 #@ Repository initialization
-.PHONY: repo-pre-commit repo-deps repo-local-init
+.PHONY:
+	repo-pre-commit
+	repo-deps
+	repo-local-init
 
 # Install pre-commit in repository
 repo-pre-commit:
@@ -7,7 +10,7 @@ repo-pre-commit:
 
 # Install dependencies in repository
 repo-deps:
-	poetry install --extras "dev research"
+	poetry install
 
 # Configure environment variables in repository
 repo-local-init:

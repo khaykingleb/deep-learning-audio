@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "deep-learning-for-audio"
-version = "0.1.0"
-description = "Neural networks used for digital signal processing, speech analysis, and speech synthesis."
 authors = ["Gleb Khaykin <khaykingleb@gmail.com>"]
+version = "0.1.0"
+name = "deep-learning-for-audio"
+description = "Neural networks used for digital signal processing, speech analysis, and speech synthesis."
 repository = "https://github.com/khaykingleb/Deep-Learning-for-Audio"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -11,6 +12,32 @@ hydra-core = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 commitizen = "^2.29.2"
+pre-commit = "^2.20.0"
+detect-secrets = "^1.3.0"
+
+[tool.black]
+line-length = 88
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+force_sort_within_sections = true
+order_by_type = false
+line_length = 88
+
+[tool.semantic_release]
+version_variable = ["pyproject.toml:version"]
+upload_to_pypi = false
+upload_to_release = false
+commit_subject = "chore(release): {version}"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

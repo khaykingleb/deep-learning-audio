@@ -35,7 +35,7 @@ repos:
   - repo: local
     hooks:
       - id: poetry_lock_check
-        name: Check if poetry lock file is updated
+        name: Check if poetry.lock file is updated
         entry: |
             python -c "
             from poetry.factory import Factory

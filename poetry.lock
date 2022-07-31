@@ -341,10 +341,32 @@ optional = false
 python-versions = ">=3.6,<4.0"
 
 [[package]]
+name = "torch"
+version = "1.12.0"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+
+[package.dependencies]
+typing-extensions = "*"
+
+[[package]]
+name = "torchaudio"
+version = "0.12.0"
+description = "An audio package for PyTorch"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+torch = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -401,7 +423,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "6c191944bc9aa9298dba52878b89a8d4cfeb745c996cedd048400e46d18c90a4"
+content-hash = "8a03c16812e617f54dd6bed53498422fad4eb62188e79fa6df9a96111276f31b"
 
 [metadata.files]
 antlr4-python3-runtime = []
@@ -435,6 +457,8 @@ requests = []
 termcolor = []
 toml = []
 tomlkit = []
+torch = []
+torchaudio = []
 typing-extensions = []
 urllib3 = []
 virtualenv = []

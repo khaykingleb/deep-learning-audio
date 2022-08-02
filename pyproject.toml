@@ -12,14 +12,15 @@ hydra-core = "^1.2.0"
 torch = "^1.12.0"
 torchaudio = "^0.12.0"
 transformers = "^4.21.0"
-wandb = "^0.12.21"
 datasets = "^2.4.0"
+wandb = "^0.12.21"
 
 [tool.poetry.dev-dependencies]
 commitizen = "^2.29.2"
 pre-commit = "^2.20.0"
 detect-secrets = "^1.3.0"
 ipykernel = "^6.15.1"
+ipywidgets = "^7.7.1"
 matplotlib = "^3.5.2"
 
 [tool.black]

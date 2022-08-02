@@ -1,4 +1,35 @@
 [[package]]
+name = "aiohttp"
+version = "3.8.1"
+description = "Async http client/server framework (asyncio)"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+aiosignal = ">=1.1.2"
+async-timeout = ">=4.0.0a3,<5.0"
+attrs = ">=17.3.0"
+charset-normalizer = ">=2.0,<3.0"
+frozenlist = ">=1.1.1"
+multidict = ">=4.5,<7.0"
+yarl = ">=1.0,<2.0"
+
+[package.extras]
+speedups = ["aiodns", "brotli", "cchardet"]
+
+[[package]]
+name = "aiosignal"
+version = "1.2.0"
+description = "aiosignal: a list of registered asynchronous callbacks"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+frozenlist = ">=1.1.0"
+
+[[package]]
 name = "antlr4-python3-runtime"
 version = "4.9.3"
 description = "ANTLR 4.9.3 runtime for Python 3.7"
@@ -38,6 +69,28 @@ six = "*"
 
 [package.extras]
 test = ["astroid", "pytest"]
+
+[[package]]
+name = "async-timeout"
+version = "4.0.2"
+description = "Timeout context manager for asyncio programs"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
+name = "attrs"
+version = "22.1.0"
+description = "Classes Without Boilerplate"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.extras]
+dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "mypy (>=0.900,!=0.940)", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit", "cloudpickle"]
+docs = ["furo", "sphinx", "zope.interface", "sphinx-notfound-page"]
+tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "mypy (>=0.900,!=0.940)", "pytest-mypy-plugins", "zope.interface", "cloudpickle"]
+tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "mypy (>=0.900,!=0.940)", "pytest-mypy-plugins", "cloudpickle"]
 
 [[package]]
 name = "backcall"
@@ -142,6 +195,43 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "datasets"
+version = "2.4.0"
+description = "HuggingFace community-driven open-source library of datasets"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+aiohttp = "*"
+dill = "<0.3.6"
+fsspec = {version = ">=2021.11.1", extras = ["http"]}
+huggingface-hub = ">=0.1.0,<1.0.0"
+multiprocess = "*"
+numpy = ">=1.17"
+packaging = "*"
+pandas = "*"
+pyarrow = ">=6.0.0"
+requests = ">=2.19.0"
+responses = "<0.19"
+tqdm = ">=4.62.1"
+xxhash = "*"
+
+[package.extras]
+vision = ["Pillow (>=6.2.1)"]
+torch = ["torch"]
+tests = ["importlib-resources", "librosa", "Pillow (>=6.2.1)", "six (>=1.15.0,<1.16.0)", "Werkzeug (>=1.0.1)", "texttable (>=1.6.3)", "tldextract (>=3.1.0)", "requests-file (>=1.5.1)", "toml (>=0.10.1)", "seqeval", "scipy", "scikit-learn", "sacrebleu", "rouge-score (<0.0.7)", "mauve-text", "jiwer", "bert-score (>=0.3.6)", "sacremoses", "sentencepiece", "zstandard", "tldextract", "py7zr", "openpyxl", "nltk", "mwparserfromhell", "lz4", "lxml", "langdetect", "h5py", "conllu", "bs4", "transformers", "soundfile", "torchaudio", "torch", "tensorflow (>=2.3,!=2.6.0,!=2.6.1)", "s3fs (>=2021.11.1)", "rarfile (>=4.0)", "moto[server,s3] (==2.0.4)", "fsspec", "faiss-cpu (>=1.6.4)", "botocore (>=1.22.8)", "boto3 (>=1.19.8)", "aiobotocore (>=2.0.1)", "elasticsearch (<8.0.0)", "apache-beam (>=2.26.0)", "pytest-xdist", "pytest-datadir", "pytest", "absl-py"]
+tensorflow_gpu = ["tensorflow-gpu (>=2.2.0,!=2.6.0,!=2.6.1)"]
+tensorflow = ["tensorflow (>=2.2.0,!=2.6.0,!=2.6.1)"]
+s3 = ["s3fs", "botocore", "boto3", "fsspec"]
+quality = ["pyyaml (>=5.3.1)", "isort (>=5.0.0)", "flake8 (>=3.8.3)", "black (>=22.0,<23.0)"]
+docs = ["s3fs"]
+dev = ["importlib-resources", "pyyaml (>=5.3.1)", "isort (>=5.0.0)", "flake8 (>=3.8.3)", "black (>=22.0,<23.0)", "librosa", "Pillow (>=6.2.1)", "six (>=1.15.0,<1.16.0)", "Werkzeug (>=1.0.1)", "texttable (>=1.6.3)", "tldextract (>=3.1.0)", "requests-file (>=1.5.1)", "toml (>=0.10.1)", "seqeval", "scipy", "scikit-learn", "sacrebleu", "rouge-score (<0.0.7)", "mauve-text", "jiwer", "bert-score (>=0.3.6)", "sacremoses", "sentencepiece", "zstandard", "tldextract", "py7zr", "openpyxl", "nltk", "mwparserfromhell", "lz4", "lxml", "langdetect", "h5py", "conllu", "bs4", "transformers", "soundfile", "torchaudio", "torch", "tensorflow (>=2.3,!=2.6.0,!=2.6.1)", "s3fs (>=2021.11.1)", "rarfile (>=4.0)", "moto[server,s3] (==2.0.4)", "fsspec", "faiss-cpu (>=1.6.4)", "botocore (>=1.22.8)", "boto3 (>=1.19.8)", "aiobotocore (>=2.0.1)", "elasticsearch (<8.0.0)", "apache-beam (>=2.26.0)", "pytest-xdist", "pytest-datadir", "pytest", "absl-py"]
+benchmarks = ["transformers (==3.0.2)", "torch (==1.6.0)", "tensorflow (==2.3.0)", "numpy (==1.18.5)"]
+audio = ["librosa"]
+apache-beam = ["apache-beam (>=2.26.0)"]
+
+[[package]]
 name = "debugpy"
 version = "1.6.2"
 description = "An implementation of the Debug Adapter Protocol for Python"
@@ -180,6 +270,17 @@ requests = "*"
 [package.extras]
 word_list = ["pyahocorasick"]
 gibberish = ["gibberish-detector"]
+
+[[package]]
+name = "dill"
+version = "0.3.5.1"
+description = "serialize all of python"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, !=3.6.*"
+
+[package.extras]
+graph = ["objgraph (>=1.7.2)"]
 
 [[package]]
 name = "distlib"
@@ -249,6 +350,49 @@ type1 = ["xattr"]
 ufo = ["fs (>=2.2.0,<3)"]
 unicode = ["unicodedata2 (>=14.0.0)"]
 woff = ["zopfli (>=0.1.4)", "brotlicffi (>=0.8.0)", "brotli (>=1.0.1)"]
+
+[[package]]
+name = "frozenlist"
+version = "1.3.0"
+description = "A list-like structure which implements collections.abc.MutableSequence"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
+name = "fsspec"
+version = "2022.7.1"
+description = "File-system specification"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+aiohttp = {version = "*", optional = true, markers = "extra == \"http\""}
+requests = {version = "*", optional = true, markers = "extra == \"http\""}
+
+[package.extras]
+abfs = ["adlfs"]
+adl = ["adlfs"]
+arrow = ["pyarrow (>=1)"]
+dask = ["dask", "distributed"]
+dropbox = ["dropboxdrivefs", "requests", "dropbox"]
+entrypoints = ["importlib-metadata"]
+fuse = ["fusepy"]
+gcs = ["gcsfs"]
+git = ["pygit2"]
+github = ["requests"]
+gs = ["gcsfs"]
+gui = ["panel"]
+hdfs = ["pyarrow (>=1)"]
+http = ["requests", "aiohttp"]
+libarchive = ["libarchive-c"]
+oci = ["ocifs"]
+s3 = ["s3fs"]
+sftp = ["paramiko"]
+smb = ["smbprotocol"]
+ssh = ["paramiko"]
+tqdm = ["tqdm"]
 
 [[package]]
 name = "gitdb"
@@ -500,6 +644,25 @@ python-versions = ">=3.5"
 traitlets = "*"
 
 [[package]]
+name = "multidict"
+version = "6.0.2"
+description = "multidict implementation"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
+name = "multiprocess"
+version = "0.70.13"
+description = "better multiprocessing and multithreading in python"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, !=3.6.*"
+
+[package.dependencies]
+dill = ">=0.3.5.1"
+
+[[package]]
 name = "nest-asyncio"
 version = "1.5.5"
 description = "Patch asyncio to allow nested event loops"
@@ -545,6 +708,22 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
+
+[[package]]
+name = "pandas"
+version = "1.4.3"
+description = "Powerful data structures for data analysis, time series, and statistics"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.dependencies]
+numpy = {version = ">=1.21.0", markers = "python_version >= \"3.10\""}
+python-dateutil = ">=2.8.1"
+pytz = ">=2020.1"
+
+[package.extras]
+test = ["hypothesis (>=5.5.3)", "pytest (>=6.0)", "pytest-xdist (>=1.31)"]
 
 [[package]]
 name = "parso"
@@ -697,6 +876,17 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "pyarrow"
+version = "8.0.0"
+description = "Python library for Apache Arrow"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+numpy = ">=1.16.6"
+
+[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -727,12 +917,20 @@ diagrams = ["railroad-diagrams", "jinja2"]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 
 [package.dependencies]
 six = ">=1.5"
+
+[[package]]
+name = "pytz"
+version = "2022.1"
+description = "World timezone definitions, modern and historical"
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "pywin32"
@@ -801,6 +999,21 @@ urllib3 = ">=1.21.1,<1.27"
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
+
+[[package]]
+name = "responses"
+version = "0.18.0"
+description = "A utility library for mocking out the `requests` Python library."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+requests = ">=2.0,<3.0"
+urllib3 = ">=1.25.10"
+
+[package.extras]
+tests = ["pytest (>=4.6)", "coverage (>=6.0.0)", "pytest-cov", "pytest-localserver", "flake8", "types-mock", "types-requests", "mypy"]
 
 [[package]]
 name = "sentry-sdk"
@@ -1145,16 +1358,40 @@ category = "dev"
 optional = false
 python-versions = "*"
 
+[[package]]
+name = "xxhash"
+version = "3.0.0"
+description = "Python binding for xxHash"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
+name = "yarl"
+version = "1.8.1"
+description = "Yet another URL library"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+idna = ">=2.0"
+multidict = ">=4.0"
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "d4e944bbbd7c8ab9d48dc8caf0690113d9df926a0aa29d359f24f198214c5817"
+content-hash = "7398ce1bf333f0015e440a6066f9d9c9556c3333bbe7a2a4e030daca74aab173"
 
 [metadata.files]
+aiohttp = []
+aiosignal = []
 antlr4-python3-runtime = []
 appnope = []
 argcomplete = []
 asttokens = []
+async-timeout = []
+attrs = []
 backcall = []
 certifi = []
 cffi = []
@@ -1165,16 +1402,20 @@ click = []
 colorama = []
 commitizen = []
 cycler = []
+datasets = []
 debugpy = []
 decli = []
 decorator = []
 detect-secrets = []
+dill = []
 distlib = []
 docker-pycreds = []
 entrypoints = []
 executing = []
 filelock = []
 fonttools = []
+frozenlist = []
+fsspec = []
 gitdb = []
 gitpython = []
 huggingface-hub = []
@@ -1191,11 +1432,14 @@ kiwisolver = []
 markupsafe = []
 matplotlib = []
 matplotlib-inline = []
+multidict = []
+multiprocess = []
 nest-asyncio = []
 nodeenv = []
 numpy = []
 omegaconf = []
 packaging = []
+pandas = []
 parso = []
 pathtools = []
 pexpect = []
@@ -1210,16 +1454,19 @@ psutil = []
 ptyprocess = []
 pure-eval = []
 py = []
+pyarrow = []
 pycparser = []
 pygments = []
 pyparsing = []
 python-dateutil = []
+pytz = []
 pywin32 = []
 pyyaml = []
 pyzmq = []
 questionary = []
 regex = []
 requests = []
+responses = []
 sentry-sdk = []
 setproctitle = []
 setuptools-scm = []
@@ -1243,3 +1490,5 @@ urllib3 = []
 virtualenv = []
 wandb = []
 wcwidth = []
+xxhash = []
+yarl = []

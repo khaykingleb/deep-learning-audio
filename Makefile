@@ -1,3 +1,5 @@
+VERSION := 0.1.0
+
 #@ Repository initialization
 .PHONY:
 	repo-pre-commit
@@ -6,7 +8,8 @@
 
 # Install pre-commit in repository
 repo-pre-commit:
-	pre-commit install -t pre-commit -t commit-msg
+	pre-commit install
+	pre-commit install -t commit-msg
 
 # Install dependencies in repository
 repo-deps:

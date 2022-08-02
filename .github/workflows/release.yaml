@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+            python-version: 3.10.5
+      - uses: actions/checkout@v2
+        name: Checkout code
+      - run: |
+          pip install python-semantic-release
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          semantic-release publish
+        name: Semantic Release

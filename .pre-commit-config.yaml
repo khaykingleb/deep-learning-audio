@@ -7,24 +7,29 @@ repos:
       - id: check-added-large-files
       - id: trailing-whitespace
       - id: end-of-file-fixer
+
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:
       - id: isort
+
   - repo: https://github.com/psf/black
     rev: 22.6.0
     hooks:
     - id: black
       args:  ["-l", "88"]
+
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
     hooks:
     - id: flake8
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.3.0
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
+
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.0.0
     hooks:
@@ -32,6 +37,7 @@ repos:
         stages: [commit-msg]
         additional_dependencies:
           - '@commitlint/config-conventional'
+
   - repo: local
     hooks:
       - id: poetry_lock_check

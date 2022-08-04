@@ -44,8 +44,8 @@ line_length = 88
 [tool.semantic_release]
 version_variable = ["pyproject.toml:version"]
 version_pattern = [
-    "Makefile:^VERSION := {version}",
-    "src/__init__.py:^ __version__ = {version}"
+  "Makefile:^VERSION := {version}",
+  "src/__init__.py:^ __version__ = {version}"
 ]
 upload_to_pypi = false
 upload_to_release = false

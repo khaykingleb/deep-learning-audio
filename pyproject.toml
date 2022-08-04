@@ -1,6 +1,6 @@
 [tool.poetry]
 authors = ["Gleb Khaykin <khaykingleb@gmail.com>"]
-version = "0.1.0"
+version = "0.0.1"
 name = "deep-learning-for-audio"
 description = "Neural networks used for digital signal processing, speech analysis, and speech synthesis."
 repository = "https://github.com/khaykingleb/Deep-Learning-for-Audio"
@@ -42,10 +42,12 @@ order_by_type = false
 line_length = 88
 
 [tool.semantic_release]
-version_variable = ["pyproject.toml:version"]
+version_variable = [
+  "pyproject.toml:version",
+  "src/__init__.py:__version__"
+]
 version_pattern = [
-  "Makefile:^VERSION := {version}",
-  "src/__init__.py:^ __version__ = {version}"
+  "Makefile:^VERSION := {version}"
 ]
 upload_to_pypi = false
 upload_to_release = false

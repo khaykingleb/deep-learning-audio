@@ -1,10 +1,10 @@
 VERSION := 0.0.1
 
-#@ Repository initialization
 .PHONY:
 	repo-pre-commit
 	repo-deps
 	repo-local-init
+	jupyter
 
 # Install pre-commit in repository
 repo-pre-commit:
@@ -18,3 +18,6 @@ repo-deps:
 # Configure environment variables in repository
 repo-local-init:
 	cat .test.env  > .env
+
+jupyter:
+	poetry run jupyter lab

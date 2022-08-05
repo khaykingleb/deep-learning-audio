@@ -19,5 +19,6 @@ repo-deps:
 repo-local-init:
 	cat .test.env  > .env
 
+# Run jupyter lab
 jupyter:
 	poetry run jupyter lab

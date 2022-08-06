@@ -49,23 +49,3 @@ repos:
         stages: [commit-msg]
         additional_dependencies:
           - '@commitlint/config-conventional'
-
-  - repo: local
-    hooks:
-      - id: poetry_lock_check
-        name: Check if poetry.lock file is updated
-        entry: |
-            python -c "
-            from poetry.factory import Factory
-            l = Factory().create_poetry('.').locker
-            if l.is_locked() and l.is_fresh():
-              exit(0)
-            else:
-              print('run `poetry update` to fix')
-              exit(1)
-            "
-        language: python_venv
-        additional_dependencies:
-          - poetry
-        verbose: True
-        files: pyproject.toml

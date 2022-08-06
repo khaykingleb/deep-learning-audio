@@ -23,6 +23,18 @@ repos:
     rev: 3.9.2
     hooks:
     - id: flake8
+      additional_dependencies:
+        - darglint==1.8.1  # DAR
+        - flake8-annotations==2.7.0  # ANN
+        - flake8-bugbear==22.1.11  # B,B9
+        - flake8-cognitive-complexity==0.1.0  # CCR
+        - flake8-comprehensions==3.8.0  # C4
+        - flake8-docstrings==1.6.0  # D
+        - flake8-eradicate==1.2.0  # E800
+        - flake8-import-order==0.18.1  # I
+        - flake8-polyfill==1.0.2
+        - flake8-pytest-style==1.6.0  # PT
+        - pep8-naming==0.12.1  # N8
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.3.0

@@ -22,3 +22,7 @@ repo-local-init:
 # Run jupyter lab
 jupyter:
 	poetry run jupyter lab
+
+# Run mypy type checker
+mypy:
+	poetry run mypy

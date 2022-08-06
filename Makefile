@@ -16,7 +16,7 @@ repo-deps:
 	poetry install
 
 # Configure environment variables in repository
-repo-local-init:
+repo-env-init:
 	cat .test.env  > .env
 
 # Run jupyter lab

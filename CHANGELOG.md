@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2022-08-06)
+### Feature
+* Dsp transformers plot ([`9761510`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9761510a1295de9a33a2d90ee3cfde7db5e30c44))
+
 ## v0.1.0 (2022-08-06)
 ### Feature
 * Feature extractors from audio signal ([`753de91`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/753de91873659b4df694dc1b963ffbfd3992a975))

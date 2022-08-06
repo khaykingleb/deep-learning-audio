@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.0 (2022-08-06)
+### Feature
+* Feature extractors from audio signal ([`753de91`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/753de91873659b4df694dc1b963ffbfd3992a975))
+
 ## v0.0.1 (2022-08-05)
 ### Fix
 * Release version again ([`3a55df7`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/3a55df7c13947cd9a5323de5621881b4ca336261))

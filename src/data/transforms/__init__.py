@@ -37,8 +37,8 @@ def get_feature_extractors(dsp_config: DictConfig) -> tp.Dict[str, nn.Module]:
             hop_length=hop_length,
             window_fn=torch.hann_window,
             power=2,
-            n_mels=dsp_config.spectrogram.n_mels,
-            mel_scale=dsp_config.spectrogram.mel_type,
+            n_mels=dsp_config.melspectrogram.n_mels,
+            mel_scale=dsp_config.melspectrogram.mel_type,
         ),
         "mfccer": T.MFCC(
             sample_rate=dsp_config.sr,
@@ -53,8 +53,8 @@ def get_feature_extractors(dsp_config: DictConfig) -> tp.Dict[str, nn.Module]:
                 "hop_length": hop_length,
                 "window_fn": torch.hann_window,
                 "power": 2,
-                "n_mels": dsp_config.spectrogram.n_mels,
-                "mel_scale": dsp_config.spectrogram.mel_type,
+                "n_mels": dsp_config.melspectrogram.n_mels,
+                "mel_scale": dsp_config.melspectrogram.mel_type,
             },
         ),
     }

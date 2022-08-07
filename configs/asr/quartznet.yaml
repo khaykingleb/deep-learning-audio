@@ -1,12 +1,15 @@
 preprocess:
+
   sr: 16000  # sample rate
   frequency_min: 0
   frequency_max: 8000  # above 6 kHz sounds become like whines and whistles because they are high pitched
   window_length_ms: 30  # window length in milliseconds for FFT
   hop_length_ms: 5  # window step in milliseconds for FFT
-  spectrogram:
+
+  melspectrogram:
     n_mels: 80  # mumber of mel filterbanks
     mel_type: htk  # mel = 2595.0 * np.log10(1.0 + f / 700.0)
+
   mfcc:
     n_mfcc: 40  # number of mfc coefficients to retain
     dct_type: 2  # DCT type to use

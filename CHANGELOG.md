@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2022-08-08)
+### Feature
+* Metrics for asr ([`b037173`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/b037173ff8581c22177542da6f43c03db71b5083))
+
 ## v0.2.1 (2022-08-08)
 ### Fix
 * :bug: ([`9cc992e`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9cc992ebea13d33471c2c2e606b0486800c10ff5))

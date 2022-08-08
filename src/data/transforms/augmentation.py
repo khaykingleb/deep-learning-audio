@@ -9,7 +9,7 @@ from omegaconf import DictConfig
 
 
 class TransformationsAugmenter:
-    """Aaugments DSP tranformations."""
+    """Augments DSP tranformations."""
 
     def __init__(
         self: "TransformationsAugmenter",

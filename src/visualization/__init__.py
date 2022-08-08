@@ -1,4 +1,4 @@
-"""Plots for a digital singnal processing visualization."""
+"""Plots for a Digital Singnal Processing visualization."""
 
 import typing as tp
 

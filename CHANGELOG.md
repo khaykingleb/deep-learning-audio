@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.5.0 (2022-08-08)
+### Feature
+* Feature & time augmentations for dsp transorfmations ([`8978516`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/8978516b520e67112e92d233a571dfb13770e02e))
+
 ## v0.4.0 (2022-08-08)
 ### Feature
 * Metrics for asr ([`c71f6de`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/c71f6deaf8409e283d0aa4654d8afce524ee603d))

@@ -16,6 +16,7 @@ SoundFile = "^0.10.3"
 transformers = "^4.21.0"
 datasets = "^2.4.0"
 wandb = "^0.12.21"
+editdistance = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.971"

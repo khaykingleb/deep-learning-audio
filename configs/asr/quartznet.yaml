@@ -14,3 +14,12 @@ preprocess:
     n_mfcc: 40  # number of mfc coefficients to retain
     dct_type: 2  # DCT type to use
     log_mels: False # whether to use log-mel spectrograms instead of db-scaled
+
+  transforms_augmentation:
+    feature_time_mask_prob: 0.8  # probability of using feature & time masking
+    feature_mask_prob: 0.6  # probability of using feature masking if masking is allowed
+    time_mask_prob: 0.6  # probability of using time masking if masking is allowed
+    n_feature_masks: 2  # maximum number of feature masks
+    n_time_masks: 2  # maximum number of time masks
+    feature_portion: 0.15  # maximum portion of a single feature mask
+    time_portion: 0.15  # maximum portion of of a single time mask

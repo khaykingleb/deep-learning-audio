@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.1 (2022-08-08)
+### Fix
+* :bug: ([`9cc992e`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9cc992ebea13d33471c2c2e606b0486800c10ff5))
+
 ## v0.2.0 (2022-08-06)
 ### Feature
 * Dsp transformers plot ([`9761510`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9761510a1295de9a33a2d90ee3cfde7db5e30c44))

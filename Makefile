@@ -3,8 +3,10 @@ VERSION := 0.5.0
 .PHONY:
 	repo-pre-commit
 	repo-deps
-	repo-local-init
+	repo-env-init
+	repo-init
 	jupyter
+	mypy
 
 # Install pre-commit in repository
 repo-pre-commit:
@@ -18,6 +20,10 @@ repo-deps:
 # Configure environment variables in repository
 repo-env-init:
 	cat .test.env  > .env
+
+# Initialize repository
+repo-init:
+	repo-pre-commit repo-deps repo-env-init
 
 # Run jupyter lab
 jupyter:

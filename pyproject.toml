@@ -56,7 +56,7 @@ version_pattern = [
 ]
 upload_to_pypi = false
 upload_to_release = false
-commit_subject = "chore(release): v{version}"
+commit_subject = "chore(release): version {version} [skip ci]"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

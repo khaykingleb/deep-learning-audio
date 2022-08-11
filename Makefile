@@ -1,12 +1,14 @@
+#@ Variables
+SHELL := /usr/bin/env bash
 VERSION := 0.5.0
 
+
+#@ Repo initialization
 .PHONY:
 	repo-pre-commit
 	repo-deps
 	repo-env-init
 	repo-init
-	jupyter
-	mypy
 
 # Install pre-commit in repository
 repo-pre-commit:
@@ -25,10 +27,20 @@ repo-env-init:
 repo-init:
 	repo-pre-commit repo-deps repo-env-init
 
+
+#@ Research
+.PHONY:
+	jupyter
+
 # Run jupyter lab
 jupyter:
 	poetry run jupyter lab
 
-# Run mypy type checker
+
+#@ Checks
+.PHONY:
+	mypy
+
+# Run type checker
 mypy:
 	poetry run mypy

@@ -7,6 +7,7 @@ repos:
       - id: check-added-large-files
       - id: trailing-whitespace
       - id: end-of-file-fixer
+      - id: check-executables-have-shebangs
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
@@ -17,7 +18,7 @@ repos:
     rev: 22.6.0
     hooks:
     - id: black
-      args:  ["-l", "88"]
+      args: ["-l", "88"]
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
@@ -40,7 +41,7 @@ repos:
     rev: v1.3.0
     hooks:
       - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+        args: ["--baseline", ".secrets.baseline"]
 
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.0.0
@@ -48,4 +49,22 @@ repos:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies:
-          - '@commitlint/config-conventional'
+          - "@commitlint/config-conventional"
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.74.1
+    hooks:
+      - id: terraform_validate
+      - id: terraform_docs
+        args:
+          - "--args=--config=./terraform/.terraform.docs.yaml"
+      - id: terraform_fmt
+      - id: terraform_tflint
+        args:
+          - "--args=--enable-rule=terraform_comment_syntax"
+          - "--args=--enable-rule=terraform_naming_convention"
+          - "--args=--enable-rule=terraform_documented_outputs"
+          - "--args=--enable-rule=terraform_documented_variables"
+          - "--args=--enable-rule=terraform_typed_variables"
+          - "--args=--enable-rule=terraform_unused_declarations"
+          - "--args=--config=__GIT_WORKING_DIR__/terraform/.tflint.hcl"

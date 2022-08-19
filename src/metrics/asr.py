@@ -14,7 +14,7 @@ def calc_cer(reference_text: str, hypothesis_text: str) -> float:
         float: Character error rate.
     """
     if len(reference_text) == 0:
-        return 0.0
+        return 1.0
     distance = editdistance.eval(reference_text, hypothesis_text)
     return distance / len(reference_text)
 

@@ -17,6 +17,7 @@ pytest-coverage.txt
 
 # Terraform
 .terraform
+*.tfvars
 *.tfstate
 *.tfstate.backup
 .terraform.lock.hcl

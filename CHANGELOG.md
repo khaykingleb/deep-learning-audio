@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.6.0 (2022-08-19)
+### Feature
+* Add s3 bucket for storing audio samples ([`6f7f729`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/6f7f729cdeb1c723f6d24e740205cb0350f5587a))
+
 ## v0.5.0 (2022-08-08)
 ### Feature
 * Feature & time augmentations for dsp transorfmations ([`8978516`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/8978516b520e67112e92d233a571dfb13770e02e))

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.0 (2022-08-19)
+### Feature
+* Datasets for asr models ([`478ad9a`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/478ad9a83cf25e1f7fc277e2c196a569134f910d))
+
 ## v0.6.1 (2022-08-19)
 ### Fix
 * :bug: add s3 policy for dla-user ([`456aa1e`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/456aa1e7046aabdc075bb450e985d717668525f5))

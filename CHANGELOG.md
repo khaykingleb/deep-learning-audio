@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.6.1 (2022-08-19)
+### Fix
+* :bug: add s3 policy for dla-user ([`456aa1e`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/456aa1e7046aabdc075bb450e985d717668525f5))
+
 ## v0.6.0 (2022-08-19)
 ### Feature
 * Add s3 bucket for storing audio samples ([`6f7f729`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/6f7f729cdeb1c723f6d24e740205cb0350f5587a))

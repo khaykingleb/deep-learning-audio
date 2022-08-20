@@ -3,23 +3,38 @@ preprocess:
   sr: 16000  # sample rate
   frequency_min: 0
   frequency_max: 8000  # above 6 kHz sounds become like whines and whistles because they are high pitched
-  window_length_ms: 30  # window length in milliseconds for FFT
-  hop_length_ms: 5  # window step in milliseconds for FFT
 
-  melspectrogram:
-    n_mels: 80  # mumber of mel filterbanks
-    mel_type: htk  # mel = 2595.0 * np.log10(1.0 + f / 700.0)
+  audio:
+    use_room_reverberation: True
+    use_background_noise: True
+    snr_dbs:  # How much audio signal can be greater than noise in dB
+      - 20
+      - 10
+      - 3
+    use_sox_effects: True
+    effects:
+      tempo: 0.2  # Max absolute difference in adjusting tempo (but not pitch)
+      pitch: 50  # Max absolute difference in adjusting pitch (but not tempo)
+      speed: 0.2  # Max absolute difference in adjusting speed (pitch and tempo together)
 
-  mfcc:
-    n_mfcc: 40  # number of mfc coefficients to retain
-    dct_type: 2  # DCT type to use
-    log_mels: False # whether to use log-mel spectrograms instead of db-scaled
+  transforms:
+    window_length_ms: 30  # window length in milliseconds for FFT
+    hop_length_ms: 5  # window step in milliseconds for FFT
 
-  transforms_augmentation:
-    feature_time_mask_prob: 0.8  # probability of using feature & time masking
-    feature_mask_prob: 0.6  # probability of using feature masking if masking is allowed
-    time_mask_prob: 0.6  # probability of using time masking if masking is allowed
-    n_feature_masks: 2  # maximum number of feature masks
-    n_time_masks: 2  # maximum number of time masks
-    feature_portion: 0.15  # maximum portion of a single feature mask
-    time_portion: 0.15  # maximum portion of of a single time mask
+    melspectrogram:
+      n_mels: 80  # mumber of mel filterbanks
+      mel_type: htk  # mel = 2595.0 * np.log10(1.0 + f / 700.0)
+
+    mfcc:
+      n_mfcc: 40  # number of mfc coefficients to retain
+      dct_type: 2  # DCT type to use
+      log_mels: False # whether to use log-mel spectrograms instead of db-scaled
+
+    augmentation:
+      feature_time_mask_prob: 0.8  # probability of using feature & time masking
+      feature_mask_prob: 0.6  # probability of using feature masking if masking is allowed
+      time_mask_prob: 0.6  # probability of using time masking if masking is allowed
+      n_feature_masks: 2  # maximum number of feature masks
+      n_time_masks: 2  # maximum number of time masks
+      feature_portion: 0.15  # maximum portion of a single feature mask
+      time_portion: 0.15  # maximum portion of of a single time mask

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.1 (2022-08-19)
+### Fix
+* :bug: typo ([`e8a270f`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/e8a270f43813f211b443911ccbaeaa052e5e42a7))
+
 ## v0.7.0 (2022-08-19)
 ### Feature
 * Datasets for asr models ([`478ad9a`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/478ad9a83cf25e1f7fc277e2c196a569134f910d))

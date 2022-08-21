@@ -13,10 +13,11 @@ def calc_cer(reference_text: str, hypothesis_text: str) -> float:
     Returns:
         float: Character error rate.
     """
-    if len(reference_text) == 0:
+    if len(reference_text) == 0 and len(hypothesis_text) == 0:
+        return 0.0
+    if len(reference_text) == 0 and len(hypothesis_text) != 0:
         return 1.0
-    distance = editdistance.eval(reference_text, hypothesis_text)
-    return distance / len(reference_text)
+    return editdistance.eval(reference_text, hypothesis_text) / len(reference_text)
 
 
 def calc_wer(reference_text: str, hypothesis_text: str) -> float:
@@ -31,7 +32,8 @@ def calc_wer(reference_text: str, hypothesis_text: str) -> float:
     """
     reference_words = reference_text.split()
     hypothesis_words = hypothesis_text.split()
-    if len(reference_words) == 0:
+    if len(reference_words) == 0 and len(hypothesis_words) == 0:
+        return 0.0
+    elif len(reference_words) == 0 and len(hypothesis_words) != 0:
         return 1.0
-    distance = editdistance.eval(reference_words, hypothesis_words)
-    return distance / len(reference_words)
+    return editdistance.eval(reference_words, hypothesis_words) / len(reference_words)

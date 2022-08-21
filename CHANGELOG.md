@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.8.1 (2022-08-21)
+### Fix
+* :bug: ([`0dc35d2`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/0dc35d2ad12cc66678d9e31b610f1f649a01be41))
+
 ## v0.8.0 (2022-08-20)
 ### Feature
 * Audio augmentations ([`a71013a`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/a71013ae20ce8452a3b63d79b14c81b732f1c50b))

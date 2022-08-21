@@ -9,7 +9,9 @@ import torch.nn.functional as F  # NOQA
 import torchaudio
 from omegaconf import DictConfig, OmegaConf
 
-CONFIG = OmegaConf.load("../../../configs/asr/quartznet.yaml")
+from ... import cfg
+
+CONFIG = OmegaConf.load(cfg.BASE_PATH / "configs/asr/quartznet.yaml")
 
 rir, sample_rate = torchaudio.load(
     torchaudio.utils.download_asset(

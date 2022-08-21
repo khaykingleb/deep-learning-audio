@@ -68,9 +68,15 @@ class AudioAugmenter:
         """
         if self.audio_config.use_sox_effects:
             effects_to_choose = [
-                ["tempo", str(self.audio_config.effects.tempo * random.uniform(-1, 1))],
-                ["pitch", str(self.audio_config.effects.pitch * random.uniform(-1, 1))],
-                ["speed", str(self.audio_config.effects.speed * random.uniform(-1, 1))],
+                ["pitch", str(self.audio_config.effects.pitch)],
+                [
+                    "tempo",
+                    str(1 + self.audio_config.effects.tempo * random.uniform(-1, 1)),
+                ],
+                [
+                    "speed",
+                    str(1 + self.audio_config.effects.speed * random.uniform(-1, 1)),
+                ],
                 ["reverb", "-w"],
             ]
             return torchaudio.sox_effects.apply_effects_tensor(
@@ -127,6 +133,8 @@ class AudioAugmenter:
     def __call__(
         self: "AudioAugmenter",
         audio: torch.Tensor,
+        /,
+        *,
         sample_rate: int,
     ) -> torch.Tensor:
         """Augments digital signal according to the configuration file.

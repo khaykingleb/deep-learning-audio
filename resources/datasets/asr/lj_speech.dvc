@@ -1,0 +1,5 @@
+outs:
+- md5: c0c8c76c6494d17446feb7749257f669.dir
+  size: 164580054
+  nfiles: 560
+  path: lj_speech

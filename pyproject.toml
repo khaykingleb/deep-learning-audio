@@ -45,6 +45,7 @@ profile = "black"
 line_length = 88
 multi_line_output = 3
 order_by_type = true
+reverse_relative = true
 from_first = false
 
 [tool.semantic_release]

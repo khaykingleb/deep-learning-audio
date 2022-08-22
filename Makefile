@@ -35,3 +35,13 @@ jupyter:
 # Run type checker
 mypy:
 	poetry run mypy
+
+#@ Datasets
+.PHONY:	get_lj_speech
+
+# LJ Speech for ASR
+get_lj_speech:
+	chmod +x ./scripts/datasets.sh
+	sh ./scripts/datasets.sh get_lj_speech_dataset
+
+#@ Clean garbage

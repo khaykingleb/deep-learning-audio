@@ -1,3 +1,35 @@
+pretrained_model: null
+
+trainer:
+  devices: 1 # the number of gpus, 0 for CPU
+  max_epochs: 3
+  gradient_clip_val: 0.0
+  log_every_n_steps: 1
+  resume_from_checkpoint: null
+  use_augmentation_since_epoch: 100
+
+data:
+  max_text_length: null
+  max_audio_length: null
+  limit: null
+
+  parts:
+    train:
+      proportion: 0.8
+      datasets:
+        - LJSpeech
+
+    test:
+      proportion: 0.15
+      datasets:
+        - LJSpeech
+
+    val:
+      proportion: 0.05
+      datasets:
+        - LJSpeech
+
+
 preprocess:
 
   sr: 16000  # sample rate

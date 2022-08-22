@@ -21,15 +21,11 @@ class BaseTextEncoder:
         """Constructor.
 
         Args:
-            alphabet(List, optional): Alphabet used for tokenization.
+            alphabet (List, optional): Alphabet used for tokenization.
         """
         self.alphabet = self.get_simple_alphabet() if alphabet is None else alphabet
-        self.idx_to_char = {
-            key: value for key, value in enumerate(sorted(self.alphabet))
-        }
-        self.char_to_idx = {
-            value: key for key, value in enumerate(sorted(self.alphabet))
-        }
+        self.idx_to_char = {k: v for k, v in enumerate(sorted(self.alphabet))}
+        self.char_to_idx = {v: k for k, v in enumerate(sorted(self.alphabet))}
 
     def __getitem__(
         self: "BaseTextEncoder",
@@ -124,10 +120,9 @@ class BaseTextEncoder:
         Returns:
             Base tokenizer.
         """
-        if file.endswith(".yaml") or file.endswith(".yml"):
-            with Path(file).open() as file:
-                char_to_idx = OmegaConf.load(file)
-            base_tokenizer = cls(list(char_to_idx.keys()))
-            return base_tokenizer
-        else:
+        if not file.endswith(".yaml") or not file.endswith(".yml"):
             raise Exception("Provide a file with a .yaml or .yml extension.")
+        with Path(file).open() as file:
+            char_to_idx = OmegaConf.load(file)
+            base_tokenizer = cls(list(char_to_idx.keys()))
+        return base_tokenizer

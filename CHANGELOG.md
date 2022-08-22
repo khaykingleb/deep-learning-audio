@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.0 (2022-08-22)
+### Feature
+* Logging basic config ([`12ea268`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/12ea268d94fa30eb3e632530016050fc41a306f9))
+
 ## v0.9.0 (2022-08-22)
 ### Feature
 * Seed fixer ([`55752b4`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/55752b443b3131a8b744c2fb3bd17380a8d524be))

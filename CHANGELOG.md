@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.0 (2022-08-22)
+### Feature
+* Base tokenizer ([`d682669`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/d68266994ef0e26de9b809dab8fcfb5f24c1282e))
+
 ## v0.10.0 (2022-08-22)
 ### Feature
 * Logging basic config ([`12ea268`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/12ea268d94fa30eb3e632530016050fc41a306f9))

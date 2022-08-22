@@ -11,11 +11,11 @@ from omegaconf import OmegaConf
 # TODO: Decide what vocabulary to use for ASR models.
 
 
-class BaseTokenizer:
+class BaseTextEncoder:
     """Base text encoder."""
 
     def __init__(
-        self: "BaseTokenizer",
+        self: "BaseTextEncoder",
         alphabet: tp.Optional[tp.List[str]] = None,
     ) -> None:
         """Constructor.
@@ -32,7 +32,7 @@ class BaseTokenizer:
         }
 
     def __getitem__(
-        self: "BaseTokenizer",
+        self: "BaseTextEncoder",
         key: tp.Union[int, str],
     ) -> tp.Union[int, str]:
         """Get value from idx_to_char or char_to_idx based on the key type.
@@ -48,7 +48,7 @@ class BaseTokenizer:
         elif isinstance(key, str):
             return self.char_to_idx[key]
 
-    def encode(self: "BaseTokenizer", text: str) -> torch.Tensor:
+    def encode(self: "BaseTextEncoder", text: str) -> torch.Tensor:
         """Encode text.
 
         Args:
@@ -74,11 +74,11 @@ class BaseTokenizer:
                 )
             )
 
-    def decode(self: "BaseTokenizer", x: torch.Tensor) -> str:  # NOQA
+    def decode(self: "BaseTextEncoder", x: torch.Tensor) -> str:  # NOQA
         pass
 
     @property
-    def alphabet_length(self: "BaseTokenizer") -> int:
+    def alphabet_length(self: "BaseTextEncoder") -> int:
         """Get the length of the alphabet used in the tokenization.
 
         Returns:
@@ -112,7 +112,7 @@ class BaseTokenizer:
         return "".join([char for char in text if char in alphabet]).lower().strip()
 
     @classmethod
-    def from_yaml(cls: "BaseTokenizer", file: str) -> "BaseTokenizer":
+    def from_yaml(cls: "BaseTextEncoder", file: str) -> "BaseTextEncoder":
         """Construct the tokenizer from the YAML file.
 
         Args:

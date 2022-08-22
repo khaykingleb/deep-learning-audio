@@ -8,8 +8,8 @@ from rich.logging import RichHandler
 
 from ...src import cfg
 
-LOGS_PATH = cfg.BASE_DIR / "logs"
-LOGS_PATH.mkdir(parents=True, exists_ok=True)
+LOGS_DIR = cfg.BASE_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exists_ok=True)
 
 logging_config = {
     "version": 1,
@@ -29,7 +29,7 @@ logging_config = {
         },
         "info": {
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOGS_PATH / "info.log",
+            "filename": LOGS_DIR / "info.log",
             "maxBytes": 10485760,  # 1 MB
             "backupCount": 10,
             "formatter": "detailed",
@@ -37,7 +37,7 @@ logging_config = {
         },
         "error": {
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOGS_PATH / "error.log",
+            "filename": LOGS_DIR / "error.log",
             "maxBytes": 10485760,  # 1 MB
             "backupCount": 10,
             "formatter": "detailed",

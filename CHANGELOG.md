@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.1 (2022-08-22)
+### Fix
+* :bug: complete lj speech dataset ([`cd36788`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/cd36788d92b5c21c6115edbbab093f48cce5e471))
+
 ## v0.11.0 (2022-08-22)
 ### Feature
 * Base tokenizer ([`d682669`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/d68266994ef0e26de9b809dab8fcfb5f24c1282e))

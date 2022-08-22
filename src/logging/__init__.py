@@ -8,7 +8,7 @@ from rich.logging import RichHandler
 
 from ...src import cfg
 
-LOGS_PATH = cfg.BASE_PATH / "logs"
+LOGS_PATH = cfg.BASE_DIR / "logs"
 LOGS_PATH.mkdir(parents=True, exists_ok=True)
 
 logging_config = {

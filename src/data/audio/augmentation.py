@@ -11,7 +11,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from ... import cfg
 
-CONFIG = OmegaConf.load(cfg.BASE_PATH / "configs/asr/quartznet.yaml")
+CONFIG = OmegaConf.load(cfg.BASE_DIR / "configs/asr/quartznet.yaml")
 
 rir, sample_rate = torchaudio.load(
     torchaudio.utils.download_asset(

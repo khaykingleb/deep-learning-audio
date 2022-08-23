@@ -3,19 +3,15 @@
 import typing as tp
 from math import ceil
 
-import librosa
 import numpy as np
 import pandas as pd
-import torch
 import torchaudio
-import torchaudio.transforms as T  # NOQA
 from omegaconf import DictConfig
 from torch.utils.data import Dataset
 
-from ..preprocessing.audio.augmentation import AudioAugmenter
+from ..preprocessing.audio import load_audio
 from ..preprocessing.text import BaseTextEncoder
-from ..preprocessing.transform import get_feature_extractors
-from ..preprocessing.transform.augmentation import TransformAugmenter
+from ..preprocessing.transform import preprocess_audio
 from ... import cfg
 from ...logging import logger
 
@@ -61,10 +57,10 @@ class BaseDatasetForASR(Dataset):
             Dict: Data sample.
         """
         data = self.data[idx]
-        audio = self.load_audio(data["path"], self.config)
-        audio, transform = self.process_audio(
+        audio = load_audio(data["path"], self.config.preprocess)
+        audio, transform = preprocess_audio(
             data["audio"],
-            self.config,
+            self.config.preprocess,
             self.use_audio_aug,
             self.use_transform_aug,
         )
@@ -99,7 +95,6 @@ class BaseDatasetForASR(Dataset):
         Returns:
             List: Filtered data.
         """
-        filter_by_text_len = False
         if config.data.max_text_length is not None:
             data_text_exceeds = (
                 np.array([len(sample["text"]) for sample in data])
@@ -113,9 +108,6 @@ class BaseDatasetForASR(Dataset):
                     max_text_length=config.data.max_text_length,
                 )
             )
-            filter_by_text_len = True
-
-        filter_by_audio_duration = False
         if config.data.max_audio_duration is not None:
             data_audio_exceeds = (
                 np.array([sample["audio_duration"] for sample in data])
@@ -129,10 +121,13 @@ class BaseDatasetForASR(Dataset):
                     max_audio_duration=config.data.max_audio_duration,
                 )
             )
-            filter_by_audio_duration = True
-
-        if filter_by_text_len or filter_by_audio_duration:
-            data_exceeds = data_text_exceeds + data_audio_exceeds
+        if data_text_exceeds is not None or data_audio_exceeds is not None:
+            if data_text_exceeds is None:
+                data_exceeds = data_audio_exceeds
+            elif data_audio_exceeds is None:
+                data_exceeds = data_text_exceeds
+            else:
+                data_exceeds = data_text_exceeds + data_audio_exceeds
             logger.info(
                 "{percentage:.3%} of records are excluded.".format(
                     percentage=data_exceeds.sum() / len(data)
@@ -141,10 +136,8 @@ class BaseDatasetForASR(Dataset):
             data = [
                 data for data, not_exclude in zip(data, ~data_exceeds) if not_exclude
             ]
-
         if config.data.limit is not None:
             data = data[: config.data.limit]
-
         return data
 
     @staticmethod
@@ -158,57 +151,6 @@ class BaseDatasetForASR(Dataset):
             List: Filtered data.
         """
         return sorted(data, key=lambda x: x["audio_duration"])
-
-    @staticmethod
-    def load_audio(path: str, config: DictConfig) -> torch.Tensor:
-        """Load an audio file from a given path and resample it with the accordance to config sample rate if needed.
-
-        Args:
-            path (str): Path to the audio file.
-            config (DictConfig): Configuration file.
-
-        Returns:
-            Tensor: Digital audio signal with shape of (1, audio_len).
-
-        """
-        audio, sample_rate = torchaudio.load(path)
-        audio = audio[:1, :]  # remove all channels but the first
-        if sample_rate != config.preprocess.audio.sr:
-            audio = T.Resample(sample_rate, config.preprocess.audio.sr)(audio)
-        return audio
-
-    @staticmethod
-    def process_audio(
-        audio: torch.Tensor,
-        config: DictConfig,
-        *,
-        use_audio_aug: bool,
-        use_transform_aug: bool,
-    ) -> tp.Tuple[torch.Tensor]:
-        """Performs digital signal processing with augmentation if specified.
-
-        Args:
-            audio (Tensor): Original digital signal.
-            config (DictConfig): Configuration file.
-            use_audio_aug (bool): Whether to use audio augmentation.
-            use_transform_aug (bool): Whether to use transformation augmentation.
-
-        Returns:
-            Tuple: Digital signal and its transformation with augmentation if specified.
-        """
-        if use_audio_aug:
-            audio_augmenter = AudioAugmenter(config.preprocess.audio.augmentation)
-            audio = audio_augmenter(audio, sample_rate=config.preprocess.audio.sr)
-        feature_extractors = get_feature_extractors(config.preprocess)
-        transform = feature_extractors[config.preprocess.main_transform](audio)
-        if config.preprocess.main_transform != "mfccer":
-            transform = librosa.power_to_db(transform)
-        if use_transform_aug:
-            transform_augmenter = TransformAugmenter(
-                config.preprocess.transform.augmentation
-            )
-            transform = transform_augmenter(transform)
-        return audio, transform
 
 
 class LJSpeechDataset(BaseDatasetForASR):

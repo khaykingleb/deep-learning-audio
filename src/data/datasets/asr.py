@@ -133,9 +133,7 @@ class BaseDatasetForASR(Dataset):
                     percentage=data_exceeds.sum() / len(data)
                 )
             )
-            data = [
-                data for data, not_exclude in zip(data, ~data_exceeds) if not_exclude
-            ]
+            data = [data for data, exclude in zip(data, data_exceeds) if not exclude]
         if config.data.limit is not None:
             data = data[: config.data.limit]
         return data

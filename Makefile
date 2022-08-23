@@ -42,7 +42,8 @@ mypy:
 # Download LJ Speech for ASR
 get_lj_speech:
 	chmod +x ./scripts/datasets.sh
-	sh ./scripts/datasets.sh get_lj_speech_dataset
+	sh ./scripts/datasets.sh get_lj_speech_dataset \
+		resources/datasets/asr https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
 # Download all datasets
 get_all_datasets: get_lj_speech

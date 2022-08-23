@@ -62,9 +62,10 @@ class BaseTextEncoder:
         except KeyError:
             unknown_chars = {char for char in text if char not in self.char_to_idx}
             raise Exception(
-                """Cannot encode text:\n\n
-            {text}.\n\n
-            Unknown chars: {unknown_chars}.""".format(
+                """\
+                Cannot encode text:\n\n
+                {text}.\n\n
+                Unknown chars: {unknown_chars}.""".format(
                     text=text,
                     unknown_chars=" ".join(unknown_chars),
                 )

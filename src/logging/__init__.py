@@ -6,10 +6,10 @@ import sys
 
 from rich.logging import RichHandler
 
-from ...src import cfg
+from .. import cfg
 
 LOGS_DIR = cfg.BASE_DIR / "logs"
-LOGS_DIR.mkdir(parents=True, exists_ok=True)
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 logging_config = {
     "version": 1,
@@ -28,7 +28,7 @@ logging_config = {
             "level": logging.DEBUG,
         },
         "info": {
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.handlers.RotaptingFileHandler",
             "filename": LOGS_DIR / "info.log",
             "maxBytes": 10485760,  # 1 MB
             "backupCount": 10,

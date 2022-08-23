@@ -8,11 +8,11 @@ import torchaudio.transforms as T  # NOQA
 from omegaconf import DictConfig
 
 
-class TransformationsAugmenter:
+class TransformAugmenter:
     """Augments DSP tranformations."""
 
     def __init__(
-        self: "TransformationsAugmenter",
+        self: "TransformAugmenter",
         augmentation_config: DictConfig,
     ) -> None:
         """Constructor.
@@ -24,7 +24,7 @@ class TransformationsAugmenter:
         self.augmentation_config = augmentation_config
 
     def __get_feature_masker(
-        self: "TransformationsAugmenter",
+        self: "TransformAugmenter",
         transformation_size: int,
     ) -> nn.Module:
         """Gets feature masker to mask y-axis.
@@ -42,7 +42,7 @@ class TransformationsAugmenter:
         )
 
     def __get_time_masker(
-        self: "TransformationsAugmenter",
+        self: "TransformAugmenter",
         time_size: int,
     ) -> nn.Module:
         """Gets time masker to mask x-axis.
@@ -60,7 +60,7 @@ class TransformationsAugmenter:
         )
 
     def __feature_time_mask(
-        self: "TransformationsAugmenter",
+        self: "TransformAugmenter",
         transformation: torch.Tensor,
     ) -> torch.Tensor:
         """Masks x- and y-axes of DSP transformation.
@@ -89,7 +89,7 @@ class TransformationsAugmenter:
         return transformation
 
     def __call__(
-        self: "TransformationsAugmenter",
+        self: "TransformAugmenter",
         transformation: torch.Tensor,
     ) -> torch.Tensor:
         """Augmentate transformation of a digital signal.

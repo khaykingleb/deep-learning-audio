@@ -21,10 +21,12 @@ rir, sample_rate = torchaudio.load(
 rir = torchaudio.functional.resample(
     rir,
     sample_rate,
-    CONFIG.preprocess.sr,
+    CONFIG.preprocess.audio.sr,
     lowpass_filter_width=6,
 )
-rir = rir[:, int(CONFIG.preprocess.sr * 1.01) : int(CONFIG.preprocess.sr * 1.3)]
+rir = rir[
+    :, int(CONFIG.preprocess.audio.sr * 1.01) : int(CONFIG.preprocess.audio.sr * 1.3)
+]
 rir = rir / torch.norm(rir, p=2)
 RIR = torch.flip(rir, [1])
 
@@ -36,7 +38,7 @@ NOISE, sample_rate = torchaudio.load(
 NOISE = torchaudio.functional.resample(
     NOISE,
     sample_rate,
-    CONFIG.preprocess.sr,
+    CONFIG.preprocess.audio.sr,
     lowpass_filter_width=6,
 )
 

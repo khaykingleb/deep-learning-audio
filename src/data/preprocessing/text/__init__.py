@@ -103,9 +103,9 @@ class BaseTextEncoder:
             str: Preprocessed text that is ready to be tokenized.
         """
         # NB: Can be changed to increase an ASR model performance
-        text = re.sub(r"[^\w\s]", " ", text)
+        text = re.sub(r"[^\w\s]", " ", text.lower())
         text = re.sub(r"\s+", " ", text)
-        return "".join([char for char in text if char in alphabet]).lower().strip()
+        return "".join([char for char in text if char in alphabet]).strip()
 
     @classmethod
     def from_yaml(cls: "BaseTextEncoder", file: str) -> "BaseTextEncoder":

@@ -53,7 +53,7 @@ preprocess:
   main_transform: melspectrogramer  # currently used feature extractor
 
   transform:
-    window_length_ms: 30  # window length in milliseconds for FFT
+    win_length_ms: 30  # window length in milliseconds for FFT
     hop_length_ms: 5  # window step in milliseconds for FFT
 
     melspectrogram:

@@ -18,7 +18,6 @@ repos:
     rev: 22.6.0
     hooks:
     - id: black
-      args: ["-l", "88"]
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2

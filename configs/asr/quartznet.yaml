@@ -9,9 +9,9 @@ trainer:
   use_augmentation_since_epoch: 100
 
 data:
-  max_text_length: null
-  max_audio_length: null
-  limit: null
+  max_text_length: null  # in characters
+  max_audio_duration: null  # in seconds
+  limit: null  # limit the size of a dataset
 
   parts:
     train:
@@ -32,24 +32,27 @@ data:
 
 preprocess:
 
-  sr: 16000  # sample rate
-  frequency_min: 0
-  frequency_max: 8000  # above 6 kHz sounds become like whines and whistles because they are high pitched
-
   audio:
-    use_room_reverberation: True
-    use_background_noise: True
-    snr_dbs:  # How much audio signal can be greater than noise in dB
-      - 20
-      - 10
-      - 3
-    use_sox_effects: True
-    effects:
-      tempo: 0.2  # Max absolute difference in adjusting tempo (but not pitch)
-      pitch: 50  # Max absolute difference in adjusting pitch (but not tempo)
-      speed: 0.2  # Max absolute difference in adjusting speed (pitch and tempo together)
+    sr: 16000  # sample rate
+    frequency_min: 0
+    frequency_max: 8000  # above 6 kHz sounds become like whines and whistles because they are high pitched
 
-  transforms:
+    augmentation:
+      use_room_reverberation: True
+      use_background_noise: True
+      snr_dbs:  # How much audio signal can be greater than noise in dB
+        - 20
+        - 10
+        - 3
+      use_sox_effects: True
+      effects:
+        tempo: 0.2  # Max absolute difference in adjusting tempo (but not pitch)
+        pitch: 50  # Max absolute difference in adjusting pitch (but not tempo)
+        speed: 0.2  # Max absolute difference in adjusting speed (pitch and tempo together)
+
+  main_transform: melspectrogramer  # currently used feature extractor
+
+  transform:
     window_length_ms: 30  # window length in milliseconds for FFT
     hop_length_ms: 5  # window step in milliseconds for FFT
 

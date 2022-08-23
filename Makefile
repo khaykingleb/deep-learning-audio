@@ -37,11 +37,22 @@ mypy:
 	poetry run mypy
 
 #@ Datasets
-.PHONY:	get_lj_speech
+.PHONY:	get_lj_speech get_all_datasets
 
-# LJ Speech for ASR
+# Download LJ Speech for ASR
 get_lj_speech:
 	chmod +x ./scripts/datasets.sh
 	sh ./scripts/datasets.sh get_lj_speech_dataset
 
-#@ Clean garbage
+# Download all datasets
+get_all_datasets: get_lj_speech
+
+#@ Cleaning
+.PHONY: clean_logs clean_all
+
+# Delete all log files
+clean_logs:
+	rm logs/*
+
+# Delete all "junk" files
+clean_all: clean_logs

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.2 (2022-08-23)
+### Fix
+* :bug: ([`b7460af`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/b7460af4743ce56a2cfe6452df3d2d4b24cf3e97))
+
 ## v0.11.1 (2022-08-22)
 ### Fix
 * :bug: complete lj speech dataset ([`cd36788`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/cd36788d92b5c21c6115edbbab093f48cce5e471))

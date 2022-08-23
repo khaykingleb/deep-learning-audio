@@ -21,3 +21,6 @@ pytest-coverage.txt
 *.tfstate
 *.tfstate.backup
 .terraform.lock.hcl
+
+# Logging
+logs

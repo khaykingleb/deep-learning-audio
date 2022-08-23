@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.3 (2022-08-23)
+### Fix
+* :bug: complete base dataset structure for asr ([`7e004b3`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/7e004b3cdc3ddd8cbe874983008df2828d927ca7))
+
 ## v0.11.2 (2022-08-23)
 ### Fix
 * :bug: ([`b7460af`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/b7460af4743ce56a2cfe6452df3d2d4b24cf3e97))

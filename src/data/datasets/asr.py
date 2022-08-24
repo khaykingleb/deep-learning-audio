@@ -17,6 +17,8 @@ from ...logging import logger
 
 # TODO: Form batches based on audio length.
 
+# TODO: Захерачить пайплайны с dvc?
+
 
 class BaseDatasetForASR(Dataset):
     """Base dataset for training an ASR model."""
@@ -194,7 +196,10 @@ class LJSpeechDataset(BaseDatasetForASR):
             use_transform_aug=True if part == "train" else False,
         )
 
-    def __get_full_data(self: "LJSpeechDataset", data: pd.DataFrame) -> pd.DataFrame:
+    def __get_full_data(
+        self: "LJSpeechDataset",
+        data: pd.DataFrame,
+    ) -> tp.List[tp.Dict[str, tp.Any]]:
         full_data = []
         for idx, audio_name in enumerate(data[0]):
             audio_path = self.LJ_SPEECH_WAVS_DIR / str(audio_name + ".wav")
@@ -223,12 +228,6 @@ class LibriSpeechDataset(BaseDatasetForASR):
         super(BaseDatasetForASR, self).__init__(config)
         pass
 
-    def __getitem__(self: "LibriSpeechDataset", idx: int) -> None:  # NOQA: D105
-        pass
-
-    def __len__(self: "LibriSpeechDataset") -> int:  # NOQA: D105
-        pass
-
 
 class CommonVoiceDataset(BaseDatasetForASR):
     """Common Voice dataset for training an ASR model."""
@@ -240,10 +239,4 @@ class CommonVoiceDataset(BaseDatasetForASR):
             config (DictConfig): Configuration file.
         """
         super(BaseDatasetForASR, self).__init__(config)
-        pass
-
-    def __getitem__(self: "CommonVoiceDataset", idx: int) -> None:  # NOQA: D105
-        pass
-
-    def __len__(self: "CommonVoiceDataset") -> int:  # NOQA: D105
         pass

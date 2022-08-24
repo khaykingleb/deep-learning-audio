@@ -74,7 +74,7 @@ def preprocess_audio(
 
     Args:
         audio (Tensor): Original digital signal.
-         dsp_config (DictConfig): Preprocess part of a configuration file.
+        dsp_config (DictConfig): Preprocess part of a configuration file.
         use_audio_aug (bool): Whether to use audio augmentation.
         use_transform_aug (bool): Whether to use transformation augmentation.
 

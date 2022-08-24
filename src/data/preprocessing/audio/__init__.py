@@ -7,7 +7,7 @@ from omegaconf import DictConfig
 
 
 def load_audio(path: str, dsp_config: DictConfig) -> torch.Tensor:
-    """Load an audio file from a given path and resample it with the accordance to config sample rate if needed.
+    """Load an audio file from a given path and resample it with the accordance to config sample.
 
     Args:
         path (str): Path to the audio file.
@@ -19,5 +19,6 @@ def load_audio(path: str, dsp_config: DictConfig) -> torch.Tensor:
     audio, sample_rate = torchaudio.load(path)
     audio = audio[:1, :]  # remove all channels but the first
     if sample_rate != dsp_config.audio.sr:
-        audio = T.Resample(sample_rate, dsp_config.audio.sr)(audio)
+        resampler = T.Resample(sample_rate, dsp_config.audio.sr)
+        audio = resampler(audio)
     return audio

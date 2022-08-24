@@ -45,6 +45,19 @@ get_lj_speech:
 	sh ./scripts/datasets.sh get_lj_speech_dataset \
 		resources/datasets/asr https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
+get_libri_speech:
+	chmod +x ./scripts/datasets.sh
+	for dataset in dev-clean dev-other test-clean test-other train-clean-100 train-clean-360 train-other-500; \
+	do \
+		sh ./scripts/datasets.sh get_libri_speech_dataset resources/datasets/asr $$dataset; \
+	done
+
+get_example:
+	for i in {1..15}; \
+	do \
+		echo "Number: $$i"; \
+	done
+
 # Download all datasets
 get_all_datasets: get_lj_speech
 

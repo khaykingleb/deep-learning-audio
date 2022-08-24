@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.4 (2022-08-24)
+### Fix
+* Complete libri speech dataset ([`f13afb1`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/f13afb1429c0e1b3625f41cb77a3dac249fbd526))
+
 ## v0.11.3 (2022-08-23)
 ### Fix
 * :bug: complete base dataset structure for asr ([`7e004b3`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/7e004b3cdc3ddd8cbe874983008df2828d927ca7))

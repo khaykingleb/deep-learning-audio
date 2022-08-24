@@ -9,7 +9,7 @@ import torch.nn.functional as F  # NOQA
 import torchaudio
 from omegaconf import DictConfig, OmegaConf
 
-from ... import cfg
+from .... import cfg
 
 CONFIG = OmegaConf.load(cfg.BASE_DIR / "configs/asr/quartznet.yaml")
 

@@ -28,7 +28,7 @@ logging_config = {
             "level": logging.DEBUG,
         },
         "info": {
-            "class": "logging.handlers.RotaptingFileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": LOGS_DIR / "info.log",
             "maxBytes": 10485760,  # 1 MB
             "backupCount": 10,

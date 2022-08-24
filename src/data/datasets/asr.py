@@ -1,7 +1,9 @@
 """Datasets for training ASR models."""
 
+import os
 import typing as tp
 from math import ceil
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -29,8 +31,7 @@ class BaseDatasetForASR(Dataset):
         config: DictConfig,
         text_encoder: BaseTextEncoder,
         *,
-        use_audio_aug: bool,
-        use_transform_aug: bool,
+        use_aug: bool,
     ) -> None:
         """Constructor.
 
@@ -38,16 +39,14 @@ class BaseDatasetForASR(Dataset):
             data (List): Information about audio files.
             config (DictConfig): Configuration file.
             text_encoder (BaseTextEncoder): Text encoder used for tokenization.
-            use_audio_aug (bool): Whether to use audio augmentation on data.
-            use_transform_aug (bool): Whether to use dsp augmentation on data.
+            use_aug (bool): Whether to use audio and dsp augmentation on data.
         """
         data = self.filter_data(data, config)
         self.data = self.sort_data(data)
 
         self.text_encoder = text_encoder
         self.config = config
-        self.use_audio_aug = use_audio_aug
-        self.use_transform_aug = use_transform_aug
+        self.use_aug = use_aug
 
     def __getitem__(self: "BaseDatasetForASR", idx: int) -> tp.Dict[str, tp.Any]:
         """Get a sample from the dataset according to the given index.
@@ -63,8 +62,7 @@ class BaseDatasetForASR(Dataset):
         audio, transform = preprocess_audio(
             data["audio"],
             self.config.preprocess,
-            self.use_audio_aug,
-            self.use_transform_aug,
+            self.use_aug,
         )
         return {
             "path": data["path"],
@@ -123,10 +121,13 @@ class BaseDatasetForASR(Dataset):
                     max_audio_duration=config.data.max_audio_duration,
                 )
             )
-        if data_text_exceeds is not None or data_audio_exceeds is not None:
-            if data_text_exceeds is None:
+        if (
+            config.data.max_text_length is not None
+            or config.data.max_audio_duration is not None
+        ):
+            if config.data.max_text_length is None:
                 data_exceeds = data_audio_exceeds
-            elif data_audio_exceeds is None:
+            elif config.data.max_audio_duration is None:
                 data_exceeds = data_text_exceeds
             else:
                 data_exceeds = data_text_exceeds + data_audio_exceeds
@@ -156,7 +157,7 @@ class BaseDatasetForASR(Dataset):
 class LJSpeechDataset(BaseDatasetForASR):
     """LJ Speech dataset for training an ASR model."""
 
-    LJ_SPEECH_DIR = cfg.BASE_DIR / "resources/datasets/asr/lj_speech"
+    LJ_SPEECH_DIR = cfg.BASE_DIR / "resources" / "datasets" / "asr" / "lj_speech"
     LJ_SPEECH_WAVS_DIR = LJ_SPEECH_DIR / "wavs"
 
     def __init__(
@@ -178,6 +179,21 @@ class LJSpeechDataset(BaseDatasetForASR):
             sep="|",
             header=None,
         )
+        data = self.__part_data(data, config, part)
+        data = self.__get_full_data(data.reset_index())
+        super().__init__(
+            data,
+            config,
+            text_encoder,
+            use_aug=True if part == "train" else False,
+        )
+
+    def __part_data(
+        self: "LJSpeechDataset",
+        data: pd.DataFrame,
+        config: DictConfig,
+        part: tp.Literal["train", "test", "val"],
+    ) -> pd.DataFrame:
         train_idx = ceil(data.shape[0] * config.data.parts.train.proportion)
         test_idx = train_idx + ceil(data.shape[0] * config.data.parts.test.proportion)
         match part:
@@ -187,14 +203,7 @@ class LJSpeechDataset(BaseDatasetForASR):
                 data = data[train_idx:test_idx]
             case "val":
                 data = data[test_idx:]
-        data = self.__get_full_data(data.reset_index())
-        super().__init__(
-            data,
-            config,
-            text_encoder,
-            use_audio_aug=True if part == "train" else False,
-            use_transform_aug=True if part == "train" else False,
-        )
+        return data
 
     def __get_full_data(
         self: "LJSpeechDataset",
@@ -203,7 +212,6 @@ class LJSpeechDataset(BaseDatasetForASR):
         full_data = []
         for idx, audio_name in enumerate(data[0]):
             audio_path = self.LJ_SPEECH_WAVS_DIR / str(audio_name + ".wav")
-            audio_path = audio_path.resolve().as_posix()
             audio_info = torchaudio.info(audio_path)
             alphabet = BaseTextEncoder.get_simple_alphabet()
             full_data.append(
@@ -219,14 +227,74 @@ class LJSpeechDataset(BaseDatasetForASR):
 class LibriSpeechDataset(BaseDatasetForASR):
     """LibriSpeech dataset for training an ASR model."""
 
-    def __init__(self: "LibriSpeechDataset", config: DictConfig) -> None:
+    LIBRI_SPEECH_DIR = cfg.BASE_DIR / "resources" / "datasets" / "asr" / "libri_speech"
+
+    def __init__(
+        self: "LibriSpeechDataset",
+        config: DictConfig,
+        text_encoder: BaseTextEncoder,
+        *,
+        part: tp.Literal[
+            "dev-clean",
+            "dev-other",
+            "test-clean",
+            "test-other",
+            "train-clean-100",
+            "train-clean-360",
+            "train-other-500",
+        ],
+    ) -> None:
         """Constructor.
 
         Args:
             config (DictConfig): Configuration file.
+            text_encoder (BaseTextEncoder): Text encoder used for tokenization.
+            part (Literal): Part of the dataset needed.
         """
-        super(BaseDatasetForASR, self).__init__(config)
-        pass
+        data = self.__get_full_data(part)
+        super().__init__(
+            data,
+            config,
+            text_encoder,
+            use_aug=True if part.startswith("train") else False,
+        )
+
+    def __get_full_data(
+        self: "LibriSpeechDataset",
+        part: tp.Literal[
+            "dev-clean",
+            "dev-other",
+            "test-clean",
+            "test-other",
+            "train-clean-100",
+            "train-clean-360",
+            "train-other-500",
+        ],
+    ) -> tp.List[tp.Dict[str, tp.Any]]:
+        dir_paths = set()
+        for dir_path, _, files in os.walk(self.LIBRI_SPEECH_DIR / part, topdown=True):
+            if any([file.endswith(".flac") for file in files]):
+                dir_paths.add(Path(dir_path))
+
+        full_data = []
+        for dir_path in dir_paths:
+            text_path = list(dir_path.glob("*.trans.txt"))[0]
+            with text_path.open() as file:
+                for line in file.readlines():
+                    audio_id = line.split()[0]
+                    audio_path = dir_path / str(audio_id + ".flac")
+                    audio_info = torchaudio.info(audio_path)
+                    text = " ".join(line.split()[1:])
+                    alphabet = BaseTextEncoder.get_simple_alphabet()
+                    full_data.append(
+                        {
+                            "path": audio_path,
+                            "text": BaseTextEncoder.preprocess_text(text, alphabet),
+                            "audio_duration": audio_info.num_frames
+                            / audio_info.sample_rate,
+                        }
+                    )
+        return full_data
 
 
 class CommonVoiceDataset(BaseDatasetForASR):

@@ -11,9 +11,9 @@ import torchaudio
 from omegaconf import DictConfig
 from torch.utils.data import Dataset
 
-from ..preprocessing.audio import load_audio
-from ..preprocessing.text import BaseTextEncoder
-from ..preprocessing.transform import preprocess_audio
+from ..preprocess.audio import load_audio
+from ..preprocess.text import BaseTextEncoder
+from ..preprocess.transform import preprocess_audio
 from ... import cfg
 from ...logging import logger
 

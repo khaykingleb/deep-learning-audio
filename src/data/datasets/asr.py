@@ -60,9 +60,9 @@ class BaseDatasetForASR(Dataset):
         data = self.data[idx]
         audio = load_audio(data["path"], self.config.preprocess)
         audio, transform = preprocess_audio(
-            data["audio"],
+            audio,
             self.config.preprocess,
-            self.use_aug,
+            use_aug=self.use_aug,
         )
         return {
             "path": data["path"],

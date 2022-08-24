@@ -45,7 +45,7 @@ get_lj_speech:
 	sh ./scripts/datasets.sh get_lj_speech_dataset \
 		resources/datasets/asr https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
-get_libri_speech:
+get_all_libri_speech:
 	chmod +x ./scripts/datasets.sh
 	for dataset in dev-clean dev-other test-clean test-other train-clean-100 train-clean-360 train-other-500; \
 	do \
@@ -53,7 +53,7 @@ get_libri_speech:
 	done
 
 # Download all datasets
-get_all_datasets: get_lj_speech get_libri_speech
+get_all_datasets: get_lj_speech get_all_libri_speech
 
 #@ Cleaning
 .PHONY: clean_logs clean_all

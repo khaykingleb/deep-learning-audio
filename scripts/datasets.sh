@@ -11,9 +11,9 @@ get_lj_speech_dataset () {
 get_libri_speech_dataset () {
     mkdir -p "$1"
     wget --output-document "$1"/"$2".tar.gz https://www.openslr.org/resources/12/"$2".tar.gz && \
-        tar -xzvf "$1"/"$2".tar.gz --directory "$1"
+        tar -xzvf "$1"/"$2".tar.gz --directory "$1" && \
         mv "$1"/LibriSpeech "$1"/libri_speech && \
-        rm -rf "$1"/LibriSpeech
+        rm -rf "$1"/LibriSpeech && \
         rm "$1"/"$2".tar.gz
 }
 

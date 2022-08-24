@@ -52,14 +52,8 @@ get_libri_speech:
 		sh ./scripts/datasets.sh get_libri_speech_dataset resources/datasets/asr $$dataset; \
 	done
 
-get_example:
-	for i in {1..15}; \
-	do \
-		echo "Number: $$i"; \
-	done
-
 # Download all datasets
-get_all_datasets: get_lj_speech
+get_all_datasets: get_lj_speech get_libri_speech
 
 #@ Cleaning
 .PHONY: clean_logs clean_all

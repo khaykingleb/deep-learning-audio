@@ -24,9 +24,7 @@ rir = torchaudio.functional.resample(
     CONFIG.preprocess.audio.sr,
     lowpass_filter_width=6,
 )
-rir = rir[
-    :, int(CONFIG.preprocess.audio.sr * 1.01) : int(CONFIG.preprocess.audio.sr * 1.3)
-]
+rir = rir[:, int(CONFIG.preprocess.audio.sr * 1.01) : int(CONFIG.preprocess.audio.sr * 1.3)]
 rir = rir / torch.norm(rir, p=2)
 RIR = torch.flip(rir, [1])
 
@@ -72,14 +70,8 @@ class AudioAugmenter:
         if self.audio_config.use_sox_effects:
             effects_to_choose = [
                 ["pitch", str(random.randint(0, self.audio_config.effects.pitch))],
-                [
-                    "tempo",
-                    str(1 + self.audio_config.effects.tempo * random.uniform(-1, 1)),
-                ],
-                [
-                    "speed",
-                    str(1 + self.audio_config.effects.speed * random.uniform(-1, 1)),
-                ],
+                ["tempo", str(1 + self.audio_config.effects.tempo * random.uniform(-1, 1))],
+                ["speed", str(1 + self.audio_config.effects.speed * random.uniform(-1, 1))],
                 ["reverb", "-w"],
             ]
             audio, sr = torchaudio.sox_effects.apply_effects_tensor(
@@ -89,7 +81,6 @@ class AudioAugmenter:
                 channels_first=True,
             )
             self.sample_rate = sr
-            return audio.unsqueeze(dim=0)
         return audio
 
     def __simulate_room_reverberation(
@@ -150,10 +141,14 @@ class AudioAugmenter:
             Tensor: Augmented audio signal.
         """
         self.sample_rate = sample_rate
-        audio_augmented = {
-            "sox_effect": self.__apply_sox_effect(audio, sample_rate),
-            "room_reverberation": self.__simulate_room_reverberation(audio),
-            "background_noise": self.__add_background_noise(audio),
-            "none": audio,
-        }
-        return audio_augmented[random.choice(list(audio_augmented.keys()))]
+        augmentations = ["sox_effect", "room_reverberation", "background_noise", "none"]
+        augmentation = random.choice(augmentations)
+        match augmentation:
+            case "sox_effect":
+                return self.__apply_sox_effect(audio, sample_rate)
+            case "room_reverberation":
+                return self.__simulate_room_reverberation(audio)
+            case "background_noise":
+                return self.__add_background_noise(audio)
+            case "none":
+                return audio

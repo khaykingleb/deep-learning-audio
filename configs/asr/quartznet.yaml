@@ -1,4 +1,9 @@
-pretrained_model: null
+project_name: asr_quartznet
+seed: 42
+
+model:
+  name: QuartzNet
+  pretrained_model: null
 
 trainer:
   devices: 1 # the number of gpus, 0 for CPU
@@ -13,24 +18,38 @@ data:
   max_audio_duration: null  # in seconds
   limit: null  # limit the size of a dataset
 
+  use_aug: false
+
   parts:
     train:
       proportion: 0.8
+      num_workers: 1
+      batch_size: 8
       datasets:
-        - LJSpeech
+        - LJSpeechDataset,train
+        - LibriSpeechDataset,train-clean
 
     test:
       proportion: 0.15
+      num_workers: 1
+      batch_size: 8
       datasets:
-        - LJSpeech
+        - LJSpeechDataset,test
+        # - LibriSpeechDataset,test-clean
 
     val:
       proportion: 0.05
+      num_workers: 1
+      batch_size: 8
       datasets:
-        - LJSpeech
-
+        - LJSpeechDataset,val
+        # - LibriSpeechDataset,dev-clean
 
 preprocess:
+
+  text:
+    encoder:
+      name: BaseTextEncoder
 
   audio:
     sr: 16000  # sample rate
@@ -50,9 +69,8 @@ preprocess:
         pitch: 50  # Max absolute difference in adjusting pitch (but not tempo)
         speed: 0.2  # Max absolute difference in adjusting speed (pitch and tempo together)
 
-  main_transform: melspectrogramer  # currently used feature extractor
-
   transform:
+    name: MelSpectrogram
     win_length_ms: 30  # window length in milliseconds for FFT
     hop_length_ms: 5  # window step in milliseconds for FFT
 

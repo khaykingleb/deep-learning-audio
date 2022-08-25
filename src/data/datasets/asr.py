@@ -179,7 +179,7 @@ class LJSpeechDataset(BaseDatasetForASR):
             sep="|",
             header=None,
         )
-        data = self.__part_data(data, config, part)
+        data = self.__part_data(data.dropna(), config, part)
         data = self.__get_full_data(data.reset_index())
         super().__init__(
             data,
@@ -211,16 +211,20 @@ class LJSpeechDataset(BaseDatasetForASR):
     ) -> tp.List[tp.Dict[str, tp.Any]]:
         full_data = []
         for idx, audio_name in enumerate(data[0]):
-            audio_path = self.LJ_SPEECH_WAVS_DIR / str(audio_name + ".wav")
-            audio_info = torchaudio.info(audio_path)
-            alphabet = BaseTextEncoder.get_simple_alphabet()
-            full_data.append(
-                {
-                    "path": audio_path,
-                    "text": BaseTextEncoder.preprocess_text(data[2][idx], alphabet),
-                    "audio_duration": audio_info.num_frames / audio_info.sample_rate,
-                }
-            )
+            try:
+                audio_path = self.LJ_SPEECH_WAVS_DIR / str(audio_name + ".wav")
+                audio_info = torchaudio.info(audio_path)
+                alphabet = BaseTextEncoder.get_simple_alphabet()
+                full_data.append(
+                    {
+                        "path": audio_path,
+                        "text": BaseTextEncoder.preprocess_text(data[2][idx], alphabet),
+                        "audio_duration": audio_info.num_frames
+                        / audio_info.sample_rate,
+                    }
+                )
+            except AttributeError:
+                print(idx, audio_name)
         return full_data
 
 
@@ -275,7 +279,6 @@ class LibriSpeechDataset(BaseDatasetForASR):
         for dir_path, _, files in os.walk(self.LIBRI_SPEECH_DIR / part, topdown=True):
             if any([file.endswith(".flac") for file in files]):
                 dir_paths.add(Path(dir_path))
-
         full_data = []
         for dir_path in dir_paths:
             text_path = list(dir_path.glob("*.trans.txt"))[0]

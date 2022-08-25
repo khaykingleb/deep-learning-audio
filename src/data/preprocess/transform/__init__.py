@@ -11,8 +11,14 @@ from omegaconf import DictConfig
 from .augmentation import TransformAugmenter
 from ..audio.augmentation import AudioAugmenter
 
+Transform = tp.Union[
+    T._transforms.Spectrogram,
+    T._transforms.MelSpectrogram,
+    T._transforms.MFCC,
+]
 
-def get_feature_extractors(dsp_config: DictConfig) -> tp.Dict[str, nn.Module]:
+
+def get_feature_extractors(dsp_config: DictConfig) -> tp.Dict[str, Transform]:
     """Common feature extractors for a digital signal.
 
     Args:

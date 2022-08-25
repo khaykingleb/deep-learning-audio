@@ -25,18 +25,18 @@ class TransformAugmenter:
 
     def __get_feature_masker(
         self: "TransformAugmenter",
-        transformation_size: int,
+        transform_size: int,
     ) -> nn.Module:
         """Gets feature masker to mask y-axis.
 
         Args:
-            transformation_size (int): Length of y-axis.
+            transform_size (int): Length of y-axis.
 
         Returns:
             torchaudio.transforms.FrequencyMasking.
         """
         return T.FrequencyMasking(
-            freq_mask_param=round(self.augmentation_config.feature_portion * transformation_size)
+            freq_mask_param=round(self.augmentation_config.feature_portion * transform_size)
         )
 
     def __get_time_masker(
@@ -58,41 +58,41 @@ class TransformAugmenter:
 
     def __feature_time_mask(
         self: "TransformAugmenter",
-        transformation: torch.Tensor,
+        transform: torch.Tensor,
     ) -> torch.Tensor:
         """Masks x- and y-axes of DSP transformation.
 
         Args:
-            transformation (Tensor): DSP transformation of shape (1, n_feature, n_time).
+            transform (Tensor): DSP transformation of shape (1, n_feature, n_time).
 
         Returns:
             Tensor: Transformation with augmented x- and y-axes.
         """
-        transformation_size, time_size = transformation.squeeze().shape
-        feature_masker = self.__get_feature_masker(transformation_size)
+        transform_size, time_size = transform.squeeze().shape
+        feature_masker = self.__get_feature_masker(transform_size)
         time_masker = self.__get_time_masker(time_size)
         aug_type = random.randint(0, 2)
         if aug_type == 0:
             for _ in range(self.augmentation_config.n_feature_masks):
                 if random.random() <= self.augmentation_config.feature_mask_prob:
-                    transformation = feature_masker(transformation)
+                    transform = feature_masker(transform)
         elif aug_type == 1:
             for _ in range(self.augmentation_config.n_time_masks):
                 if random.random() <= self.augmentation_config.time_mask_prob:
-                    transformation = time_masker(transformation)
+                    transform = time_masker(transform)
         else:
-            transformation = feature_masker(transformation)
-            transformation = time_masker(transformation)
-        return transformation
+            transform = feature_masker(transform)
+            transform = time_masker(transform)
+        return transform
 
     def __call__(
         self: "TransformAugmenter",
-        transformation: torch.Tensor,
+        transform: torch.Tensor,
     ) -> torch.Tensor:
         """Augmentate transformation of a digital signal.
 
         Args:
-            transformation (Tensor): DSP transformation of shape (1, n_feature, n_time).
+            transform (Tensor): DSP transformation of shape (1, n_feature, n_time).
 
         Returns:
             Tensor: Augmented transformation.
@@ -105,5 +105,5 @@ class TransformAugmenter:
             ],
         )[0]
         if use_aug:
-            transformation = self.__feature_time_mask(transformation)
-        return transformation
+            transform = self.__feature_time_mask(transform)
+        return transform

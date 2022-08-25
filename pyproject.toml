@@ -31,7 +31,7 @@ jupyterlab = "^3.4.4"
 dvc = "^2.18.1"
 
 [tool.black]
-line-length = 88
+line-length = 100
 exclude = '''
 /(
     \.git
@@ -43,7 +43,7 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
-line_length = 88
+line_length = 100
 multi_line_output = 3
 order_by_type = true
 reverse_relative = true

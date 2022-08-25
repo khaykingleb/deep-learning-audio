@@ -59,7 +59,7 @@ class AudioAugmenter:
         self: "AudioAugmenter",
         audio: torch.Tensor,
         sample_rate: int,
-    ) -> tp.Tuple[torch.Tensor, int]:
+    ) -> torch.Tensor:
         """Apply SOX effect to the digital signal.
 
         Args:
@@ -67,7 +67,7 @@ class AudioAugmenter:
             sample_rate (int): Original sampling rate.
 
         Returns:
-            Tuple: (augmented audio signal, sample_rate).
+            Tensor: Augmented audio signal.
         """
         if self.audio_config.use_sox_effects:
             effects_to_choose = [
@@ -151,7 +151,7 @@ class AudioAugmenter:
         """
         self.sample_rate = sample_rate
         audio_augmented = {
-            "sox_effect": self.__apply_sox_effect(audio, sample_rate)[0],
+            "sox_effect": self.__apply_sox_effect(audio, sample_rate),
             "room_reverberation": self.__simulate_room_reverberation(audio),
             "background_noise": self.__add_background_noise(audio),
             "none": audio,

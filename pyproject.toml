@@ -1,6 +1,6 @@
 [tool.poetry]
 authors = ["Gleb Khaykin <khaykingleb@gmail.com>"]
-version = "0.11.5"
+version = "0.12.0"
 name = "deep-learning-for-audio"
 description = "Neural networks used for digital signal processing, speech analysis, and speech synthesis."
 repository = "https://github.com/khaykingleb/Deep-Learning-for-Audio"
@@ -59,7 +59,7 @@ version_pattern = [
 ]
 upload_to_pypi = false
 upload_to_release = false
-commit_subject = "chore(release): v{version}"
+commit_subject = "chore(release): v{version} [skip ci]"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

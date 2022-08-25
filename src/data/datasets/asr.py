@@ -177,7 +177,7 @@ class LJSpeechDataset(BaseDatasetForASR):
             data,
             config,
             text_encoder,
-            use_aug=True if part == "train" else False,
+            use_aug=True if part == "train" and config.data.use_aug else False,
         )
 
     def __part_data(
@@ -248,7 +248,7 @@ class LibriSpeechDataset(BaseDatasetForASR):
             data,
             config,
             text_encoder,
-            use_aug=True if part.startswith("train") else False,
+            use_aug=True if part.startswith("train") and config.data.use_aug else False,
         )
 
     def __get_full_data(

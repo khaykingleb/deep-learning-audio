@@ -211,20 +211,16 @@ class LJSpeechDataset(BaseDatasetForASR):
     ) -> tp.List[tp.Dict[str, tp.Any]]:
         full_data = []
         for idx, audio_name in enumerate(data[0]):
-            try:
-                audio_path = self.LJ_SPEECH_WAVS_DIR / str(audio_name + ".wav")
-                audio_info = torchaudio.info(audio_path)
-                alphabet = BaseTextEncoder.get_simple_alphabet()
-                full_data.append(
-                    {
-                        "path": audio_path,
-                        "text": BaseTextEncoder.preprocess_text(data[2][idx], alphabet),
-                        "audio_duration": audio_info.num_frames
-                        / audio_info.sample_rate,
-                    }
-                )
-            except AttributeError:
-                print(idx, audio_name)
+            audio_path = self.LJ_SPEECH_WAVS_DIR / str(audio_name + ".wav")
+            audio_info = torchaudio.info(audio_path)
+            alphabet = BaseTextEncoder.get_simple_alphabet()
+            full_data.append(
+                {
+                    "path": audio_path,
+                    "text": BaseTextEncoder.preprocess_text(data[2][idx], alphabet),
+                    "audio_duration": audio_info.num_frames / audio_info.sample_rate,
+                }
+            )
         return full_data
 
 

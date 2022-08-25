@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.1 (2022-08-25)
+### Fix
+* :bug: allow not using augmentation on train data ([`2670d72`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/2670d726786868c8fc1e56a358257b693c7dc6d0))
+
 ## v0.1.0 (2022-08-25)
 ### Feature
 * Torch device support ([`84fee01`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/84fee011a7f4884f876e615852dead82c7846ccb))

@@ -53,6 +53,7 @@ class AudioAugmenter:
             audio_config (DictConfig): Audio preprocessing part of the configuration file.
         """
         self.audio_config = audio_config
+        self.sample_rate = None
 
     def __apply_sox_effect(
         self: "AudioAugmenter",
@@ -70,7 +71,7 @@ class AudioAugmenter:
         """
         if self.audio_config.use_sox_effects:
             effects_to_choose = [
-                ["pitch", str(self.audio_config.effects.pitch)],
+                ["pitch", str(random.randint(0, self.audio_config.effects.pitch))],
                 [
                     "tempo",
                     str(1 + self.audio_config.effects.tempo * random.uniform(-1, 1)),
@@ -81,12 +82,14 @@ class AudioAugmenter:
                 ],
                 ["reverb", "-w"],
             ]
-            return torchaudio.sox_effects.apply_effects_tensor(
+            audio, sr = torchaudio.sox_effects.apply_effects_tensor(
                 audio,
                 sample_rate,
-                [random.choice(effects_to_choose), ["rate", str(sample_rate)]],
+                [random.choice(effects_to_choose)],
                 channels_first=True,
             )
+            self.sample_rate = sr
+            return audio.unsqueeze(dim=0)
         return audio
 
     def __simulate_room_reverberation(
@@ -135,8 +138,6 @@ class AudioAugmenter:
     def __call__(
         self: "AudioAugmenter",
         audio: torch.Tensor,
-        /,
-        *,
         sample_rate: int,
     ) -> torch.Tensor:
         """Augments digital signal according to the configuration file.
@@ -148,6 +149,7 @@ class AudioAugmenter:
         Returns:
             Tensor: Augmented audio signal.
         """
+        self.sample_rate = sample_rate
         audio_augmented = {
             "sox_effect": self.__apply_sox_effect(audio, sample_rate)[0],
             "room_reverberation": self.__simulate_room_reverberation(audio),

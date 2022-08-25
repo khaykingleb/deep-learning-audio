@@ -4,12 +4,10 @@ import typing as tp
 
 import librosa
 import torch
-import torch.nn as nn
 import torchaudio.transforms as T  # NOQA
 from omegaconf import DictConfig
 
 from .augmentation import TransformAugmenter
-from ..audio.augmentation import AudioAugmenter
 
 Transform = tp.Union[
     T._transforms.Spectrogram,
@@ -72,9 +70,8 @@ def get_feature_extractors(dsp_config: DictConfig) -> tp.Dict[str, Transform]:
 def preprocess_audio(
     audio: torch.Tensor,
     dsp_config: DictConfig,
-    *,
     use_aug: bool,
-) -> tp.Tuple[torch.Tensor]:
+) -> torch.Tensor:
     """Performs digital signal processing with augmentation if specified.
 
     Args:
@@ -85,17 +82,12 @@ def preprocess_audio(
     Returns:
         Tuple: Digital signal and its transformation with augmentation if specified.
     """
-    if use_aug:
-        audio_augmenter = AudioAugmenter(dsp_config.audio.augmentation)
-        audio = audio_augmenter(audio, sample_rate=dsp_config.audio.sr)
-
     feature_extractors = get_feature_extractors(dsp_config)
-    transform = feature_extractors[dsp_config.main_transform](audio)
-    if dsp_config.main_transform != "mfccer":
-        transform = librosa.power_to_db(transform)
-
+    feature_extractor = feature_extractors[dsp_config.transform.name]
+    transform = feature_extractor(audio)
+    if dsp_config.transform.name != "mfccer":
+        transform = torch.Tensor(librosa.power_to_db(transform.numpy()))
     if use_aug:
-        transform_augmenter = TransformAugmenter(dsp_config.transform.augmentation)
-        transform = transform_augmenter(transform)
-
-    return audio, transform
+        augmenter = TransformAugmenter(dsp_config.transform.augmentation)
+        transform = augmenter(transform)
+    return transform

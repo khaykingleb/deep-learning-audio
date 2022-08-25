@@ -57,19 +57,15 @@ class BaseDatasetForASR(Dataset):
         Returns:
             Dict: Data sample.
         """
-        data = self.data[idx]
-        audio = load_audio(data["path"], self.config.preprocess)
-        audio, transform = preprocess_audio(
-            audio,
-            self.config.preprocess,
-            use_aug=self.use_aug,
-        )
+        sample = self.data[idx]
+        audio = load_audio(sample["path"], self.config.preprocess, self.use_aug)
+        transform = preprocess_audio(audio, self.config.preprocess, self.use_aug)
         return {
-            "path": data["path"],
-            "text": data["text"],
-            "encoded_text": self.text_encoder.encode(data["text"]),
+            "path": sample["path"],
+            "text": sample["text"],
+            "encoded_text": self.text_encoder.encode(sample["text"]),
             "audio": audio,
-            "audio_duration": data["audio_duration"],
+            "audio_duration": sample["audio_duration"],
             "transformation": transform,
         }
 

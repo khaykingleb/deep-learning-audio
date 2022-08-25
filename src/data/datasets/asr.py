@@ -1,8 +1,8 @@
 """Datasets for training ASR models."""
 
+import math
 import os
 import typing as tp
-from math import ceil
 from pathlib import Path
 
 import numpy as np
@@ -93,8 +93,7 @@ class BaseDatasetForASR(Dataset):
         """
         if config.data.max_text_length is not None:
             data_text_exceeds = (
-                np.array([len(sample["text"]) for sample in data])
-                >= config.data.max_text_length
+                np.array([len(sample["text"]) for sample in data]) >= config.data.max_text_length
             )
             logger.info(
                 """\
@@ -117,10 +116,7 @@ class BaseDatasetForASR(Dataset):
                     max_audio_duration=config.data.max_audio_duration,
                 )
             )
-        if (
-            config.data.max_text_length is not None
-            or config.data.max_audio_duration is not None
-        ):
+        if config.data.max_text_length is not None or config.data.max_audio_duration is not None:
             if config.data.max_text_length is None:
                 data_exceeds = data_audio_exceeds
             elif config.data.max_audio_duration is None:
@@ -190,8 +186,8 @@ class LJSpeechDataset(BaseDatasetForASR):
         config: DictConfig,
         part: tp.Literal["train", "test", "val"],
     ) -> pd.DataFrame:
-        train_idx = ceil(data.shape[0] * config.data.parts.train.proportion)
-        test_idx = train_idx + ceil(data.shape[0] * config.data.parts.test.proportion)
+        train_idx = math.ceil(data.shape[0] * config.data.parts.train.proportion)
+        test_idx = train_idx + math.ceil(data.shape[0] * config.data.parts.test.proportion)
         match part:
             case "train":
                 data = data[:train_idx]
@@ -285,8 +281,7 @@ class LibriSpeechDataset(BaseDatasetForASR):
                         {
                             "path": audio_path,
                             "text": BaseTextEncoder.preprocess_text(text, alphabet),
-                            "audio_duration": audio_info.num_frames
-                            / audio_info.sample_rate,
+                            "audio_duration": audio_info.num_frames / audio_info.sample_rate,
                         }
                     )
         return full_data

@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.0 (2022-08-25)
+### Feature
+* Torch device support ([`84fee01`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/84fee011a7f4884f876e615852dead82c7846ccb))
+
+### Documentation
+* Intro for dsp ([`f3f39c0`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/f3f39c0e5374da933d3c4b71d89ae5372f1d5570))
+
 ## v0.11.5 (2022-08-24)
 ### Fix
 * Correct wrong __getitem__ magic method ([`4a35072`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/4a350720bbedb1150ffc4840f59940c446c08708))

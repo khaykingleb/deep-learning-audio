@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2022-08-27)
+### Feature
+* Transform cutout ([`a07d594`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/a07d594cfa50eecd20b15776332bedbb9262e3a1))
+
 ## v0.3.0 (2022-08-27)
 ### Feature
 * Main asr script ([`e8b4f04`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/e8b4f042ce49958de022d9f06c0efd0323e9db6f))

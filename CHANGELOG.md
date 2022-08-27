@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2022-08-27)
+### Feature
+* Dataloader ([`690f00e`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/690f00e179fc1f4c6d3e99be4f815549eb3e4b3d))
+
+### Documentation
+* Update asr config ([`fbcf2d4`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/fbcf2d4a151d7c9ee9363521eedfc15bcd716ca9))
+
 ## v0.1.1 (2022-08-25)
 ### Fix
 * :bug: allow not using augmentation on train data ([`2670d72`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/2670d726786868c8fc1e56a358257b693c7dc6d0))

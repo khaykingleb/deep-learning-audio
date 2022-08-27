@@ -24,11 +24,11 @@ class TransformCutoutAugmenter:
         pass
 
 
-class TransformAugmenter:
+class TransformMaskAugmenter:
     """Augments DSP tranformations by zeroing out vertical and horizontal sections as described in https://arxiv.org/abs/1904.08779."""
 
     def __init__(
-        self: "TransformAugmenter",
+        self: "TransformMaskAugmenter",
         aug_config: DictConfig,
     ) -> None:
         """Constructor.
@@ -39,7 +39,7 @@ class TransformAugmenter:
         self.aug_config = aug_config
 
     def __get_feature_masker(
-        self: "TransformAugmenter",
+        self: "TransformMaskAugmenter",
         transform_size: int,
     ) -> nn.Module:
         """Gets feature masker to mask y-axis.
@@ -55,7 +55,7 @@ class TransformAugmenter:
         )
 
     def __get_time_masker(
-        self: "TransformAugmenter",
+        self: "TransformMaskAugmenter",
         time_size: int,
     ) -> nn.Module:
         """Gets time masker to mask x-axis.
@@ -72,7 +72,7 @@ class TransformAugmenter:
         )
 
     def __feature_time_mask(
-        self: "TransformAugmenter",
+        self: "TransformMaskAugmenter",
         transform: torch.Tensor,
     ) -> torch.Tensor:
         """Masks x- and y-axes of DSP transformation.
@@ -101,7 +101,7 @@ class TransformAugmenter:
         return transform
 
     def __call__(
-        self: "TransformAugmenter",
+        self: "TransformMaskAugmenter",
         transform: torch.Tensor,
     ) -> torch.Tensor:
         """Augmentate transformation of a digital signal.

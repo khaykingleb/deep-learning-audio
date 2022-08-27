@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2022-08-27)
+### Feature
+* Main asr script ([`e8b4f04`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/e8b4f042ce49958de022d9f06c0efd0323e9db6f))
+
 ## v0.2.0 (2022-08-27)
 ### Feature
 * Dataloader ([`690f00e`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/690f00e179fc1f4c6d3e99be4f815549eb3e4b3d))

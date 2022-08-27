@@ -6,12 +6,12 @@ import torch.nn as nn
 from omegaconf import OmegaConf
 
 from .trainer import train
+from ...collections.asr import models as models
+from ...collections.asr import optim as optimizers
+from ...collections.asr.optim import scheduler as schedulers
 from ...data.dataloaders import get_dataloaders
 from ...data.preprocess import text as text_encoders
 from ...logging.wandb import WBLogger
-from ...tasks.asr import models as models
-from ...tasks.asr import optim as optimizers
-from ...tasks.asr.optim import scheduler as schedulers
 from ...utils import fix_seed, prepare_device
 
 
@@ -32,7 +32,7 @@ def main(config_path: str) -> None:
     dataloaders = get_dataloaders(config, text_encoder)
 
     model = getattr(models, config.model.name)(config)
-    if config.model.is_pretrained:
+    if config.model.pretrained:
         model.load_state_dict(torch.load(config.model.checkpoint_path)["state_dict"])
     wb.root_logger.info(model)
 

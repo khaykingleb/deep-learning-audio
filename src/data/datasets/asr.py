@@ -66,7 +66,7 @@ class BaseDatasetForASR(Dataset):
             "encoded_text": self.text_encoder.encode(sample["text"]),
             "audio": audio,
             "audio_duration": sample["audio_duration"],
-            "transformation": transform,
+            "transform": transform,
         }
 
     def __len__(self: "BaseDatasetForASR") -> int:
@@ -156,7 +156,6 @@ class LJSpeechDataset(BaseDatasetForASR):
         self: "LJSpeechDataset",
         config: DictConfig,
         text_encoder: BaseTextEncoder,
-        *,
         part: tp.Literal["train", "test", "val"],
     ) -> None:
         """Constructor.
@@ -225,7 +224,6 @@ class LibriSpeechDataset(BaseDatasetForASR):
         self: "LibriSpeechDataset",
         config: DictConfig,
         text_encoder: BaseTextEncoder,
-        *,
         part: tp.Literal[
             "dev-clean",
             "dev-other",

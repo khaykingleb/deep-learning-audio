@@ -21,7 +21,7 @@ class WBLogger:
 
         Args:
             config (DictConfig): Configuration file.
-            root_logger (RootLogger): Base logger.
+            root_logger (RootLogger, optional): Base logger.
         """
-        self.wandb = wandb.init(project=config.wandb_project_name)
+        self.wandb = wandb.init(project=config.project_name)
         self.root_logger = root_logger

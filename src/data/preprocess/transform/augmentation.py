@@ -8,17 +8,17 @@ import torchaudio.transforms as T  # NOQA
 from omegaconf import DictConfig
 
 
-class TransformCutout:
+class TransformCutoutAugmenter:
     """Augments DSP tranformations by zeroing out rectangulars as described in https://arxiv.org/abs/1708.04552."""
 
     def __init__(  # NOQA
-        self: "TransformCutout",
+        self: "TransformCutoutAugmenter",
         aug_config: DictConfig,
     ) -> None:
         pass
 
     def __call__(  # NOQA
-        self: "TransformCutout",
+        self: "TransformCutoutAugmenter",
         transform: torch.Tensor,
     ) -> torch.Tensor:
         pass

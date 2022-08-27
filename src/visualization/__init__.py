@@ -16,7 +16,7 @@ def plot_signal_transformation(
     """Plot audio singnal transformation.
 
     Args:
-        transform (Tensor): Audio singnal transformation.
+        transform (Tensor): Audio singnal transformation of shape (1, n_transform_features, n_transform_len).
         title (str): Plot title.
         xlabel (str): Label for x-axis.
         ylabel (str): Label for y-axis.
@@ -27,7 +27,7 @@ def plot_signal_transformation(
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.imshow(
-        transform,
+        transform.squeeze().numpy(),
         origin="lower",
         aspect="auto",
         extent=[0, audio_size / sample_rate, 0, sample_rate / 2000],

@@ -77,10 +77,10 @@ def preprocess_audio(
     Args:
         audio (Tensor): Original digital signal.
         dsp_config (DictConfig): Preprocess part of a configuration file.
-        use_aug (bool): Whether to use audio and transformation augmentation.
+        use_aug (bool): Whether to use augmentation.
 
     Returns:
-        Tuple: Digital signal and its transformation with augmentation if specified.
+        Tuple: Transformation of shape (1, n_transform_features, n_transform_len) with augmentation if specified.
     """
     feature_extractors = get_feature_extractors(dsp_config)
     feature_extractor = feature_extractors[dsp_config.transform.name]

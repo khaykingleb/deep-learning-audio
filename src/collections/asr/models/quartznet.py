@@ -205,7 +205,7 @@ class QuartzNet(nn.Module):
             x: Tensor of shape (batch_size, in_channels, transform_length).
 
         Returns:
-            Tensor of shape (batch_size, out_channels, ceil(transform_lenght / 2)).
+            Tensor of shape (batch_size, vocab_size, ceil(transform_lenght / 2)).
         """
         x = self.C1(x)
         x = self.Bs(x)

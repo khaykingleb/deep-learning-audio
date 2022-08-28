@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.6.0 (2022-08-28)
+### Feature
+* Object intialization ([`e6722d0`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/e6722d06729a4a68bbf1d061d04e684e4a7abddd))
+
 ## v0.5.0 (2022-08-28)
 ### Feature
 * Quartznet bxr structure ([`9480541`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9480541a526123d9f3f6a6519cc63bb0cb6f3336))

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.8.1 (2022-08-28)
+### Fix
+* :bug: wrong import ([`4d38727`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/4d3872729e4be633fc290b2d6d47b4affc82f284))
+
 ## v0.8.0 (2022-08-28)
 ### Feature
 * Metrics for asr ([`a1988a9`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/a1988a90dfd8e848b8d0e188d84d8ae3c61b6e9e))

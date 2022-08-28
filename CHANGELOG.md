@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.5.0 (2022-08-28)
+### Feature
+* Quartznet bxr structure ([`9480541`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9480541a526123d9f3f6a6519cc63bb0cb6f3336))
+* Quartznet bxr structure ([`6b34c92`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/6b34c92e94d5ac3c6cacc7596eeb9f0f35aa21da))
+
 ## v0.4.0 (2022-08-27)
 ### Feature
 * Transform cutout ([`a07d594`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/a07d594cfa50eecd20b15776332bedbb9262e3a1))

@@ -7,7 +7,7 @@ import torch
 import torchaudio.transforms as T  # NOQA
 from omegaconf import DictConfig
 
-from .augmentation import TransformAugmenter
+from .augmentation import TransformMaskAugmenter
 
 Transform = tp.Union[
     T._transforms.Spectrogram,
@@ -85,9 +85,9 @@ def preprocess_audio(
     feature_extractors = get_feature_extractors(dsp_config)
     feature_extractor = feature_extractors[dsp_config.transform.name]
     transform = feature_extractor(audio)
-    if dsp_config.transform.name != "mfccer":
+    if dsp_config.transform.name != "MFCC":
         transform = torch.Tensor(librosa.power_to_db(transform.numpy()))
     if use_aug:
-        augmenter = TransformAugmenter(dsp_config.transform.augmentation)
+        augmenter = TransformMaskAugmenter(dsp_config.transform.augmentation)
         transform = augmenter(transform)
     return transform

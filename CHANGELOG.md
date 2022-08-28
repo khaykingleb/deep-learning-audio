@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.0 (2022-08-28)
+### Feature
+* Dataloader and collater for asr ([`a2c0047`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/a2c0047de71e989c46f0dd9d10c780b233517e70))
+
 ## v0.6.1 (2022-08-28)
 ### Fix
 * :bug: use correct class name for augmenter ([`77ea121`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/77ea121640308c867e912a7b2595d89f24ce515c))

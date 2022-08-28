@@ -10,8 +10,8 @@ from ...core.asr import models as models
 from ...core.utils import fix_seed
 from ...core.utils import optim as optimizers
 from ...core.utils import prepare_device
+from ...core.utils.dataloaders import get_dataloaders
 from ...core.utils.optim import scheduler as schedulers
-from ...data.dataloaders import get_dataloaders
 from ...data.preprocess import text as text_encoders
 from ...logging.wandb import WBLogger
 from ...utils import init_obj

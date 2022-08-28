@@ -14,6 +14,7 @@ from ...core.utils.optim import scheduler as schedulers
 from ...data.dataloaders import get_dataloaders
 from ...data.preprocess import text as text_encoders
 from ...logging.wandb import WBLogger
+from ...utils import init_obj
 
 
 @click.command()
@@ -29,10 +30,10 @@ def main(config_path: str) -> None:
 
     fix_seed(config.seed)
 
-    text_encoder = getattr(text_encoders, config.preprocess.text.encoder.name)()
+    text_encoder = init_obj(text_encoders, config.preprocess.text.encoder.name)
     dataloaders = get_dataloaders(config, text_encoder)
 
-    model = getattr(models, config.model.name)(config)
+    model = init_obj(models, config.model.name, config, vocab_size=text_encoder.alphabet_length)
     if config.model.pretrained:
         model.load_state_dict(torch.load(config.model.checkpoint_path)["state_dict"])
     wb.root_logger.info(model)
@@ -43,8 +44,8 @@ def main(config_path: str) -> None:
         model = nn.DataParallel(model, device_ids=device_ids)
 
     params = filter(lambda param: param.requires_grad, model.parameters())
-    optimizer = getattr(optimizers, config.model.optimizer.name)(config, params)
-    scheduler = getattr(schedulers, config.model.optimizer.scheduler.name)(config, optimizer)
+    optimizer = init_obj(optimizers, config.model.optimizer.name, config, params)
+    scheduler = init_obj(schedulers, config.model.optimizer.scheduler.name, config, optimizer)
 
     wb.wandb.watch(model)
     train(

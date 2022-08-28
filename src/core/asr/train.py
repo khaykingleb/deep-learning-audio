@@ -7,12 +7,13 @@ from omegaconf import OmegaConf
 
 from .trainer import train
 from ...core.asr import models as models
-from ...core.asr import optim as optimizers
-from ...core.asr.optim import scheduler as schedulers
+from ...core.utils import fix_seed
+from ...core.utils import optim as optimizers
+from ...core.utils import prepare_device
+from ...core.utils.optim import scheduler as schedulers
 from ...data.dataloaders import get_dataloaders
 from ...data.preprocess import text as text_encoders
 from ...logging.wandb import WBLogger
-from ...utils import fix_seed, prepare_device
 
 
 @click.command()

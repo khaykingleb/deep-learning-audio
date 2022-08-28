@@ -196,9 +196,7 @@ class QuartzNet(nn.Module):
         )
 
         # Layer C_4: Pointwise Conv
-        self.C4 = nn.Sequential(
-            nn.Conv1d(in_channels=1024, out_channels=vocab_size, kernel_size=1),
-        )
+        self.C4 = nn.Conv1d(in_channels=1024, out_channels=vocab_size, kernel_size=1)
 
     def forward(self: "QuartzNet", x: torch.Tensor) -> torch.Tensor:
         """Defines the QuartzNet structure.

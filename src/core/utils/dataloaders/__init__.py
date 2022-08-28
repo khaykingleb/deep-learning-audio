@@ -1,7 +1,5 @@
 """Dataloaders for training models."""
 
-# TODO: Collater and Sampler need to be defiend for ASR, NOT GENERAL
-
 import typing as tp
 
 from omegaconf import DictConfig

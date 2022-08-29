@@ -48,26 +48,26 @@ class ASRCollater(Collater):
 
     def __call__(
         self: "ASRCollater",
-        batch: tp.List[tp.Dict[str, tp.Any]],
+        items: tp.List[tp.Dict[str, tp.Any]],
     ) -> tp.Dict[str, tp.Union[torch.Tensor, tp.List[torch.Tensor], tp.List[str]]]:
         """Collates samples and pads samples' fields in dataset.
 
         Args:
-            batch (List): Batch of samples.
+            items (List): Samples of data.
 
         Returns:
             Dict: Collated batch with padded fields.
         """
-        transform_lens = torch.Tensor([item["transform"].shape[2] for item in batch])
+        transform_lens = torch.Tensor([item["transform"].shape[2] for item in items])
         max_transform_len = int(transform_lens.max())
         if self.config.model.downsize:
             transform_lens = (transform_lens / self.config.model.downsize).ceil()
 
-        encoded_text_lens = torch.Tensor([item["encoded_text"].shape[1] for item in batch])
+        encoded_text_lens = torch.Tensor([item["encoded_text"].shape[1] for item in items])
         max_encoded_text_len = int(encoded_text_lens.max())
 
         audios, transforms, texts, encoded_texts = [], [], [], []
-        for sample in batch:
+        for sample in items:
             audios.append(sample["audio"])
             pad_size = max_transform_len - sample["transform"].shape[2]
             pad_tensor = torch.zeros(1, self.config.preprocess.transform.n_transform, pad_size)

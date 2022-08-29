@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from omegaconf import OmegaConf
 
-from . import models as models
+from . import models
 from .trainer import train
 from ..utils import fix_seed
 from ..utils import optim as optimizers
@@ -57,6 +57,7 @@ def main(config_path: str) -> None:
         wb,
         skip_oom=True,
     )
+    # TODO: test()
 
 
 if __name__ == "__main__":

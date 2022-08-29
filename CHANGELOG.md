@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.9.0 (2022-08-29)
+### Feature
+* Batch to device ([`212a940`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/212a940c4b5c99e5eebf3c36b8efb0aba355fd10))
+
 ## v0.8.1 (2022-08-28)
 ### Fix
 * :bug: wrong import ([`4d38727`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/4d3872729e4be633fc290b2d6d47b4affc82f284))

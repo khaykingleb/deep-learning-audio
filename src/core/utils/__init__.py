@@ -27,7 +27,7 @@ def fix_seed(seed: int) -> None:
     torch.backends.cudnn.deterministic = True
 
 
-def prepare_device(n_gpu: int) -> tp.Tuple[torch.device]:
+def prepare_device(n_gpu: int) -> tp.Tuple[torch.device, tp.List[int]]:
     """Set up GPU device.
 
     Args:

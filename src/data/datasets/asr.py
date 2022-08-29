@@ -17,16 +17,12 @@ from ..preprocess.transform import preprocess_audio
 from ... import cfg
 from ...logging import logger
 
-# TODO: Form batches based on audio length.
 
-# TODO: Захерачить пайплайны с dvc?
-
-
-class BaseDatasetForASR(Dataset):
+class ASRBaseDataset(Dataset):
     """Base dataset for training an ASR model."""
 
     def __init__(
-        self: "BaseDatasetForASR",
+        self: "ASRBaseDataset",
         data: tp.List[tp.Dict[str, tp.Any]],
         config: DictConfig,
         text_encoder: BaseTextEncoder,
@@ -48,7 +44,7 @@ class BaseDatasetForASR(Dataset):
         self.config = config
         self.use_aug = use_aug
 
-    def __getitem__(self: "BaseDatasetForASR", idx: int) -> tp.Dict[str, tp.Any]:
+    def __getitem__(self: "ASRBaseDataset", idx: int) -> tp.Dict[str, tp.Any]:
         """Get a sample from the dataset according to the given index.
 
         Args:
@@ -69,7 +65,7 @@ class BaseDatasetForASR(Dataset):
             "transform": transform,
         }
 
-    def __len__(self: "BaseDatasetForASR") -> int:
+    def __len__(self: "ASRBaseDataset") -> int:
         """Get the total number of data samples in the dataset.
 
         Returns:
@@ -146,7 +142,7 @@ class BaseDatasetForASR(Dataset):
         return sorted(data, key=lambda x: x["audio_duration"])
 
 
-class LJSpeechDataset(BaseDatasetForASR):
+class LJSpeechDataset(ASRBaseDataset):
     """LJ Speech dataset for training an ASR model."""
 
     LJ_SPEECH_DIR = cfg.BASE_DIR / "resources" / "datasets" / "asr" / "lj_speech"
@@ -215,7 +211,7 @@ class LJSpeechDataset(BaseDatasetForASR):
         return full_data
 
 
-class LibriSpeechDataset(BaseDatasetForASR):
+class LibriSpeechDataset(ASRBaseDataset):
     """LibriSpeech dataset for training an ASR model."""
 
     LIBRI_SPEECH_DIR = cfg.BASE_DIR / "resources" / "datasets" / "asr" / "libri_speech"
@@ -285,7 +281,7 @@ class LibriSpeechDataset(BaseDatasetForASR):
         return full_data
 
 
-class CommonVoiceDataset(BaseDatasetForASR):
+class CommonVoiceDataset(ASRBaseDataset):
     """Common Voice dataset for training an ASR model."""
 
     def __init__(self: "CommonVoiceDataset", config: DictConfig) -> None:
@@ -294,5 +290,5 @@ class CommonVoiceDataset(BaseDatasetForASR):
         Args:
             config (DictConfig): Configuration file.
         """
-        super(BaseDatasetForASR, self).__init__(config)
+        super(ASRBaseDataset, self).__init__(config)
         pass

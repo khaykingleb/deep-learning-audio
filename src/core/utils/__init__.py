@@ -48,3 +48,24 @@ def prepare_device(n_gpu: int) -> tp.Tuple[torch.device, tp.List[int]]:
         logger.info(f"Training will be performed on {n_gpu_available} GPUs")
         n_gpu = n_gpu_available
     return torch.device("cuda:0" if n_gpu > 0 else "cpu"), list(range(n_gpu))
+
+
+def move_batch_to_device(
+    batch: tp.Dict[str, tp.Any],
+    device: torch.device,
+    *,
+    fields_on_device: tp.List[str],
+) -> tp.Dict[str, tp.Any]:
+    """Move all necessary fields to the device.
+
+    Args:
+        batch (Dict): Collated batch.
+        device: CPU or GPU device.
+        fields_on_device (List): What fields move to the device.
+
+    Returns:
+        Dict: Batch with selected fields on device.
+    """
+    for field in fields_on_device:
+        batch[field] = batch[field].to(device)
+    return batch

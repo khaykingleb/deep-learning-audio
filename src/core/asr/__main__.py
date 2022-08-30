@@ -6,13 +6,14 @@ import torch.nn as nn
 from omegaconf import OmegaConf
 
 from . import models
+from .loss import CTCLossWrapper
 from .trainer import train
-from ..utils import fix_seed
-from ..utils import optim as optimizers
-from ..utils import prepare_device
+from ..utils import fix_seed, optimizers, prepare_device
 from ..utils.dataloaders import get_dataloaders
-from ..utils.optim import scheduler as schedulers
-from ...data.preprocess import text as text_encoders
+from ..utils.dataloaders.collater import ASRCollater
+from ..utils.optimizers import schedulers
+from ...data.preprocess import text
+from ...data.preprocess.text import CTCTextEncoder
 from ...logging.wandb import WBLogger
 from ...utils import init_obj
 
@@ -30,9 +31,12 @@ def main(config_path: str) -> None:
 
     fix_seed(config.training.seed)
 
-    text_encoder = init_obj(text_encoders, config.preprocess.text.encoder.name)
-    dataloaders = get_dataloaders(config, text_encoder)
+    alphabet = CTCTextEncoder.get_simple_ctc_alphabet()
+    text_encoder = CTCTextEncoder(alphabet)
+    collater = ASRCollater(config)
+    dataloaders = get_dataloaders(config, text_encoder, collater)
 
+    criterion = CTCLossWrapper(text_encoder.blank_idx)
     model = init_obj(models, config.model.name, config, vocab_size=text_encoder.alphabet_length)
     if config.model.pretrained:
         model.load_state_dict(torch.load(config.model.checkpoint_path)["state_dict"])
@@ -53,8 +57,10 @@ def main(config_path: str) -> None:
         model,
         optimizer,
         scheduler,
+        criterion,
         dataloaders,
         wb,
+        device,
         skip_oom=True,
     )
     # TODO: test()

@@ -32,7 +32,7 @@ def get_dataloaders(
         for dataset in config_part.datasets:
             dataset_name = dataset.split(",")[0]
             dataset_part = dataset.split(",")[1]
-            ds = init_obj(datasets, dataset_name, text_encoder, part=dataset_part)
+            ds = init_obj(datasets, dataset_name, config, text_encoder, part=dataset_part)
             datasets.append(ds)
         dataset = ConcatDataset(data)
         dataloaders[part] = DataLoader(

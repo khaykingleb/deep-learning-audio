@@ -8,11 +8,10 @@ from omegaconf import OmegaConf
 from . import models
 from .loss import CTCLossWrapper
 from .trainer import train
-from ..utils import fix_seed, optimizers, prepare_device
+from ..utils import fix_seed, prepare_device
 from ..utils.dataloaders import get_dataloaders
 from ..utils.dataloaders.collater import ASRCollater
-from ..utils.optimizers import schedulers
-from ...data.preprocess import text
+from ..utils.optim import optimizers, schedulers
 from ...data.preprocess.text import CTCTextEncoder
 from ...logging.wandb import WBLogger
 from ...utils import init_obj
@@ -48,8 +47,8 @@ def main(config_path: str) -> None:
         model = nn.DataParallel(model, device_ids=device_ids)
 
     params = filter(lambda param: param.requires_grad, model.parameters())
-    optimizer = init_obj(optimizers, config.model.optimizer.name, config, params)
-    scheduler = init_obj(schedulers, config.model.optimizer.scheduler.name, config, optimizer)
+    optimizer = init_obj(optimizers, config.model.optimizer.name, params, config)
+    scheduler = init_obj(schedulers, config.model.optimizer.scheduler.name, optimizer, config)
 
     wb.wandb.watch(model)
     train(

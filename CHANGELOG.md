@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.1 (2022-08-30)
+### Fix
+* :bug: plot is saved to buffer now ([`c36f97f`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/c36f97f376468eb89cbc5ffa3d38e19a0244be70))
+
 ## v0.12.0 (2022-08-30)
 ### Feature
 * Optimizers and schedulers ([`d3b1260`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/d3b126017a3878ae0815beb64e051d0d7d922fa7))

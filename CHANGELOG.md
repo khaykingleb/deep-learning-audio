@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.0 (2022-08-30)
+### Feature
+* Ctc text encoder without beam search ([`3946fa4`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/3946fa40f5b0810611e09d2a5e5a2435e432c6c1))
+
 ## v0.9.0 (2022-08-29)
 ### Feature
 * Batch to device ([`212a940`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/212a940c4b5c99e5eebf3c36b8efb0aba355fd10))

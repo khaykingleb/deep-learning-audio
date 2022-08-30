@@ -1,6 +1,6 @@
 [tool.poetry]
 authors = ["Gleb Khaykin <khaykingleb@gmail.com>"]
-version = "0.9.0"
+version = "0.10.0"
 name = "deep-learning-for-audio"
 description = "Neural networks used for digital signal processing, speech analysis, and speech synthesis."
 repository = "https://github.com/khaykingleb/Deep-Learning-for-Audio"

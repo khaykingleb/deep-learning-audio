@@ -50,7 +50,7 @@ class ASRCollater(Collater):
     def __call__(
         self: "ASRCollater",
         samples: tp.List[tp.Dict[str, tp.Any]],
-    ) -> tp.Dict[str, tp.Union[tp.List[str], tp.List[int], torch.Tensor]]:
+    ) -> tp.Dict[str, tp.Union[tp.List[str], tp.List[int], torch.Tensor, tp.List[torch.Tensor]]]:
         """Collates samples and pads samples' fields in dataset.
 
         Args:
@@ -87,7 +87,7 @@ class ASRCollater(Collater):
             "texts": texts,
             "encoded_texts": torch.cat(encoded_texts),
             "encoded_text_lengths": encoded_text_lengths,
-            "audios": torch.cat(audios),
+            "audios": audios,
             "transforms": torch.cat(transforms),
             "char_probs_lengths": char_probs_lengths,
         }

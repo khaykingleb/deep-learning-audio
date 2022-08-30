@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.0 (2022-08-30)
+### Feature
+* Ctc loss wrapper ([`9002bbd`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9002bbd126ae5d90f188decc7479be384ca96338))
+
 ## v0.10.2 (2022-08-30)
 ### Fix
 * :bug: remove alphabet as argument from preprocess_text ([`1f05197`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/1f05197e32b12fa2702e8c1f28eebc7235b058a7))

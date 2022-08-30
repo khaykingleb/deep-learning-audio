@@ -200,11 +200,10 @@ class LJSpeechDataset(ASRBaseDataset):
         for idx, audio_name in enumerate(data[0]):
             audio_path = self.LJ_SPEECH_WAVS_DIR / str(audio_name + ".wav")
             audio_info = torchaudio.info(audio_path)
-            alphabet = BaseTextEncoder.get_simple_alphabet()
             full_data.append(
                 {
                     "path": audio_path,
-                    "text": BaseTextEncoder.preprocess_text(data[2][idx], alphabet),
+                    "text": BaseTextEncoder.preprocess_text(data[2][idx]),
                     "audio_duration": audio_info.num_frames / audio_info.sample_rate,
                 }
             )
@@ -270,11 +269,10 @@ class LibriSpeechDataset(ASRBaseDataset):
                     audio_path = dir_path / str(audio_id + ".flac")
                     audio_info = torchaudio.info(audio_path)
                     text = " ".join(line.split()[1:])
-                    alphabet = BaseTextEncoder.get_simple_alphabet()
                     full_data.append(
                         {
                             "path": audio_path,
-                            "text": BaseTextEncoder.preprocess_text(text, alphabet),
+                            "text": BaseTextEncoder.preprocess_text(text),
                             "audio_duration": audio_info.num_frames / audio_info.sample_rate,
                         }
                     )

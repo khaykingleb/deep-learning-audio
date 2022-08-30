@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.2 (2022-08-30)
+### Fix
+* :bug: remove alphabet as argument from preprocess_text ([`1f05197`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/1f05197e32b12fa2702e8c1f28eebc7235b058a7))
+
 ## v0.10.1 (2022-08-30)
 ### Fix
 * :bug: model needs to output probs ([`4a1540f`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/4a1540f77dae7da2938d7a1a542a16c202b2e64c))

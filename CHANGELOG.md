@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.0 (2022-08-30)
+### Feature
+* Optimizers and schedulers ([`d3b1260`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/d3b126017a3878ae0815beb64e051d0d7d922fa7))
+
 ## v0.11.4 (2022-08-30)
 ### Fix
 * :bug: ([`6bf158a`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/6bf158ac3739dda7a2e072de5d4a32c9757c5c98))

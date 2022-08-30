@@ -40,7 +40,7 @@ def get_dataloaders(
             batch_size=config.data.batch.batch_size,
             shuffle=config.data.batch.shuffle,
             num_workers=config.data.batch.num_workers,
-            sampler=config.data.batch.num_workers,
+            sampler=config.data.batch.sampler,
             collate_fn=collater,
             drop_last=config.data.batch.drop_last,
         )

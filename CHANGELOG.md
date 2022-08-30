@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.1 (2022-08-30)
+### Fix
+* :bug: add config to dataset instance initialization ([`0374919`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/0374919d0f01b736eccf16068804098dff56b7eb))
+
 ## v0.11.0 (2022-08-30)
 ### Feature
 * Ctc loss wrapper ([`9002bbd`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9002bbd126ae5d90f188decc7479be384ca96338))

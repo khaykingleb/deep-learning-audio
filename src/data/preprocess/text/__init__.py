@@ -8,24 +8,21 @@ from pathlib import Path
 import torch
 from omegaconf import OmegaConf
 
-# TODO: Decide what vocabulary to use for ASR models.
-
 
 class BaseTextEncoder:
     """Base text encoder."""
 
     def __init__(
         self: "BaseTextEncoder",
-        alphabet: tp.Optional[tp.List[str]] = None,
+        alphabet: tp.List[str],
     ) -> None:
         """Constructor.
 
         Args:
-            alphabet (List, optional): Alphabet used for tokenization.
+            alphabet (List): Alphabet used for tokenization.
         """
-        self.alphabet = self.get_simple_alphabet() if alphabet is None else alphabet
-        self.idx_to_char = {k: v for k, v in enumerate(sorted(self.alphabet))}
-        self.char_to_idx = {v: k for k, v in enumerate(sorted(self.alphabet))}
+        self.idx_to_char = {k: v for k, v in enumerate(sorted(alphabet))}
+        self.char_to_idx = {v: k for k, v in enumerate(sorted(alphabet))}
 
     def __getitem__(
         self: "BaseTextEncoder",
@@ -45,7 +42,7 @@ class BaseTextEncoder:
             return self.char_to_idx[key]
 
     def encode(self: "BaseTextEncoder", text: str) -> torch.Tensor:
-        """Encode text.
+        """Encode text according to char_to_idx mapping.
 
         Args:
             text (str): Text to encode.
@@ -54,25 +51,30 @@ class BaseTextEncoder:
             Exception: If encoding fails due to unknown characters.
 
         Returns:
-            Tensor: Encoded text in form of torch.Tensor.
+            Tensor: Encoded text.
         """
-        text = self.preprocess_text(text, self.alphabet)
+        text = self.preprocess_text(text)
         try:
-            return torch.Tensor([self.char_to_idx[char] for char in text]).unsqueeze(0)
+            return torch.Tensor([self.char_to_idx[char] for char in text]).unsqueeze(dim=0)
         except KeyError:
             unknown_chars = {char for char in text if char not in self.char_to_idx}
             raise Exception(
-                """\
-                Cannot encode text:\n\n
-                {text}.\n\n
-                Unknown chars: {unknown_chars}.""".format(
+                "Cannot encode text:\n{text}.\nUnknown chars: {unknown_chars}.".format(
                     text=text,
-                    unknown_chars=" ".join(unknown_chars),
+                    unknown_chars=", ".join(unknown_chars),
                 )
             )
 
-    def decode(self: "BaseTextEncoder", x: torch.Tensor) -> str:  # NOQA
-        pass
+    def decode(self: "BaseTextEncoder", idxs: torch.Tensor) -> str:
+        """Decodes the encoded text according to idx_to_char mapping.
+
+        Args:
+            idxs (Tensor): Encoded text.
+
+        Returns:
+            str: Decoded text.
+        """
+        return "".join([self.idx_to_char[int(idx)] for idx in idxs])
 
     @property
     def alphabet_length(self: "BaseTextEncoder") -> int:
@@ -93,12 +95,11 @@ class BaseTextEncoder:
         return list(string.ascii_lowercase + " ")
 
     @staticmethod
-    def preprocess_text(text: str, alphabet: tp.List[str]) -> str:
+    def preprocess_text(text: str) -> str:
         """Preprocess text before using it with the tokenizer.
 
         Args:
             text (str): Text to preprocess.
-            alphabet (List): Alphabet used in the tokenization.
 
         Returns:
             str: Preprocessed text that is ready to be tokenized.
@@ -106,7 +107,7 @@ class BaseTextEncoder:
         # NB: Can be changed to increase an ASR model performance
         text = re.sub(r"[^\w\s]", " ", text.lower())
         text = re.sub(r"\s+", " ", text)
-        return "".join([char for char in text if char in alphabet]).strip()
+        return text.strip()
 
     @classmethod
     def from_yaml(cls: "BaseTextEncoder", file: str) -> "BaseTextEncoder":
@@ -127,3 +128,56 @@ class BaseTextEncoder:
             char_to_idx = OmegaConf.load(file)
             base_tokenizer = cls(list(char_to_idx.keys()))
         return base_tokenizer
+
+
+class CTCTextEncoder(BaseTextEncoder):
+    """Text encoder for Connectionist Temporal Classification."""
+
+    def __init__(
+        self: "CTCTextEncoder",
+        alphabet: tp.List[str],
+    ) -> None:
+        """Constructor.
+
+        Args:
+            alphabet (List): Alphabet used for tokenization with blank token ϵ.
+        """
+        super().__init__(alphabet)
+        self.blank_idx = self.char_to_idx["ϵ"]
+
+    @staticmethod
+    def get_simple_ctc_alphabet() -> tp.List[str]:
+        """Get the most simple alphabet for CTC.
+
+        Returns:
+            List: Simple alphabet.
+        """
+        return list(string.ascii_lowercase + " " + "ϵ")
+
+    def ctc_decode(self: "CTCTextEncoder", idxs: torch.Tensor) -> str:
+        """Decodes the encoded text according to idx_to_char mapping.
+
+        Args:
+            idxs (Tensor): Encoded text with blank token.
+
+        Returns:
+            str: Decoded text without blank token.
+        """
+        encoded_text = []
+        for i, idx in enumerate(idxs):
+            idx = int(idx)
+            if idx == self.blank_idx:
+                continue
+            if i > 0:
+                if idxs[i] == idxs[i - 1]:
+                    continue
+            encoded_text.append(idx)
+        return "".join([self.idx_to_char[idx] for idx in encoded_text])
+
+    def ctc_beam_search(  # NOQA
+        self: "CTCTextEncoder",
+        probs: torch.Tensor,
+        *,
+        beam_size: int,
+    ) -> tp.List[tp.Tuple[str, float]]:
+        pass

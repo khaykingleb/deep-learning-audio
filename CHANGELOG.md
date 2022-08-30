@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.4 (2022-08-30)
+### Fix
+* :bug: ([`6bf158a`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/6bf158ac3739dda7a2e072de5d4a32c9757c5c98))
+
 ## v0.11.3 (2022-08-30)
 ### Fix
 * :bug: correct audios collate ([`0a227fd`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/0a227fd4603fccc13aaff190feadf715ea2bc51d))

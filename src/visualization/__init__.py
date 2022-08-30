@@ -16,7 +16,7 @@ def plot_signal_transformation(
     """Plot audio singnal transformation.
 
     Args:
-        transform (Tensor): Audio singnal transformation of shape (1, n_transform_features, n_transform_len).
+        transform (Tensor): Audio singnal transformation of shape (1, n_transform, input_lenght).
         title (str): Plot title.
         xlabel (str): Label for x-axis.
         ylabel (str): Label for y-axis.

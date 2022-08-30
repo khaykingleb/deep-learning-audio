@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.2 (2022-08-30)
+### Fix
+* :bug: ([`4545922`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/45459225cfa71c631be4e0951b467ad356a29e44))
+
 ## v0.11.1 (2022-08-30)
 ### Fix
 * :bug: add config to dataset instance initialization ([`0374919`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/0374919d0f01b736eccf16068804098dff56b7eb))

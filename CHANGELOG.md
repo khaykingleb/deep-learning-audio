@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.1 (2022-08-30)
+### Fix
+* :bug: model needs to output probs ([`4a1540f`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/4a1540f77dae7da2938d7a1a542a16c202b2e64c))
+
 ## v0.10.0 (2022-08-30)
 ### Feature
 * Ctc text encoder without beam search ([`3946fa4`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/3946fa40f5b0810611e09d2a5e5a2435e432c6c1))

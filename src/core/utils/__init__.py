@@ -6,6 +6,10 @@ import typing as tp
 
 import numpy as np
 import torch
+import torch.nn as nn
+from omegaconf import DictConfig
+from torch.optim import Optimizer
+from torch.optim.lr_scheduler import _LRScheduler
 
 from ...logging import logger
 
@@ -69,3 +73,32 @@ def move_batch_to_device(
     for field in fields_on_device:
         batch[field] = batch[field].to(device)
     return batch
+
+
+def save_architecture(
+    config: DictConfig,
+    epoch: int,
+    model: nn.Module,
+    optimizer: Optimizer,
+    scheduler: _LRScheduler,
+) -> None:
+    """Save architecture.
+
+    Args:
+        config (DictConfig): Configuration used for architecture.
+        epoch (int): Last epoch.
+        model (Module): Nural network.
+        optimizer (Optimizer): Optimizer used to optimize the model's weights.
+        scheduler (_LRScheduler): Scheduler used to choose the learning rate for GD.
+    """
+    state = {
+        "config": config,
+        "epoch": epoch,
+        "model": model.state_dict(),
+        "model_name": type(model).__name__,
+        "optimizer": optimizer.state_dict(),
+        "optimizer_name": type(optimizer).__name__,
+        "scheduler": scheduler.state_dict(),
+        "scheduler_name": type(scheduler).__name__,
+    }
+    torch.save(state, config.model.path_to_save)

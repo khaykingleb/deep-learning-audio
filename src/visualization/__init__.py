@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import torch
 
 
-def plot_signal_transformation(
+def plot_transform(
     transform: torch.Tensor,
     *,
     title: str,
@@ -35,14 +35,14 @@ def plot_signal_transformation(
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.imshow(
-        transform.squeeze().numpy(),
+        transform.squeeze().detach().cpu().numpy(),
         origin="lower",
         aspect="auto",
         extent=[0, audio_size / sample_rate, 0, sample_rate / 2000],
     )
     plt.grid(False)
     buffer = io.BytesIO()
-    plt.savefig(buffer, dpi=250, format="jpeg")
+    plt.savefig(buffer, dpi=300, bbox_inches="tight", format="jpeg")
     if not show_fig:
         plt.close()
     buffer.seek(0)

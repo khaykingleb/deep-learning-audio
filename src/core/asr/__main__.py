@@ -1,4 +1,4 @@
-"""Train and test parts for Automatic Speech Recognition."""
+"""Training and testing parts for Automatic Speech Recognition."""
 
 import click
 import torch
@@ -15,6 +15,8 @@ from ..utils.optim import optimizers, schedulers
 from ...data.preprocess.text import CTCTextEncoder
 from ...logging.wandb import WBLogger
 from ...utils import init_obj
+
+# TODO: Make option 'mode' — whether it's training or testing
 
 
 @click.command()
@@ -58,11 +60,11 @@ def main(config_path: str) -> None:
         scheduler,
         criterion,
         dataloaders,
+        text_encoder,
         wb,
         device,
         skip_oom=True,
     )
-    # TODO: test()
 
 
 if __name__ == "__main__":

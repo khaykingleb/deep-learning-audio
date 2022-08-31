@@ -5,20 +5,20 @@ import typing as tp
 import torch
 
 from .metrics import calc_cer, calc_wer
-from ...data.preprocess.text import BaseTextEncoder
+from ...data.preprocess.text import CTCTextEncoder
 
 
 def get_metrics_from_ctc_decode(
     batch: tp.Dict[str, tp.Any],
     probs: torch.Tensor,
-    text_encoder: BaseTextEncoder,
+    text_encoder: CTCTextEncoder,
 ) -> tp.Tuple[tp.List[float]]:
     """Get predictions for a given batch without using beam search.
 
     Args:
         batch (Dict): Batch of data sample.
         probs (Tensor): Probabilities of characters for each frame.
-        text_encoder (BaseTextEncoder): Text encoder used for tokenization.
+        text_encoder (CTCTextEncoder): Text encoder used for tokenization.
 
     Returns:
         Tuple: CERs and WERs for batch.

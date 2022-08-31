@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.0 (2022-08-31)
+### Feature
+* Training cycle ([`3bd315b`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/3bd315bd640f5e6682ec516e7d8a192bb3bca1ab))
+
 ## v0.12.1 (2022-08-30)
 ### Fix
 * :bug: plot is saved to buffer now ([`c36f97f`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/c36f97f376468eb89cbc5ffa3d38e19a0244be70))

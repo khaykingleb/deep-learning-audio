@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.3 (2022-08-31)
+### Fix
+* :bug: log items for wb ([`23d0597`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/23d0597d9a021d7132c90d5b01f0cb18c99a24c6))
+
 ## v0.13.2 (2022-08-31)
 ### Fix
 * :bug: ([`b3c9351`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/b3c9351ab1683e01d49654141a5fc3cb4342fd38))

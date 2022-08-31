@@ -11,7 +11,7 @@ from torch.optim.lr_scheduler import _LRScheduler
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from ..inference import get_metrics_from_naive_approach
+from ..inference import get_metrics_from_ctc_decode
 from ..loss import CTCLossWrapper
 from ...utils import move_batch_to_device, save_architecture
 from ....data.preprocess.text import BaseTextEncoder
@@ -73,7 +73,7 @@ def _train_epoch(
                 wb.log_data(metrics, level="step", part="train")
                 wb.log_random_audio(batch, level="step", part="train")
 
-            cers, wers = get_metrics_from_naive_approach(batch, probs, text_encoder)
+            cers, wers = get_metrics_from_ctc_decode(batch, probs, text_encoder)
             train_cers.extend(cers)
             train_wers.extend(wers)
 
@@ -115,7 +115,7 @@ def _validate_epoch(
             target_lengths=batch["encoded_text_lengths"],
         )
         val_loss += loss.item()
-        cers, wers = get_metrics_from_naive_approach(batch, probs, text_encoder)
+        cers, wers = get_metrics_from_ctc_decode(batch, probs, text_encoder)
         val_cers.extend(cers)
         val_wers.extend(wers)
 

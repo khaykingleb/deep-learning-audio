@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.1 (2022-08-31)
+### Fix
+* Get metrics from ctc decoding ([`e92f73e`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/e92f73ebf412c3a8b447b7134f215eb75455e2be))
+
 ## v0.13.0 (2022-08-31)
 ### Feature
 * Training cycle ([`3bd315b`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/3bd315bd640f5e6682ec516e7d8a192bb3bca1ab))

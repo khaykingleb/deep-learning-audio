@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.4 (2022-08-31)
+### Fix
+* Add save architecture func ([`423f2f2`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/423f2f27f2aa2e7342334d446239bc05f65f791c))
+
 ## v0.13.3 (2022-08-31)
 ### Fix
 * :bug: log items for wb ([`23d0597`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/23d0597d9a021d7132c90d5b01f0cb18c99a24c6))

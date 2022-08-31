@@ -1,4 +1,4 @@
-"""Loss functions for ASR."""
+"""Loss functions for Automatic Speech Recognition."""
 
 import torch.nn as nn
 

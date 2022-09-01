@@ -49,8 +49,8 @@ def main(config_path: str) -> None:
         model = nn.DataParallel(model, device_ids=device_ids)
 
     params = filter(lambda param: param.requires_grad, model.parameters())
-    optimizer = init_obj(optimizers, config.model.optimizer.name, params, config)
-    scheduler = init_obj(schedulers, config.model.optimizer.scheduler.name, optimizer, config)
+    optimizer = init_obj(optimizers, config.training.optimizer.name, params, config)
+    scheduler = init_obj(schedulers, config.training.scheduler.name, optimizer, config)
 
     wb.wandb.watch(model)
     train(

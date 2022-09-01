@@ -5,6 +5,8 @@ project_name: asr_quartznet
 
 # Use mixed precision training.
 
+# Ранить subprocess datasets.sh, если датасеты не загружены
+
 # Сделать еще Cutout аугментацию, а не только freq и time masking
 
 # УБРАТЬ mr, ms, etc. как прописано в LJ Speech!!!
@@ -45,20 +47,33 @@ model:
 
 training:
   seed: 42
-  epochs: 30000000
+  epochs: 1_000_000
   n_gpu: 1  # number of gpus, 0 for CPU
 
   gradient_clip_val: 10.0
-
   log_every_n_steps: 1
 
   optimizer:
-  name: null
-  args: null
+    name: NovoGradWrapper
+    args:
+      lr: 0.05
+      betas:
+        - 0.95
+        - 0.5
+      eps: 1e-8
+      weight_decay: 0.001
+      grad_averaging: false
+      amsgrad: false
 
-  schduler:
-    name: null
-    args: null
+  scheduler:
+    name: CosineAnnealingWarmupRestartsWrapper
+    args:
+      first_cycle_steps: 300_000
+      cycle_mult: 1.0
+      max_lr: 0.05
+      min_lr: 0.001
+      warmup_steps: 1000
+      gamma: 1.0
 
 data:
   max_text_length: null  # in characters

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.1 (2022-09-01)
+### Fix
+* :bug: wrong module name ([`75b90b9`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/75b90b9fa78ca06e18de73d6ee285a3721eb6a70))
+
 ## v0.14.0 (2022-08-31)
 ### Feature
 * Cosine annealing warmup ([`43034fe`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/43034fe3bc70310e6fcb75d8c2e917397f0ec236))

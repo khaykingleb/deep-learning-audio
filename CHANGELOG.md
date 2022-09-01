@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.4 (2022-09-01)
+### Fix
+* Fixing wb logging errors ([`3440361`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/3440361778efd94410dd385dce5c80465bd6a57e))
+
+### Documentation
+* Fix config ([`fcf999f`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/fcf999f937f613402a0604db98a2a2ea17fc9cf2))
+
 ## v0.14.3 (2022-09-01)
 ### Fix
 * :bug: ([`df22ba4`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/df22ba4e70e5037ec9f36c2415d6a7d2e641d7e9))

@@ -1,6 +1,6 @@
 #@ Variables
 SHELL := /usr/bin/env bash
-VERSION := 0.13.5
+VERSION := 0.14.0
 
 #@ Repo initialization
 .PHONY: repo-pre-commit repo-deps repo-env repo-init

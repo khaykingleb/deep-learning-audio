@@ -50,7 +50,7 @@ training:
   epochs: 1_000_000
   n_gpu: 1  # number of gpus, 0 for CPU
 
-  gradient_clip_val: 10.0
+  grad_clip_val: 10.0
   log_every_n_steps: 1
 
   optimizer:

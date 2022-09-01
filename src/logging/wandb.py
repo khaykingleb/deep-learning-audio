@@ -35,7 +35,6 @@ class WBLogger:
             "step": {"train": 0, "val": 0},
             "epoch": {"train": 0, "val": 0},
         }
-        self.text_encoder
 
     def increment_step(self: "WBLogger", part: tp.Literal["train", "val"]) -> None:
         """Increment step.

@@ -210,5 +210,4 @@ class CosineAnnealingWarmupRestartsWrapper(CosineAnnealingWarmupRestarts):
             min_lr=config.training.scheduler.args.min_lr,
             warmup_steps=config.training.scheduler.args.warmup_steps,
             gamma=config.training.scheduler.args.gamma,
-            last_epoch=config.training.scheduler.args.last_epoch,
         )

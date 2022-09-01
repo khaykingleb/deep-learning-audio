@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.3 (2022-09-01)
+### Fix
+* :bug: ([`df22ba4`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/df22ba4e70e5037ec9f36c2415d6a7d2e641d7e9))
+
 ## v0.14.2 (2022-09-01)
 ### Fix
 * :bug: change optimizer and lr_scheduler config position ([`4299442`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/4299442da7df739a1679ec56cfef67e6f5b1d61a))

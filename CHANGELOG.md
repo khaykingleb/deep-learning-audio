@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.1 (2022-09-01)
+### Fix
+* :bug: wrong module name ([`75b90b9`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/75b90b9fa78ca06e18de73d6ee285a3721eb6a70))
+
+## v0.14.0 (2022-08-31)
+### Feature
+* Cosine annealing warmup ([`43034fe`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/43034fe3bc70310e6fcb75d8c2e917397f0ec236))
+
+### Documentation
+* Update asr config ([`1bf2672`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/1bf2672bc7c79675372d3234fd808db11f6f7a1c))
+
 ## v0.13.5 (2022-08-31)
 ### Fix
 * :bug: ([`347aa87`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/347aa87526650aaf7b70741188102be5cbfbdb35))

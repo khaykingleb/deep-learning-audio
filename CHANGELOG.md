@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.2 (2022-09-01)
+### Fix
+* :bug: change optimizer and lr_scheduler config position ([`4299442`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/4299442da7df739a1679ec56cfef67e6f5b1d61a))
+* :bug: delete text encoder ([`d0ec15f`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/d0ec15f254f6af92aaf2a09495be1c5cd4a291c2))
+
 ## v0.14.1 (2022-09-01)
 ### Fix
 * :bug: wrong module name ([`75b90b9`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/75b90b9fa78ca06e18de73d6ee285a3721eb6a70))

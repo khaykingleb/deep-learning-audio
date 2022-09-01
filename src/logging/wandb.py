@@ -10,6 +10,7 @@ from omegaconf import DictConfig
 from PIL import Image
 
 from . import logger
+from ..data.preprocess.text import BaseTextEncoder
 from ..visualization import plot_transform
 
 
@@ -109,6 +110,7 @@ class WBLogger:
         self: "WBLogger",
         batch: tp.Dict[str, tp.Any],
         probs: torch.Tensor,
+        text_encoder: BaseTextEncoder,
         *,
         level: tp.Literal["step", "epoch"],
         part: tp.Literal["train", "val"],
@@ -118,12 +120,13 @@ class WBLogger:
         Args:
             batch (Dict): Batch of data samples.
             probs (Tensor): Probabilities for each character of shape (batch_size, vocab_size, input_length).
+            text_encoder (BaseTextEncoder): Text encoder used for tokenization.
             level (Literal): With accordance to what, step or epoch, we need to log.
             part (Literal): For what part, train or val, we need to log.
         """
         pred_idxs = probs.argmax(dim=1)
-        pred_raw_texts = [self.text_encoder.decode(idxs) for idxs in pred_idxs]
-        pred_texts = [self.text_encoder.ctc_decode(idxs) for idxs in pred_idxs]
+        pred_raw_texts = [text_encoder.decode(idxs) for idxs in pred_idxs]
+        pred_texts = [text_encoder.ctc_decode(idxs) for idxs in pred_idxs]
         logs = []
         for ref_text, hypo_raw_text, hypo_text in zip(batch["texts"], pred_raw_texts, pred_texts):
             logs.append(

@@ -120,7 +120,7 @@ def _validate_epoch(
         val_wers.extend(wers)
 
     wb.log_random_audio(batch, level="epoch", part="val")
-    wb.log_asr_predictions_form_ctc_decode(batch, probs, level="epoch", part="val")
+    wb.log_asr_predictions_form_ctc_decode(batch, probs, text_encoder, level="epoch", part="val")
 
     return val_loss / len(dataloader), val_cers, val_wers
 

@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.5 (2022-09-01)
+### Fix
+* :bug: add text_encoder for ctc decode ([`f58eff6`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/f58eff65673a2615af303c09c95a63965648a22f))
+
 ## v0.14.4 (2022-09-01)
 ### Fix
 * Fixing wb logging errors ([`3440361`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/3440361778efd94410dd385dce5c80465bd6a57e))

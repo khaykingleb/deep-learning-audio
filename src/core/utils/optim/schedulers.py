@@ -46,7 +46,7 @@ class WarmupLRScheduler(_LRScheduler):
         self.steps += 1
 
     @staticmethod
-    def set_lr(optimizer: torch.optimizer.Optimizer, lr: float) -> None:
+    def set_lr(optimizer: torch.optim.Optimizer, lr: float) -> None:
         """Set the learning rates to new value in each parameter group.
 
         Args:

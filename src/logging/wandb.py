@@ -10,7 +10,6 @@ from omegaconf import DictConfig
 from PIL import Image
 
 from . import logger
-from ..data.preprocess.text import BaseTextEncoder
 from ..visualization import plot_transform
 
 
@@ -63,7 +62,7 @@ class WBLogger:
             level (Literal): With accordance to what, step or epoch, we need to log.
             part (Literal): For what part, train or val, we need to log.
         """
-        data = {(part + " " + k).capitalize(): v for k, v in data}
+        data = {(part + " " + k).capitalize(): v for k, v in data.items()}
         self.wandb.log(data, step=self._levels[level][part])
 
     def log_random_audio(
@@ -85,7 +84,7 @@ class WBLogger:
         sr = self.config.preprocess.audio.sr
         audio_name = (part + " audio").capitalize()
         self.wandb.log(
-            {audio_name: wandb.Audio(audio, caption=batch["text"], sample_rate=sr)},
+            {audio_name: wandb.Audio(audio, caption=batch["texts"][idx], sample_rate=sr)},
             step=self._levels[level][part],
         )
         transform_image = Image.open(
@@ -95,7 +94,7 @@ class WBLogger:
                 xlabel="Time (seconds)",
                 ylabel="",
                 sample_rate=self.config.preprocess.audio.sr,
-                audio_size=audio.shape[1],
+                audio_size=len(audio),
                 show_fig=False,
             )
         )

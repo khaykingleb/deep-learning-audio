@@ -43,13 +43,22 @@ mypy:
 get_lj_speech:
 	chmod +x ./scripts/datasets.sh
 	sh ./scripts/datasets.sh get_lj_speech_dataset \
-		resources/datasets/asr https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
+		resources/datasets/asr \
+		https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
 get_all_libri_speech:
 	chmod +x ./scripts/datasets.sh
-	for dataset in dev-clean dev-other test-clean test-other train-clean-100 train-clean-360 train-other-500; \
+	for dataset in dev-clean \
+				   dev-other \
+				   test-clean \
+				   test-other \
+				   train-clean-100 \
+				   train-clean-360 \
+				   train-other-500; \
 	do \
-		sh ./scripts/datasets.sh get_libri_speech_dataset resources/datasets/asr $$dataset; \
+		sh ./scripts/datasets.sh get_libri_speech_dataset \
+			resources/datasets/asr \
+			$$dataset; \
 	done
 
 # Download all datasets

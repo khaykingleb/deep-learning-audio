@@ -4,17 +4,17 @@
 
 # Usage
 
-* To initialize the repository:
+* Initialize the repository:
 
   ```shell
   git clone https://github.com/khaykingleb/Deep-Learning-for-Audio.git && cd Deep-Learning-for-Audio
   ```
-* To build the image:
+* Build the image:
 
   ```shell
   docker build -t deep-learning-for-audio .
   ```
-* To train a model:
+* Train a model:
 
   ```shell
   poetry run python3 -m src.core.<TASK> --config_path=configs/<TASK>/<MODEL>.yaml

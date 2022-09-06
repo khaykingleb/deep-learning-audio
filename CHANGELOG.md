@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.6 (2022-09-06)
+### Fix
+* Add wandb api key ([`ae40cc6`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/ae40cc6dc70eee302bcb5e341c23888909522733))
+
 ## v0.14.5 (2022-09-01)
 ### Fix
 * :bug: add text_encoder for ctc decode ([`f58eff6`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/f58eff65673a2615af303c09c95a63965648a22f))

@@ -136,7 +136,7 @@ class WBLogger:
                 f"| hypothesis_raw: '{hypo_raw_text}' "
                 f"| hypothesis: '{hypo_text}'"
             )
-        logs = "\n---\n".join(logs)
+        logs = "\n\n---\n\n".join(logs)
         logs_name = (part + " naive predictions").capitalize()
         self.wandb.log(
             {logs_name: wandb.Html(logs)},

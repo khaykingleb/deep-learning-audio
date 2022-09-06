@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.7 (2022-09-06)
+### Fix
+* Correct method for api key ([`5800f4d`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/5800f4d840b5c7d8e82f1a59206cfdf492bad1d1))
+
 ## v0.14.6 (2022-09-06)
 ### Fix
 * Add wandb api key ([`ae40cc6`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/ae40cc6dc70eee302bcb5e341c23888909522733))

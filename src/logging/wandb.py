@@ -132,11 +132,11 @@ class WBLogger:
         logs = []
         for ref_text, hypo_raw_text, hypo_text in zip(batch["texts"], pred_raw_texts, pred_texts):
             logs.append(
-                f"reference: '{ref_text}' "
-                f"| hypothesis_raw: '{hypo_raw_text}' "
-                f"| hypothesis: '{hypo_text}'"
+                f"<font color='green'> reference </font>: '{ref_text}' "
+                f"<br> <font color='red'> hypothesis_raw </font>: '{hypo_raw_text}' "
+                f"<br> <font color='blue'> hypothesis </font>: '{hypo_text}'"
             )
-        logs = "\n\n---\n\n".join(logs)
+        logs = "<br> --- <br>".join(logs)
         logs_name = (part + " naive predictions").capitalize()
         self.wandb.log(
             {logs_name: wandb.Html(logs)},

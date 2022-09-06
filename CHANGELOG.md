@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.9 (2022-09-06)
+### Fix
+* :bug: limit data based on sorted one, not random ([`3671954`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/36719543b996eab94e95d2eeaa66eb5d241c0b11))
+
 ## v0.14.8 (2022-09-06)
 ### Fix
 * :bug: do not attempt to save model if path is not specified ([`f05b59d`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/f05b59dfbd92517e5d1286292465357ca5a5f78a))

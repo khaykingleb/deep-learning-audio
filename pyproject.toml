@@ -47,6 +47,7 @@ exclude = '''
 '''
 
 [tool.isort]
+src_paths = ["src", "tests"]
 profile = "black"
 line_length = 100
 multi_line_output = 3

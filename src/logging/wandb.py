@@ -13,6 +13,8 @@ from . import cfg, logger
 from ..data.preprocess.text import BaseTextEncoder
 from ..visualization import plot_transform
 
+wandb.login(key=cfg.WANDB_API_KEY)
+
 
 class WBLogger:
     """Wandb logger."""
@@ -28,7 +30,7 @@ class WBLogger:
             config (DictConfig): Configuration file.
             root_logger (RootLogger, optional): Base logger.
         """
-        self.wandb = wandb.init(project=config.project_name, key=cfg.WANDB_API_KEY)
+        self.wandb = wandb.init(project=config.project_name)
         self.root_logger = root_logger
         self.config = config
         self._levels = {

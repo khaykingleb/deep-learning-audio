@@ -38,7 +38,8 @@ class ASRBaseDataset(Dataset):
             use_aug (bool): Whether to use audio and dsp augmentation on data.
         """
         data = self.filter_data(data, config)
-        self.data = self.sort_data(data)
+        data = self.sort_data(data)
+        self.data = self.limit_data(data, config)
 
         self.text_encoder = text_encoder
         self.config = config
@@ -78,7 +79,7 @@ class ASRBaseDataset(Dataset):
         data: tp.List[tp.Dict[str, tp.Any]],
         config: DictConfig,
     ) -> tp.List[tp.Dict[str, tp.Any]]:
-        """Filter data in a dataset based max_text_length, max_audio_duration, and limit config params.
+        """Filter data in a dataset based on max_text_length and max_audio_duration params.
 
         Args:
             data (List): Information about audio files.
@@ -125,8 +126,6 @@ class ASRBaseDataset(Dataset):
                 )
             )
             data = [data for data, exclude in zip(data, data_exceeds) if not exclude]
-        if config.data.limit is not None:
-            data = data[: config.data.limit]
         return data
 
     @staticmethod
@@ -140,6 +139,24 @@ class ASRBaseDataset(Dataset):
             List: Filtered data.
         """
         return sorted(data, key=lambda x: x["audio_duration"])
+
+    @staticmethod
+    def limit_data(
+        data: tp.List[tp.Dict[str, tp.Any]],
+        config: DictConfig,
+    ) -> tp.List[tp.Dict[str, tp.Any]]:
+        """Limit data in a dataset.
+
+        Args:
+            data (List): Information about audio files.
+            config (DictConfig): Configuration file.
+
+        Returns:
+            List: Limited data.
+        """
+        if config.data.limit is not None:
+            data = data[: config.data.limit]
+        return data
 
 
 class LJSpeechDataset(ASRBaseDataset):

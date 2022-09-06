@@ -11,6 +11,7 @@ from omegaconf import DictConfig
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler
 
+from ... import cfg
 from ...logging import logger
 
 
@@ -101,4 +102,4 @@ def save_architecture(
         "scheduler": scheduler.state_dict(),
         "scheduler_name": type(scheduler).__name__,
     }
-    torch.save(state, config.model.path_to_save)
+    torch.save(state, cfg.BASE_DIR / config.model.path_to_save)

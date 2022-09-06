@@ -194,6 +194,6 @@ def train(
         avg_wer = np.mean(val_wers)
         val_avg_wers.append(avg_wer)
 
-        if avg_wer <= min(val_avg_wers):
+        if avg_wer <= min(val_avg_wers) and config.model.path_to_save is not None:
             wb.log_data({"best average wer": avg_wer}, level="epoch", part="val")
             save_architecture(config, epoch, model, optimizer, scheduler)

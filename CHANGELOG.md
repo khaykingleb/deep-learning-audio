@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.8 (2022-09-06)
+### Fix
+* :bug: do not attempt to save model if path is not specified ([`f05b59d`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/f05b59dfbd92517e5d1286292465357ca5a5f78a))
+
+### Documentation
+* Update readme ([`c9655d7`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/c9655d7c3f3f66210e2360bc010f342f124b769a))
+
 ## v0.14.7 (2022-09-06)
 ### Fix
 * Correct method for api key ([`5800f4d`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/5800f4d840b5c7d8e82f1a59206cfdf492bad1d1))

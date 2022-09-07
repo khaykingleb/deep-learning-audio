@@ -1,6 +1,6 @@
 #!/bin/bash
 
-get_lj_speech_dataset () {
+download_lj_speech () {
     mkdir -p "$1"
     wget --output-document "$1"/LJSpeech.tar.bz2 "$2" && \
         tar -xvf "$1"/LJSpeech.tar.bz2 --directory "$1" && \
@@ -8,7 +8,7 @@ get_lj_speech_dataset () {
         rm "$1"/LJSpeech.tar.bz2
 }
 
-get_libri_speech_dataset () {
+download_libri_speech () {
     mkdir -p "$1"
     wget --output-document "$1"/"$2".tar.gz https://www.openslr.org/resources/12/"$2".tar.gz && \
         tar -xzvf "$1"/"$2".tar.gz --directory "$1" && \

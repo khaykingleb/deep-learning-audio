@@ -1,75 +1,104 @@
-#@ Variables
-SHELL := /usr/bin/env bash
+SHELL := /bin/bash
 VERSION := 0.14.9
 
-#@ Repo initialization
+##@ Helper
+.PHONY: help
+help: ## Display help
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage: \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+
+##@ Repo initialization
 .PHONY: repo-pre-commit repo-deps repo-env repo-init
 
- # Install pre-commit in repository
-repo-pre-commit:
+repo-pre-commit: ## Install pre-commit in the repository
 	pre-commit install
 	pre-commit install -t commit-msg
 
-# Install dependencies in repository
-repo-deps:
+repo-deps: ## Install dependencies in the repository
 	poetry install
 
-# Configure environment variables in repository
-repo-env:
+repo-env: ## Configure environment variables in the repository
 	cat .test.env  > .env
 	echo "dotenv" > .envrc
 
-# Initialize repository
-repo-init: repo-pre-commit repo-deps repo-env-init
+repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize the repository
 
-#@ Research
-.PHONY:	jupyter
 
-# Run jupyter lab
-jupyter:
-	poetry run jupyter lab
+##@ Docker
+.PHONY: docker-build docker-run
 
-#@ Checks
-.PHONY:	mypy
+docker-build: ## Build the container
+	docker build -t deep-learning-for-audio .
 
-# Run type checker
-mypy:
-	poetry run mypy
+docker-run: ## Run the container
+	docker run -dte WANDB_API_KEY=${WANDB_API_KEY} deep-learning-for-audio
 
-#@ Datasets
-.PHONY:	get_lj_speech get_all_datasets
 
-# Download LJ Speech for ASR
-get_lj_speech:
+##@ Datasets
+.PHONY:	datasets-rights datasets-lj datasets-libri.% datasets-libri.all datasets-pull
+
+datasets-rights: ## Give execution rights to datasets.sh
 	chmod +x ./scripts/datasets.sh
-	sh ./scripts/datasets.sh get_lj_speech_dataset \
+
+datasets-lj: datasets-rights ## Download the LJSpeech dataset
+	sh ./scripts/datasets.sh download_lj_speech \
 		resources/datasets/asr \
 		https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
-get_all_libri_speech:
-	chmod +x ./scripts/datasets.sh
+.ONESHELL:
+datasets-libri.%: datasets-rights  ## Download the specific LibriSpeech dataset (e.g. datasets-libri.dev-clean)
+	dataset=$(shell echo $@ | awk -F. '{print $$2}')
+	sh ./scripts/datasets.sh download_libri_speech \
+		resources/datasets/asr \
+		$$datasets
+
+.ONESHELL:
+datasets-libri.all: datasets-rights ## Download all LibriSpeech datasets
 	for dataset in dev-clean \
 				   dev-other \
 				   test-clean \
 				   test-other \
 				   train-clean-100 \
 				   train-clean-360 \
-				   train-other-500; \
-	do \
-		sh ./scripts/datasets.sh get_libri_speech_dataset \
+				   train-other-500
+	do
+		sh ./scripts/datasets.sh download_libri_speech \
 			resources/datasets/asr \
-			$$dataset; \
+			$$dataset
 	done
 
-# Download all datasets
-get_all_datasets: get_lj_speech get_all_libri_speech
+datasets-pull: ## Pull data from AWS S3 bucket
+	poetry run dvc pull
 
-#@ Cleaning
-.PHONY: clean_logs clean_all
 
-# Delete all log files
-clean_logs:
-	rm logs/*
+##@ Research
+.PHONY:	jupyter
 
-# Delete all "junk" files
-clean_all: clean_logs
+jupyter: ## Run jupyter lab
+	poetry run jupyter lab
+
+
+##@ Checks
+.PHONY:	mypy
+
+mypy: ## Run type checker
+	poetry run mypy
+
+
+##@ Cleaning
+.PHONY: clean-logs
+		clean-general
+		clean-all
+
+clean-logs: ## Delete log files
+	rm logs/* wandb/*
+
+clean-general: ## Delete general files
+	find . -type f -name "*.DS_Store" -ls -delete
+	find . | grep -E "(__pycache__|\.pyc|\.pyo)" | xargs rm -rf
+	find . | grep -E ".pytest_cache" | xargs rm -rf
+	find . | grep -E ".ipynb_checkpoints" | xargs rm -rf
+	find . | grep -E ".trash" | xargs rm -rf
+	rm -f .coverage
+
+clean-all: clean_logs clean_general ## Delete all "junk" files

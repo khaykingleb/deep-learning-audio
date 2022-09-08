@@ -87,9 +87,7 @@ mypy: ## Run type checker
 
 
 ##@ Cleaning
-.PHONY: clean-logs
-		clean-general
-		clean-all
+.PHONY: clean-logs clean-general clean-all
 
 clean-logs: ## Delete log files
 	rm logs/* wandb/*

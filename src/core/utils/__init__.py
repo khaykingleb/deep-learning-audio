@@ -43,7 +43,7 @@ def prepare_device(n_gpu: int) -> tp.Tuple[torch.device, tp.List[int]]:
     """
     n_gpu_available = torch.cuda.device_count()
     if n_gpu > 0 and n_gpu_available == 0:
-        logger.warn("There's no GPU available. Use GPU instead.")
+        logger.warn("There's no GPU available. Use CPU instead.")
         n_gpu = 0
     elif n_gpu_available > n_gpu:
         logger.warn(

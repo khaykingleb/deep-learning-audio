@@ -26,6 +26,6 @@ RUN apt-get -y install python3 \
 COPY pyproject.toml poetry.lock ./
 
 # Project initialization
-RUN poetry config virtualenvs.create false && poetry install
+RUN poetry config virtualenvs.create false && poetry install --without test,research
 
 COPY . .

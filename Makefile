@@ -24,6 +24,7 @@ repo-env: ## Configure environment variables in the repository
 
 repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize the repository
 
+
 ##@ AWS EC2
 .PHONY: ec2-connect
 

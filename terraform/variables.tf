@@ -16,14 +16,14 @@ variable "region" {
   default     = ""
 }
 
-# variable "instance_type" {
-#   type        = string
-#   description = "Instance type for the EC2."
-#   default     = ""
-# }
-#
-# variable "ami_id" {
-#   description = "AMI ID to use for the EC2 instance."
-#   type        = string
-#   default     = ""
-# }
+variable "instance_type" {
+  type        = string
+  description = "Instance type for the EC2."
+  default     = "t3.micro"
+}
+
+variable "ami_id" {
+  description = "AMI ID to use for the EC2 instance."
+  type        = string
+  default     = ""
+}

@@ -17,6 +17,7 @@ pytest-coverage.txt
 
 # Terraform
 .terraform
+terraform/ssh
 *.tfvars
 *.tfstate
 *.tfstate.backup

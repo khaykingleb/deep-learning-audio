@@ -28,7 +28,7 @@ repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize the repository
 .PHONY: aws-instance-connect
 
 .ONESHELL:
-aws-instance-connect: ## Connect to the AWS EC2 instance (execute as e.g. make aws-instance-connect INSTANCE_USER_NAME=ubuntu)
+aws-instance-connect: ## Connect to the AWS EC2 instance (e.g. make aws-instance-connect INSTANCE_USER_NAME=ubuntu)
 	public_ip=$(shell cd terraform && terraform output -raw instance_public_ip)
 	user_name=${INSTANCE_USER_NAME}
 	ssh -i terraform/ssh/deep-learning-for-audio.pem $$user_name@$$public_ip
@@ -56,7 +56,7 @@ datasets-lj: datasets-rights ## Download the LJSpeech dataset
 		https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
 .ONESHELL:
-datasets-libri.%: datasets-rights  ## Download the specific LibriSpeech dataset (e.g. datasets-libri.dev-clean)
+datasets-libri.%: datasets-rights  ## Download the specific LibriSpeech dataset (e.g. make datasets-libri.dev-clean)
 	dataset=$(shell echo $@ | awk -F. '{print $$2}')
 	sh ./scripts/datasets.sh download_libri_speech \
 		resources/datasets/asr \
@@ -99,7 +99,7 @@ mypy: ## Run type checker
 .PHONY: clean-logs clean-general clean-all
 
 clean-logs: ## Delete log files
-	rm logs/* wandb/*
+	rm -rf logs/* wandb/*
 
 clean-general: ## Delete general files
 	find . -type f -name "*.DS_Store" -ls -delete
@@ -109,4 +109,4 @@ clean-general: ## Delete general files
 	find . | grep -E ".trash" | xargs rm -rf
 	rm -f .coverage
 
-clean-all: clean_logs clean_general ## Delete all "junk" files
+clean-all: clean-logs clean-general ## Delete all "junk" files

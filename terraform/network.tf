@@ -34,7 +34,7 @@ resource "aws_security_group" "this" {
 
 resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
-  tags   = merge({ name = "DLA-VPC" }, local.tags)
+  tags   = merge({ name = "DLA-IG" }, local.tags)
 }
 
 resource "aws_route_table" "this" {

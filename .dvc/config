@@ -2,4 +2,4 @@
     remote = myremote
     autostage = true
 ['remote "myremote"']
-    url = s3://dev-deep-learning-in-audio-bucket
+    url = s3://dev-deep-learning-for-audio-bucket

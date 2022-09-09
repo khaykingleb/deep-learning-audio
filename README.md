@@ -18,7 +18,8 @@ Make sure that you have `make --version` greater than 3.81.
 
 * Training models:
   ```shell
-  poetry run python3 -m src.core.<TASK> --config_path=<CONFIG>.yaml
+  poetry shell
+  python3 -m src.core.<TASK> --config_path=<CONFIG>.yaml
   ```
 
 

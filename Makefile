@@ -28,9 +28,10 @@ repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize the repository
 .PHONY: ec2-connect
 
 .ONESHELL:
-ec2-connect: ## Connect to the AWS EC2 instance
+ec2-connect: ## Connect to the AWS EC2 instance (execute as e.g. make ec2-connect INSTANCE_USER_NAME=ubuntu)
 	public_ip=$(shell cd terraform && terraform output -raw instance_public_ip)
-	ssh -i terraform/ssh/deep-learning-for-audio.pem ec2-user@public_ip
+	user_name=${INSTANCE_USER_NAME}
+	ssh -i terraform/ssh/deep-learning-for-audio.pem $$user_name@$$public_ip
 
 
 ##@ Docker

@@ -24,6 +24,14 @@ repo-env: ## Configure environment variables in the repository
 
 repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize the repository
 
+##@ AWS EC2
+.PHONY: ec2-connect
+
+.ONESHELL:
+ec2-connect: ## Connect to the AWS EC2 instance
+	public_ip=$(shell cd terraform && terraform output -raw instance_public_ip)
+	ssh -i terraform/ssh/deep-learning-for-audio.pem ec2-user@public_ip
+
 
 ##@ Docker
 .PHONY: docker-build docker-run

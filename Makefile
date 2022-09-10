@@ -55,12 +55,12 @@ datasets-lj: datasets-rights ## Download the LJSpeech dataset
 		resources/datasets/asr \
 		https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
-.ONESHELL:
+#.ONESHELL:
 datasets-libri.%: datasets-rights  ## Download the specific LibriSpeech dataset (e.g. make datasets-libri.dev-clean)
 	dataset=$(shell echo $@ | awk -F. '{print $$2}')
 	sh ./scripts/datasets.sh download_libri_speech \
 		resources/datasets/asr \
-		$$datasets
+		$$dataset
 
 .ONESHELL:
 datasets-libri.all: datasets-rights ## Download all LibriSpeech datasets

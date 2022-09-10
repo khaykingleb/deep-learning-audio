@@ -9,7 +9,7 @@ download_lj_speech () {
 
 download_libri_speech () {
     mkdir -p "$1"
-    wget --output-document "$1"/"$2".tar.gz https://www.openslr.org/resources/12/"$2".tar.gz
+    wget --output-document "$1"/"$2".tar.gz https://www.openslr.org/resources/12/"$2".tar.gz \
     && tar -xzvf "$1"/"$2".tar.gz --directory "$1" \
     && mv "$1"/LibriSpeech "$1"/libri_speech \
     && rm -rf "$1"/LibriSpeech \

@@ -82,7 +82,7 @@ vine = ">=5.0.0"
 name = "antlr4-python3-runtime"
 version = "4.9.3"
 description = "ANTLR 4.9.3 runtime for Python 3.7"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -1742,7 +1742,7 @@ python-versions = ">=3.8"
 name = "omegaconf"
 version = "2.2.3"
 description = "A flexible configuration library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -2786,7 +2786,7 @@ test = ["zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.12"
-content-hash = "c613c10ce717dce2c8409340985569dad27d04c2da9d8bdace6c6df1072ac4c1"
+content-hash = "da9c40fb3750ccb50b4597d40217a48133b20977ee2d8a3d9781de7f5aacd449"
 
 [metadata.files]
 aiobotocore = [

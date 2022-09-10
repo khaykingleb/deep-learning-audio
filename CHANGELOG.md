@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.11 (2022-09-10)
+### Fix
+* :bug: ([`7835e51`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/7835e515028dd49e66750875a0268ee6aa118159))
+
 ## v0.14.10 (2022-09-10)
 ### Fix
 * :bug: allow not to use scheduler ([`51a33ac`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/51a33acbe8fd216024724c33852dc4fcf39bb966))

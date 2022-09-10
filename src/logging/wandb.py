@@ -134,7 +134,8 @@ class WBLogger:
         pred_texts = [text_encoder.ctc_decode(idxs) for idxs in pred_idxs]
         logs = []
         for idx, (ref_text, hypo_raw_text, hypo_text) in enumerate(
-            zip(batch["texts"], pred_raw_texts, pred_texts)
+            zip(batch["texts"], pred_raw_texts, pred_texts),
+            start=1,
         ):
             logs.append(
                 f"{idx})"

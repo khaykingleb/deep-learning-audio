@@ -154,6 +154,7 @@ def train(
     val_avg_wers = []
     for epoch in range(config.training.epochs):
         wb.increment_epoch()
+        wb.root_logger.info("Epoch: {epoch}.")
         train_loss, train_cers, train_wers = _train_epoch(
             config,
             model,

@@ -21,6 +21,19 @@ def fix_seed(seed: int) -> None:
     Args:
         seed (int): The seed to use.
     """
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+
+def fix_seed_all(seed: int) -> None:
+    """Fix the seed for some reproducibility.
+
+    Args:
+        seed (int): The seed to use.
+    """
     os.environ["PYTHONHASHSEED"] = str(seed)
     os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:2"
     random.seed(seed)

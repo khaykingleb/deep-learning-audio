@@ -10,7 +10,7 @@ from omegaconf import DictConfig
 from PIL import Image
 
 from . import cfg, logger
-from ..data.preprocess.text import BaseTextEncoder
+from ..data.preprocess.text import CTCTextEncoder
 from ..visualization import plot_transform
 
 wandb.login(key=cfg.WANDB_API_KEY)
@@ -112,7 +112,7 @@ class WBLogger:
         self: "WBLogger",
         batch: tp.Dict[str, tp.Any],
         probs: torch.Tensor,
-        text_encoder: BaseTextEncoder,
+        text_encoder: CTCTextEncoder,
         *,
         level: tp.Literal["step", "epoch"],
         part: tp.Literal["train", "val"],
@@ -122,7 +122,7 @@ class WBLogger:
         Args:
             batch (Dict): Batch of data samples.
             probs (Tensor): Probabilities for each character of shape (batch_size, vocab_size, input_length).
-            text_encoder (BaseTextEncoder): Text encoder used for tokenization.
+            text_encoder (CTCTextEncoder): Text encoder used for tokenization.
             level (Literal): With accordance to what, step or epoch, we need to log.
             part (Literal): For what part, train or val, we need to log.
         """
@@ -130,9 +130,12 @@ class WBLogger:
         pred_raw_texts = [text_encoder.decode(idxs) for idxs in pred_idxs]
         pred_texts = [text_encoder.ctc_decode(idxs) for idxs in pred_idxs]
         logs = []
-        for ref_text, hypo_raw_text, hypo_text in zip(batch["texts"], pred_raw_texts, pred_texts):
+        for idx, (ref_text, hypo_raw_text, hypo_text) in enumerate(
+            zip(batch["texts"], pred_raw_texts, pred_texts)
+        ):
             logs.append(
-                f"<font color='green'> reference </font>: '{ref_text}' "
+                f"{idx})"
+                f"<br> <font color='green'> reference </font>: '{ref_text}' "
                 f"<br> <font color='red'> hypothesis_raw </font>: '{hypo_raw_text}' "
                 f"<br> <font color='blue'> hypothesis </font>: '{hypo_text}'"
             )

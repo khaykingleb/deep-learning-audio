@@ -50,7 +50,11 @@ def main(config_path: str) -> None:
 
     params = filter(lambda param: param.requires_grad, model.parameters())
     optimizer = init_obj(optimizers, config.training.optimizer.name, params, config)
-    scheduler = init_obj(schedulers, config.training.scheduler.name, optimizer, config)
+    scheduler = (
+        init_obj(schedulers, config.training.scheduler.name, optimizer, config)
+        if config.training.scheduler.name is not None
+        else None
+    )
 
     wb.wandb.watch(model)
     train(

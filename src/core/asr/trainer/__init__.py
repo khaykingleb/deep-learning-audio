@@ -42,8 +42,6 @@ def _train_epoch(
                 fields_on_device=["transforms", "encoded_texts"],
             )
 
-            lr = scheduler.get_lr()[0]
-
             optimizer.zero_grad()
             probs = model(batch["transforms"])
 
@@ -60,8 +58,15 @@ def _train_epoch(
                 model.parameters(),
                 config.training.grad_clip_val,
             )
+            if bool(grad_norm.isnan()):
+                continue
+
             optimizer.step()
-            scheduler.step()
+            if scheduler is not None:
+                scheduler.step()
+                lr = scheduler.get_lr()[0]
+            else:
+                lr = optimizer.rate()
 
             wb.increment_step(part="train")
             if batch_idx % config.training.log_every_n_steps == 0:
@@ -154,7 +159,7 @@ def train(
     val_avg_wers = []
     for epoch in range(config.training.epochs):
         wb.increment_epoch()
-        wb.root_logger.info("Epoch: {epoch}.")
+        wb.root_logger.info(f"Epoch: {epoch}.")
         train_loss, train_cers, train_wers = _train_epoch(
             config,
             model,

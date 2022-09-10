@@ -5,7 +5,7 @@ VERSION := 0.14.11
 .PHONY: help
 
 help: ## Display help
-	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage: \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage: \033[36m\033[0m\n"} /^[a-zA-Z\.\%-]+:.*?##/ { printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
 
 ##@ Repo initialization
@@ -63,7 +63,7 @@ datasets-libri.%: datasets-rights  ## Download the specific LibriSpeech dataset 
 		$$dataset
 
 .ONESHELL:
-datasets-libri.all: datasets-rights ## Download all LibriSpeech datasets
+datasets-libri.all: datasets-rights  ## Download all LibriSpeech datasets
 	for dataset in dev-clean \
 				   dev-other \
 				   test-clean \

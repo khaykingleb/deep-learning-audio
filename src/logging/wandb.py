@@ -65,7 +65,10 @@ class WBLogger:
             level (Literal): With accordance to what, step or epoch, we need to log.
             part (Literal): For what part, train or val, we need to log.
         """
-        data = {(part + " " + k).capitalize(): v for k, v in data.items()}
+        data = {
+            " ".join(map(lambda w: w.capitalize(), (part + " " + k).split())): v
+            for k, v in data.items()
+        }
         self.wandb.log(data, step=self._levels[level][part])
 
     def log_random_audio(
@@ -85,7 +88,7 @@ class WBLogger:
         idx = random.randint(0, len(batch["audios"]) - 1)
         audio = batch["audios"][idx].squeeze().detach().cpu().numpy()
         sr = self.config.preprocess.audio.sr
-        audio_name = (part + " audio").capitalize()
+        audio_name = " ".join(map(lambda w: w.capitalize(), (part + " audio").split()))
         self.wandb.log(
             {audio_name: wandb.Audio(audio, caption=batch["texts"][idx], sample_rate=sr)},
             step=self._levels[level][part],
@@ -102,7 +105,7 @@ class WBLogger:
             )
         )
         transform_name = part + " " + self.config.preprocess.transform.name
-        transform_name = transform_name.lower().capitalize()
+        transform_name = " ".join(map(lambda w: w.capitalize(), transform_name.lower().split()))
         self.wandb.log(
             {transform_name: wandb.Image(transform_image)},
             step=self._levels[level][part],
@@ -140,7 +143,7 @@ class WBLogger:
                 f"<br> <font color='blue'> hypothesis </font>: '{hypo_text}'"
             )
         logs = "<br> --- <br>".join(logs)
-        logs_name = (part + " naive predictions").capitalize()
+        logs_name = " ".join(map(lambda w: w.capitalize(), (part + " naive predictions").split()))
         self.wandb.log(
             {logs_name: wandb.Html(logs)},
             step=self._levels[level][part],

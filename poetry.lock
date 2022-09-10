@@ -2599,7 +2599,7 @@ python-versions = ">= 3.7"
 name = "tqdm"
 version = "4.64.1"
 description = "Fast, Extensible Progress Meter"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
 
@@ -2786,7 +2786,7 @@ test = ["zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.12"
-content-hash = "da9c40fb3750ccb50b4597d40217a48133b20977ee2d8a3d9781de7f5aacd449"
+content-hash = "695beb1436a03b0d9939ce78cf1f5f2ad83c077a60adb9c95bb8ecaa3593216d"
 
 [metadata.files]
 aiobotocore = [

@@ -9,8 +9,8 @@ model:
   name: QuartzNet
   args:
     B: 5  # number of QuartzBlocks
-    S: 1  # number of QuartzBlock repeats
-    R: 3  # number of subblocks within QuartzBlock
+    S: 3  # number of QuartzBlock repeats
+    R: 5  # number of subblocks within QuartzBlock
     initial_hidden_channels: 256 # must be devisible by n_transform
     block_hidden_channels:
       - 256,256
@@ -59,7 +59,7 @@ training:
 data:
   max_text_length: null  # in characters
   max_audio_duration: null  # in seconds
-  limit: 8  # limit the size of a dataset
+  limit: 32  # limit the size of a dataset
 
   use_aug: false
 
@@ -67,24 +67,24 @@ data:
     drop_last: true  # whether to drop the last incomplete batch, if the dataset size is not divisible by the batch size
     num_workers: 0
     shuffle: false
-    batch_size: 8
+    batch_size: 32
     sampler: null
 
   parts:
     train:
       proportion: null
       datasets:
-        - LibriSpeechDataset,dev-clean
+        - LJSpeechDataset,train
 
     test:
       proportion: null
       datasets:
-        - LibriSpeechDataset,dev-clean
+        - LJSpeechDataset,train
 
     val:
       proportion: null
       datasets:
-        - LibriSpeechDataset,dev-clean
+        - LJSpeechDataset,train
 
 preprocess:
 

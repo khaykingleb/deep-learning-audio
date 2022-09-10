@@ -1,10 +1,8 @@
-
-
 terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.26.0"
+      version = "4.30.0"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -18,7 +16,8 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region            = var.region
+  s3_use_path_style = true
 }
 
 provider "tls" {}

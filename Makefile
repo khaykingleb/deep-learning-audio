@@ -11,24 +11,24 @@ help: ## Display help
 ##@ Repo initialization
 .PHONY: repo-pre-commit repo-deps repo-env repo-init
 
-repo-pre-commit: ## Install pre-commit in the repository
+repo-pre-commit: ## Install pre-commit
 	pre-commit install
 	pre-commit install -t commit-msg
 
-repo-deps: ## Install dependencies in the repository
+repo-deps: ## Install dependencies
 	poetry install
 
-repo-env: ## Configure environment variables in the repository
+repo-env: ## Configure environment variables
 	cat .test.env  > .env
 	echo "dotenv" > .envrc
 
-repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize the repository
+repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize repository by executing above commands
 
 ##@ AWS
 .PHONY: aws-instance-connect
 
 .ONESHELL:
-aws-instance-connect: ## Connect to the AWS EC2 instance (e.g. make aws-instance-connect INSTANCE_USER_NAME=ubuntu)
+aws-instance-connect: ## Connect to AWS EC2 (e.g. make aws-instance-connect INSTANCE_USER_NAME=ubuntu)
 	public_ip=$(shell cd terraform && terraform output -raw instance_public_ip)
 	user_name=${INSTANCE_USER_NAME}
 	ssh -i terraform/ssh/deep-learning-for-audio.pem $$user_name@$$public_ip
@@ -37,26 +37,26 @@ aws-instance-connect: ## Connect to the AWS EC2 instance (e.g. make aws-instance
 ##@ Docker
 .PHONY: docker-build docker-run
 
-docker-build: ## Build the container
+docker-build: ## Build container
 	docker build -t deep-learning-for-audio .
 
-docker-run: ## Run the container
+docker-run: ## Run container
 	docker run -dte WANDB_API_KEY=${WANDB_API_KEY} deep-learning-for-audio
 
 
 ##@ Datasets
 .PHONY:	datasets-rights datasets-lj datasets-libri.% datasets-libri.all datasets-pull
 
-datasets-rights: ## Give execution rights to datasets.sh
+datasets-rights: ## Give execution rights to scripts/datasets.sh
 	chmod +x ./scripts/datasets.sh
 
-datasets-lj: datasets-rights ## Download the LJSpeech dataset
+datasets-lj: datasets-rights ## Download LJSpeech dataset
 	sh ./scripts/datasets.sh download_lj_speech \
 		resources/datasets/asr \
 		https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
 
 #.ONESHELL:
-datasets-libri.%: datasets-rights  ## Download the specific LibriSpeech dataset (e.g. make datasets-libri.dev-clean)
+datasets-libri.%: datasets-rights  ## Download specified LibriSpeech dataset (e.g. make datasets-libri.dev-clean)
 	dataset=$(shell echo $@ | awk -F. '{print $$2}')
 	sh ./scripts/datasets.sh download_libri_speech \
 		resources/datasets/asr \
@@ -77,7 +77,7 @@ datasets-libri.all: datasets-rights  ## Download all LibriSpeech datasets
 			$$dataset
 	done
 
-datasets-pull: ## Pull data from AWS S3 bucket
+datasets-pull: ## Pull data from AWS S3
 	poetry run dvc pull
 
 

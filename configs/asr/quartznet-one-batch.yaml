@@ -60,7 +60,7 @@ training:
       cycle_mult: 1.0
       max_lr: 0.05
       min_lr: 0.001
-      warmup_steps: 1000
+      warmup_steps: 10
       gamma: 1.0
 
 data:
@@ -68,7 +68,7 @@ data:
   max_audio_duration: null  # in seconds
   limit: 8  # limit the size of a dataset
 
-  use_aug: True
+  use_aug: false
 
   batch:
     drop_last: true  # whether to drop the last incomplete batch, if the dataset size is not divisible by the batch size

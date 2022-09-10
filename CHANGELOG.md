@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.10 (2022-09-10)
+### Fix
+* :bug: allow not to use scheduler ([`51a33ac`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/51a33acbe8fd216024724c33852dc4fcf39bb966))
+
+### Documentation
+* Update readme ([`8554612`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/8554612cd6b1ec12a5bfaa26b4a9d7e189a729a2))
+* Update readme ([`2ebcb74`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/2ebcb74df1bc3d3edab6acab653e3c6a020dc759))
+* Update readme ([`9fd61a7`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/9fd61a7d5765e7765c261eeea6445ecf289b1279))
+* Update readme ([`a12b5ec`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/a12b5ec77ceacabe3b06bd607e636e591167f852))
+
 ## v0.14.9 (2022-09-06)
 ### Fix
 * :bug: limit data based on sorted one, not random ([`3671954`](https://github.com/khaykingleb/Deep-Learning-for-Audio/commit/36719543b996eab94e95d2eeaa66eb5d241c0b11))

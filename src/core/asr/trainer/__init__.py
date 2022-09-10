@@ -66,7 +66,7 @@ def _train_epoch(
                 scheduler.step()
                 lr = scheduler.get_lr()[0]
             else:
-                lr = optimizer.rate()
+                lr = config.training.optimizer.args.lr
 
             wb.increment_step(part="train")
             if batch_idx % config.training.log_every_n_steps == 0:

@@ -495,7 +495,7 @@ typing-extensions = ">=4.0.1,<5.0.0"
 name = "commonmark"
 version = "0.9.1"
 description = "Python parser for the CommonMark Markdown spec"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -2018,7 +2018,7 @@ cffi = ">=1.9.1"
 name = "Pygments"
 version = "2.13.0"
 description = "Pygments is a syntax highlighting package written in Python."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -2191,7 +2191,7 @@ tests = ["pytest (<8)", "pytest-cov", "scipy (>=1.0)"]
 name = "rich"
 version = "12.5.1"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.3,<4.0.0"
 
@@ -2786,7 +2786,7 @@ test = ["zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.12"
-content-hash = "695beb1436a03b0d9939ce78cf1f5f2ad83c077a60adb9c95bb8ecaa3593216d"
+content-hash = "4aab0842e46c4b241a32a778351f8b833beea4cabfb4d6c86537cfeabe7f9b9e"
 
 [metadata.files]
 aiobotocore = [

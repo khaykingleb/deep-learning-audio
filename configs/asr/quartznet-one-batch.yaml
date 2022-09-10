@@ -42,26 +42,19 @@ training:
   log_every_n_steps: 1
 
   optimizer:
-    name: NovoGradWrapper
+    name: AdamWWrapper
     args:
-      lr: 0.05
+      lr: 1e-4
       betas:
-        - 0.95
-        - 0.5
+        - 0.9
+        - 0.999
       eps: 1e-8
-      weight_decay: 0.001
-      grad_averaging: false
+      weight_decay: 0.0
       amsgrad: false
 
   scheduler:
-    name: CosineAnnealingWarmupRestartsWrapper
-    args:
-      first_cycle_steps: 300_000
-      cycle_mult: 1.0
-      max_lr: 0.05
-      min_lr: 0.001
-      warmup_steps: 10
-      gamma: 1.0
+    name: null
+    args: null
 
 data:
   max_text_length: null  # in characters

@@ -51,3 +51,9 @@ variable "ebs_volume_type" {
   default     = ""
   description = "EBS volume type."
 }
+
+variable "user_data_script_name" {
+  type        = string
+  default     = ""
+  description = "Script name in /scripts folder to run on EC2."
+}

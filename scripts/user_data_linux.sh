@@ -7,11 +7,11 @@ sudo file -s /dev/xvdb \
 sudo yum -y update \
 && sudo yum -y groupinstall "Development Tools" \
 && sudo yum -y install openssl11 \
-                    openssl11-devel \
-                    libffi-devel \
-                    bzip2-devel \
-                    git \
-                    wget \
+                       openssl11-devel \
+                       libffi-devel \
+                       bzip2-devel \
+                       git \
+                       wget \
 
 wget https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tgz \
 && tar -xf Python-3.10.4.tgz \

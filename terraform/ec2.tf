@@ -33,7 +33,7 @@ resource "aws_instance" "this" {
     volume_type = var.root_volume_type
   }
 
-  user_data = file(abspath("${path.cwd}/../scripts/user_data_linux.tpl"))
+  user_data = file(abspath("${path.cwd}/../scripts/${var.user_data_script_name}.sh"))
 
   tags = merge({ name = "DLA-EC2" }, local.tags)
 }

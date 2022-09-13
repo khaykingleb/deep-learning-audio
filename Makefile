@@ -99,6 +99,7 @@ jupyter: ## Run jupyter lab
 
 ##=============================================================================
 ##@ Checks
+
 mypy: ## Run type checker
 	poetry run mypy
 .PHONY:	mypy

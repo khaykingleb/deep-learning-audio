@@ -24,3 +24,9 @@ Make sure that you have `make --version` greater than 3.81.
 
 
 [release]: https://github.com/khaykingleb/Deep-Learning-for-Audio/actions/workflows/release.yaml/badge.svg
+
+# To Be Added
+
+* [Attention model for KWS](https://github.com/khaykingleb/KWS).
+* [Acoustic model for TTS](https://github.com/khaykingleb/FastSpeech).
+* [Vocoder for TTS](https://github.com/khaykingleb/HiFi-GAN).

@@ -1,14 +1,14 @@
 SHELL := /bin/bash
 VERSION := 0.14.11
 
-##=============================================================================
+##==================================================================================================
 ##@ Helper
 
 help: ## Display help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage: \033[36m\033[0m\n"} /^[a-zA-Z\.\%-]+:.*?##/ { printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 .PHONY: help
 
-##=============================================================================
+##==================================================================================================
 ##@ Repo initialization
 
 repo-pre-commit: ## Install pre-commit
@@ -25,10 +25,10 @@ repo-env: ## Configure environment variables
 	echo "dotenv" > .envrc
 .PHONY: repo-env
 
-repo-init: repo-pre-commit repo-deps repo-env-init ## Initialize repository by executing above commands
+repo-init: repo-pre-commit repo-deps repo-env ## Initialize repository by executing above commands
 .PHONY: repo-init
 
-##=============================================================================
+##==================================================================================================
 ##@ AWS
 
 .ONESHELL:
@@ -42,7 +42,7 @@ aws-datasets-pull: ## Pull some datasets from S3 bucket
 	poetry run dvc pull
 .PHONY: aws-datasets-pull
 
-##=============================================================================
+##==================================================================================================
 ##@ Docker
 
 docker-build: ## Build container
@@ -53,7 +53,7 @@ docker-run: ## Run container
 	docker run -dte WANDB_API_KEY=${WANDB_API_KEY} deep-learning-for-audio
 .PHONY: docker-run
 
-##=============================================================================
+##==================================================================================================
 ##@ Datasets
 
 datasets-rights: ## Grant execution rights to scripts/datasets.sh
@@ -90,21 +90,28 @@ datasets-libri.all: datasets-rights  ## Download all LibriSpeech datasets
 	done
 .PHONY: datasets-libri.all
 
-##=============================================================================
+##==================================================================================================
 ##@ Research
 
 jupyter: ## Run jupyter lab
 	poetry run jupyter lab
 .PHONY:	jupyter
 
-##=============================================================================
+##==================================================================================================
 ##@ Checks
 
 mypy: ## Run type checker
 	poetry run mypy
 .PHONY:	mypy
 
-##=============================================================================
+##==================================================================================================
+##@ Secrets
+
+create-detect-secrets-baseline:  ## Create .secrets.baseline file
+	poetry run detect-secrets scan > .secrets.baseline
+.PHONY: create-detect-secrets-baseline
+
+##==================================================================================================
 ##@ Cleaning
 
 clean-logs: ## Delete log files
@@ -122,3 +129,8 @@ clean-general: ## Delete general files
 
 clean-all: clean-logs clean-general ## Delete all "junk" files
 .PHONY: clean-all
+
+##==================================================================================================
+##@ Miscellaneous
+update-pre-commit-hooks:
+	pre-commit autoupdate

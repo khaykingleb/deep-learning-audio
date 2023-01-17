@@ -19,15 +19,10 @@ jobs:
           python-version: "3.10"
       - name: Checkout code so that it is available to use in the executing runner
         uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
       - name: Check all files with pre-commit and update globally available pre-commit cache
         uses: pre-commit/action@v2.0.3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - run: npm install
-      - uses: wagoid/commitlint-github-action@v5
-        env:
-          NODE_PATH: ${{ github.workspace }}/node_modules
 
   Release:
       needs: Quality

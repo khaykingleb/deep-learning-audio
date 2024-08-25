@@ -1,0 +1,6 @@
+_target_: src.collections.audio.asr.data.ASRData
+
+batch_size: 32
+datasets:
+  - _target_: LJSpeechDataset
+  - _target_: LibriSpeechDataset

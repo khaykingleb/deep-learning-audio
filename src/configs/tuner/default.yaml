@@ -1,0 +1,14 @@
+#@ Batch size auto-scaling: find the largest batch size that fits into memory
+# See https://lightning.ai/docs/pytorch/stable/advanced/training_tricks.html#batch-size-finder
+# NB: not yet supported for DDP or any of its variations
+# NB: often yields a better estimation of the gradients, but may also result in longer training time
+scale_batch_size: false
+# Find batch size by growing it exponentially ("power") or with binary search ("binsearch")
+scale_batch_size_mode: power
+
+# @ Learning rate finder
+# See https://lightning.ai/docs/pytorch/stable/advanced/training_tricks.html#learning-rate-finder
+# NB: only works with models having a single optimizer
+# NB: with DDP, since all the processes run in isolation, only process with global_rank=0 will make the decision to stop the learning rate finder and broadcast its results to all other ranks
+scale_lr: false
+scale_lr_mode: power

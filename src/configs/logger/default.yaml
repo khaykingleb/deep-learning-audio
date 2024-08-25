@@ -1,0 +1,127 @@
+# https://lightning.ai/docs/pytorch/stable/visualize/logging_advanced.html
+
+
+# To track other artifacts, such as histograms or model topology graphs
+# first select one of the many loggers supported by Lightning
+# from lightning.pytorch import loggers as pl_loggers
+# tensorboard = pl_loggers.TensorBoardLogger(save_dir="")
+# trainer = Trainer(logger=tensorboard)
+
+# then access the logger’s API directly
+# def training_step(self):
+#     tensorboard = self.logger.experiment
+#     tensorboard.add_image()
+#     tensorboard.add_histogram(...)
+#     tensorboard.add_figure(...)
+
+
+# from lightning.pytorch.loggers import CometLogger
+# comet_logger = CometLogger(api_key="YOUR_COMET_API_KEY")
+# trainer = Trainer(logger=comet_logger)
+
+# from lightning.pytorch.loggers import MLFlowLogger
+# mlf_logger = MLFlowLogger(experiment_name="lightning_logs", tracking_uri="file:./ml-runs")
+# trainer = Trainer(logger=mlf_logger)
+
+# import neptune
+# from lightning.pytorch.loggers import NeptuneLogger
+# neptune_logger = NeptuneLogger(
+#     api_key=neptune.ANONYMOUS_API_TOKEN,  # replace with your own
+#     project="common/pytorch-lightning-integration",  # format "<WORKSPACE/PROJECT>"
+# )
+# trainer = Trainer(logger=neptune_logger)
+
+
+# from lightning.pytorch.loggers import WandbLogger
+# wandb_logger = WandbLogger(project="MNIST", log_model="all")
+# trainer = Trainer(logger=wandb_logger)
+# # log gradients and model topology
+# wandb_logger.watch(model)
+
+
+
+# !!NB: To use multiple experiment managers at the same time, pass a list to the logger Trainer argument.
+# https://lightning.ai/docs/pytorch/stable/visualize/logging_intermediate.html#use-multiple-exp-managers
+# from lightning.pytorch.loggers import TensorBoardLogger, WandbLogger
+# logger1 = TensorBoardLogger()
+# logger2 = WandbLogger()
+# trainer = Trainer(logger=[logger1, logger2])
+
+
+# To track hyperparameters, first call save_hyperparameters from the LightningModule init:
+# # class MyLightningModule(LightningModule):
+#     def __init__(self, learning_rate, another_parameter, *args, **kwargs):
+#         super().__init__()
+#         self.save_hyperparameters()
+# If your logger supports tracked hyperparameters, the hyperparameters will automatically show up on the logger dashboard.
+
+
+# Some loggers keep logged metrics in memory for N steps and only periodically flush
+#  them to disk to improve training efficiency. Every logger handles this a bit differently.
+# For example, here is how to fine-tune flushing for the TensorBoard logger:
+# # Default used by TensorBoard: Write to disk after 10 logging events or every two minutes
+# logger = TensorBoardLogger(..., max_queue=10, flush_secs=120)
+
+# # Faster training, more memory used
+# logger = TensorBoardLogger(..., max_queue=100)
+
+# # Slower training, less memory used
+# logger = TensorBoardLogger(..., max_queue=1)
+
+# If True, appends the index of the current dataloader to the name (when using multiple dataloaders).
+# If False, user needs to give unique names for each dataloader to not mix the values.
+# self.log(add_dataloader_idx=True)
+
+
+# Current batch size used for accumulating logs logged with on_epoch=True.
+#  This will be directly inferred from the loaded batch, but for some data structures you might need to explicitly provide it.
+# self.log(batch_size=32)
+
+# If True, will not auto detach the graph.
+# self.log(enable_graph=True)
+
+# Send logs to the logger like Tensorboard, or any other custom logger passed to the Trainer (Default: True).
+# self.log(logger=True)
+
+# If this is True, that specific self.log call accumulates and reduces all metrics to the end of the epoch.
+# self.log(on_epoch=True)
+# def training_step(self, batch, batch_idx):
+#     # Default: False
+#     self.log(on_epoch=False)
+# def validation_step(self, batch, batch_idx):
+#     # Default: True
+#     self.log(on_epoch=True)
+# def test_step(self, batch, batch_idx):
+#     # Default: True
+#     self.log(on_epoch=True)
+
+
+# If this is True, that specific self.log call will NOT accumulate metrics. Instead it will generate a timeseries across steps.
+# self.log(on_step=True)
+# def training_step(self, batch, batch_idx):
+#     # Default: True
+#     self.log(on_step=True)
+# def validation_step(self, batch, batch_idx):
+#     # Default: False
+#     self.log(on_step=False)
+# def test_step(self, batch, batch_idx):
+#     # Default: False
+#     self.log(on_step=False)
+
+
+
+# https://lightning.ai/docs/pytorch/stable/visualize/logging_advanced.html#log-to-a-custom-cloud-filesystem
+Lightning is integrated with the major remote file systems including local filesystems and several cloud storage providers such as S3 on AWS, GCS on Google Cloud, or ADL on Azure.
+PyTorch Lightning uses fsspec internally to handle all filesystem operations.
+To save logs to a remote filesystem, prepend a protocol like “s3:/” to the root_dir used for writing and reading model data.
+from lightning.pytorch.loggers import TensorBoardLogger
+
+logger = TensorBoardLogger(save_dir="s3://my_bucket/logs/")
+
+trainer = Trainer(logger=logger)
+trainer.fit(model)
+
+
+To track the timeseries over steps (on_step) as well as the accumulated epoch metric (on_epoch), set both to True
+self.log(on_step=True, on_epoch=True)
+Setting both to True will generate two graphs with _step for the timeseries over steps and _epoch for the epoch metric.

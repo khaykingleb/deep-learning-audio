@@ -1,0 +1,77 @@
+
+# # run on as many GPUs as available by default
+# trainer = Trainer(accelerator="auto", devices="auto", strategy="auto")
+# # equivalent to
+# trainer = Trainer()
+
+# # run on one GPU
+# trainer = Trainer(accelerator="gpu", devices=1)
+# # run on multiple GPUs
+# trainer = Trainer(accelerator="gpu", devices=8)
+# # choose the number of devices automatically
+# trainer = Trainer(accelerator="gpu", devices="auto")
+
+
+
+# # Setting accelerator="gpu" will also automatically choose the “mps” device on Apple sillicon GPUs.
+# # If you want to avoid this, you can set accelerator="cuda" instead.
+
+
+# # DEFAULT (int) specifies how many GPUs to use per node
+# Trainer(accelerator="gpu", devices=k)
+
+# # Above is equivalent to
+# Trainer(accelerator="gpu", devices=list(range(k)))
+
+# # Specify which GPUs to use (don't use when running on cluster)
+# Trainer(accelerator="gpu", devices=[0, 1])
+
+# # Equivalent using a string
+# Trainer(accelerator="gpu", devices="0, 1")
+
+# # To use all available GPUs put -1 or '-1'
+# # equivalent to `list(range(torch.cuda.device_count())) and `"auto"`
+# Trainer(accelerator="gpu", devices=-1)
+
+
+# # https://lightning.ai/docs/pytorch/stable/accelerators/gpu_basic.html#choosing-gpu-devices
+# # https://lightning.ai/docs/pytorch/stable/common/precision_basic.html
+# # https://lightning.ai/docs/pytorch/stable/advanced/training_tricks.html
+
+
+# ---
+# # Use 16-bit mixed precision to speed up training and inference. If your GPUs are [Tensor Core] GPUs, you can expect a ~3x speed improvement.
+# # Trainer(precision="16-mixed")
+# # In most cases, mixed precision uses FP16.
+# # Supported PyTorch operations automatically run in FP16, saving memory and improving throughput on the supported accelerators.
+# # Since computation happens in FP16, which has a very limited “dynamic range”, there is a chance of numerical instability during training.
+# # This is handled internally by a dynamic grad scaler which skips invalid steps and adjusts the scaler to ensure subsequent steps fall within a finite range.
+# # For more information see the autocast docs.
+# # With true 16-bit precision you can additionally lower your memory consumption by up to half so that you can train and deploy larger models. However, this setting can sometimes lead to unstable training.
+
+# ---
+
+# # Accumulated gradients run K small batches of size N before doing a backward pass.
+# # The effect is a large effective batch size of size KxN, where N is the batch size.
+# # Internally it doesn’t stack up the batches and do a forward pass rather it accumulates
+# # the gradients for K batches and then do an optimizer.step to make sure the effective batch size is increased but there is no memory overhead.
+# # DEFAULT (ie: no accumulated grads)
+# trainer = Trainer(accumulate_grad_batches=1)
+# # Accumulate gradients for 7 batches
+# trainer = Trainer(accumulate_grad_batches=7)
+
+
+
+# # Gradient clipping can be enabled to avoid exploding gradients.
+# # By default, this will clip the gradient norm by calling torch.nn.utils.clip_grad_norm_()
+# # computed over all model parameters together.
+# # If the Trainer’s gradient_clip_algorithm is set to 'value' ('norm' by default),
+# #  this will use instead torch.nn.utils.clip_grad_value_() for each parameter instead.
+# # DEFAULT (ie: don't clip)
+# trainer = Trainer(gradient_clip_val=0)
+
+# # clip gradients' global norm to <=0.5 using gradient_clip_algorithm='norm' by default
+# trainer = Trainer(gradient_clip_val=0.5)
+
+# # clip gradients' maximum magnitude to <=0.5
+# trainer = Trainer(gradient_clip_val=0.5, gradient_clip_algorithm="value")

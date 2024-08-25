@@ -1,0 +1,72 @@
+_target_: lightning.pytorch.trainer.Trainer
+
+
+min_epochs: 999
+max_epochs: 1111
+gradient_clip_val: 2.5
+fast_dev_run: 10
+
+
+
+
+# fast_dev_run: False  # The fast_dev_run argument in the trainer runs 5 batch of training, validation, test and prediction data through your trainer to see if there are any bugs:
+# To change how many batches to use, change the argument to an integer. Here we run 7 batches of each:
+# fast_dev_run: 7
+
+
+# Sometimes it’s helpful to only use a fraction of your training, val, test, or predict data (or a set number of batches). For example, you can use 20% of the training set and 1% of the validation set.
+# On larger datasets like Imagenet, this can help you debug or test a few things faster than waiting for a full epoch.
+# # use only 10% of training data and 1% of val data
+# trainer = Trainer(limit_train_batches=0.1, limit_val_batches=0.01)
+# # use 10 batches of train and 5 batches of val
+# trainer = Trainer(limit_train_batches=10, limit_val_batches=5)
+
+# Lightning runs 2 steps of validation in the beginning of training. This avoids crashing in the validation loop sometime deep into a lengthy training loop.
+# trainer = Trainer(num_sanity_val_steps=2)
+
+# # To turn off the autosummary use:
+# trainer = Trainer(enable_model_summary=False)
+
+
+# Find training loop bottlenecks
+# The most basic profile measures all the key methods across Callbacks, DataModules and the LightningModule in the training loop.
+# trainer = Trainer(profiler="simple")
+
+# To profile the time within every function, use the AdvancedProfiler built on top of Python’s cProfiler.
+# trainer = Trainer(profiler="advanced")
+
+# If the profiler report becomes too long, you can stream the report to a file:
+# profiler = AdvancedProfiler(dis
+
+
+
+# log_dir
+
+# Logging a metric on every single batch can slow down training. By default, Lightning logs every 50 rows, or 50 training steps.
+# To change this behaviour, set the log_every_n_steps Trainer flag.
+# k = 10
+# trainer = Trainer(log_every_n_steps=k)
+
+
+
+
+
+# ---
+
+# default_root_dir: ${paths.output_dir}
+
+# min_epochs: 1 # prevents early stopping
+# max_epochs: 10
+
+# accelerator: cpu
+# devices: 1
+
+# # mixed precision for extra speed-up
+# # precision: 16
+
+# # perform a validation loop every N training epochs
+# check_val_every_n_epoch: 1
+
+# # set True to to ensure deterministic results
+# # makes training slower but gives more reproducibility than just setting seeds
+# deterministic: False

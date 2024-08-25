@@ -1,0 +1,19 @@
+# @package _global_
+
+# Order of defaults determines the order in which configs override each other
+defaults:
+  - _self_
+  - /data: audio_asr
+  # - /model: audio_asr_quartznet
+  # - /callback: default
+  # - /logger: default
+  # - /trainer: cpu
+  # - /tuner: default
+
+ckpt_path: null  # path to a checkpoint to load
+# pretrained: False  # load a pretrained model
+# path_to_save: null  # path to save the model
+
+seed: 42  # seed for random number generators
+use_deterministic_algorithms: True  # use deterministic algorithms for reproducibility
+use_cudnn_benchmark: False  # use CuDNN benchmarking for faster training

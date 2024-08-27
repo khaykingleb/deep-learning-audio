@@ -106,10 +106,13 @@ ignore = [
   "ANN204",  # missing return type annotation for special method
   "D105",    # missing docstring in magic method
   "PLR0913", # too many arguments in function definition ({c_args} > {max_args})
+  "N812",    # imports are non-lowercase
+  "S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
 fixable = [
     "I",      # isort
     "D",      # pydocstyle
+    "TCH",    # typecheking
 ]
 
 [tool.ruff.lint.pydocstyle]

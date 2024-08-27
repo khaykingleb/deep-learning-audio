@@ -1,3 +1,5 @@
+"""Audio functions for digital signal processing."""
+
 from pathlib import Path
 
 import torch
@@ -9,11 +11,12 @@ def load_waveform(
     *,
     sample_rate: int | None = None,
 ) -> torch.Tensor:
-    """Load an audio file from a given path and resample it with the accordance to the specified sample rate.
+    """Load an audio file from a given path.
 
     Args:
         path (Path): Path to the audio file.
-        sample_rate (int | None): Sample rate to resample the audio to. If None, the original sample rate is used.
+        sample_rate (int): Sample rate to resample the audio to.
+            If None, the original sample rate is used.
 
     Returns:
         Digital audio signal.

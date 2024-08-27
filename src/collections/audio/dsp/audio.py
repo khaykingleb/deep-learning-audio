@@ -1,4 +1,4 @@
-"""Audio functions for digital signal processing."""
+"""Functions for processing digital audio signals."""
 
 from pathlib import Path
 

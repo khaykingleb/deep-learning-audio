@@ -46,7 +46,7 @@ repos:
           if l.is_locked() and l.is_fresh():
             exit(0)
           else:
-            print('run `portry update` to fix')
+            print('run `poetry update` to fix')
             exit(1)
           "
         language: python

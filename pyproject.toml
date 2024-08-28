@@ -13,15 +13,21 @@ typer = "^0.12.5"
 attrs = "^24.2.0"
 loguru = "^0.7.2"
 pydantic = "^2.8.2"
+polars = "^1.5.0"
+pandas = "^2.2.2"
+pandera = {extras = ["polars"], version = "^0.20.3"}
 torch = "^2.4.0"
-torchaudio = "^2.4.0"
 torchvision = "^0.19.0"
 lightning = "^2.4.0"
 omegaconf = "^2.3.0"
 wandb = "^0.17.7"
 einops = "^0.8.0"
 triton = { version = "^3.0.0", markers = "sys_platform == 'linux'" }
+tiktoken = "^0.7.0"
 
+[tool.poetry.group.audio.dependencies]
+soundfile = "^0.12.1"
+torchaudio = "^2.4.0"
 
 [tool.poetry.group.dev.dependencies]
 detect-secrets = "^1.5.0"
@@ -88,7 +94,6 @@ select = [
   "INT",   # flake8-gettext
   "ARG",   # flake8-unused-arguments
   "PTH",   # flake8-use-pathlib
-  "TD",    # flake8-todos
   "ERA",   # flake8-eradicate
   "PD",    # pandas-vet
   "PGH",   # pygrep

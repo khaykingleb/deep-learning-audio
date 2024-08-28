@@ -74,6 +74,15 @@ class ASRDataset(Dataset, ABC):
         """Set up the dataset."""
 
     def __getitem__(self, idx: int) -> dict[str, tp.Any]:
+        """Get a single item from the dataset.
+
+        Args:
+            idx (int): Index of the item to retrieve.
+
+        Returns:
+            dict[str, tp.Any]: A dictionary containing the waveform,
+                transformed audio, and encoded text.
+        """
         audio_path, text, _ = self.data.row(idx)
         waveform = load_waveform(audio_path, self.audio_sample_rate)
         if self.audio_augmentation_enabled:
@@ -85,9 +94,15 @@ class ASRDataset(Dataset, ABC):
         }
 
     def __len__(self) -> int:
+        """Get the length of the dataset.
+
+        Returns:
+            int: The number of items in the dataset.
+        """
         return len(self.data)
 
     def _filter_data(self) -> None:
+        """Filter the dataset based on text length and audio duration."""
         filtered_data = self.data.clone()
 
         if self.text_max_length is not None:
@@ -131,7 +146,9 @@ class ASRDataset(Dataset, ABC):
         self.data = filtered_data
 
     def _sort_data(self) -> None:
+        """Sort the dataset by audio duration."""
         self.data = self.data.sort(by="duration")
 
     def _limit_data(self) -> None:
+        """Limit the dataset to a specified number of samples."""
         self.data = self.data.head(self.data_samples_limit)

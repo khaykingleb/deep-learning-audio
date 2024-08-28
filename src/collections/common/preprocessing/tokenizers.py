@@ -1,20 +1,27 @@
+"""Text tokenizers for preprocessing text data."""
+
 import re
 import string
 
 import torch
+from attrs import define, field
 
 
-class BaseTextEncoder:
-    """Base text encoder."""
+@define(kw_only=True)
+class TextTokenizer:
+    """Base text tokenizer.
 
-    def __init__(self, alphabet: list[str]) -> None:
-        """Constructor.
+    Attributes:
+        alphabet (list[str]): List of characters in the alphabet.
+    """
 
-        Args:
-            alphabet (list): Alphabet used for tokenization.
-        """
-        self.token2char = {k: v for k, v in enumerate(sorted(alphabet))}
-        self.char2token = {v: k for k, v in enumerate(sorted(alphabet))}
+    alphabet: list[str] = field()
+    _token2char: dict = field(init=False)
+    _char2token: dict = field(init=False)
+
+    def __attrs_post_init__(self):
+        self._token2char = dict(enumerate(sorted(self.alphabet)))
+        self._char2token = {v: k for k, v in self._token2char.items()}
 
     def encode(self, text: str) -> torch.Tensor:
         """Encode text according to char2token mapping.
@@ -26,7 +33,9 @@ class BaseTextEncoder:
             Encoded text as a tensor.
         """
         text = self._preprocess_text(text)
-        return torch.Tensor([self.char2token[char] for char in text]).unsqueeze(dim=0)
+        return torch.tensor(
+            [self._char2token[char] for char in text]
+        ).unsqueeze(0)
 
     def decode(self, tokens: torch.Tensor) -> str:
         """Decode tokens according to token2char mapping.
@@ -37,7 +46,7 @@ class BaseTextEncoder:
         Returns:
             Decoded text.
         """
-        return "".join([self.token2char[token.item()] for token in tokens])
+        return "".join([self._token2char[token.item()] for token in tokens])
 
     def _preprocess_text(
         self,
@@ -46,7 +55,7 @@ class BaseTextEncoder:
         remove_punctuation: bool | None = True,
         remove_spaces: bool | None = True,
     ) -> str:
-        """Preprocess text by lowercasing and removing punctuation before using it with the tokenizer.
+        """Preprocess text before using it with the tokenizer.
 
         Args:
             text (str): Text to preprocess.
@@ -64,20 +73,22 @@ class BaseTextEncoder:
         return text.strip()
 
 
-class CTCTextEncoder(BaseTextEncoder):
-    """Text encoder for Connectionist Temporal Classification."""
+@define(kw_only=True)
+class CTCTextTokenizer(TextTokenizer):
+    """Text tokenizer for Connectionist Temporal Classification.
 
-    def __init__(self, alphabet: list[str], blank_symbol: str | None = "ϵ") -> None:
-        """Constructor.
-        Args:
-           alphabet (list): Alphabet used for tokenization.
-           blank_symbol (str, optional): Blank symbol. Defaults to "ϵ".
-        """
-        alphabet.append(blank_symbol)
-        super().__init__(alphabet)
+    Attributes:
+        alphabet (list[str]): List of characters in the alphabet.
+        blank_symbol (str): Blank symbol used in CTC loss.
+    """
 
-        self._blank_symbol = blank_symbol
-        self._blank_token = self.char2token[blank_symbol]
+    blank_symbol: str = field(default="ϵ")
+    _blank_token: int = field(init=False)
+
+    def __attrs_post_init__(self):
+        self.alphabet.append(self.blank_symbol)
+        super().__attrs_post_init__()
+        self._blank_token = self._char2token[self.blank_symbol]
 
     def raw_decode(self, tokens: torch.Tensor) -> str:
         """Decode tokens according to token2char mapping.
@@ -88,7 +99,7 @@ class CTCTextEncoder(BaseTextEncoder):
         Returns:
             Decoded text with blank symbols.
         """
-        return "".join([self.token2char[token.item()] for token in tokens])
+        return "".join([self._token2char[token.item()] for token in tokens])
 
     def decode(self, tokens: torch.Tensor) -> str:
         """Decode tokens according to token2char mapping.
@@ -100,11 +111,11 @@ class CTCTextEncoder(BaseTextEncoder):
             Decoded text without blank symbols.
         """
         decoded_text = ""
-        for idx, token in enumerate(tokens):
-            token = token.item()
-            if token == self._blank_token:
+        for idx, current_token in enumerate(tokens):
+            token_value = current_token.item()
+            if token_value == self._blank_token:
                 continue
-            if idx >= 0 and token != tokens[idx - 1]:
+            if idx > 0 and token_value == tokens[idx - 1].item():
                 continue
-            decoded_text += self.token2char[token]
+            decoded_text += self._token2char[token_value]
         return decoded_text

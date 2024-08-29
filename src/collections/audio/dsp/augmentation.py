@@ -94,12 +94,13 @@ class AudioAugmenter:
     def __load_and_process_rir(self) -> torch.Tensor:
         """Load and process the Room Impulse Response (RIR)."""
         rir_path = torchaudio.utils.download_asset(RIR_ASSET_URL)
-        _rir = load_waveform(Path(rir_path), sample_rate=self.sample_rate)
-        _rir = _rir[
-            :, int(self.sample_rate * 1.01) : int(self.sample_rate * 1.3)
+        rir = load_waveform(Path(rir_path), sample_rate=self.sample_rate)
+        rir = rir[
+            :,
+            int(self.sample_rate * 1.01) : int(self.sample_rate * 1.3),
         ]
-        _rir = _rir / torch.norm(_rir, p=2)
-        return torch.flip(_rir, [1])
+        rir = rir / torch.norm(rir, p=2)
+        return torch.flip(rir, [1])
 
     def __load_and_process_noise(self) -> torch.Tensor:
         """Load and process the background _noise."""
@@ -134,9 +135,9 @@ class AudioAugmenter:
         """Add background _noise to the digital signal."""
         # TODO(khaykingleb): check https://pytorch.org/audio/main/generated/torchaudio.functional.add_noise.html
         n_repeat = math.ceil(waveform.shape[1] / self._noise.shape[1])
-        _noise = self._noise.repeat([1, n_repeat])[:, : waveform.shape[1]]
-        waveform_rms, noise_rms = waveform.norm(p=2), _noise.norm(p=2)
+        noise = self._noise.repeat([1, n_repeat])[:, : waveform.shape[1]]
+        waveform_rms, noise_rms = waveform.norm(p=2), noise.norm(p=2)
         snr_db = random.choice(self.snr_dbs)
         snr = 10 ** (snr_db / 20)
         snr_ratio = snr * noise_rms / waveform_rms
-        return (snr_ratio * waveform + _noise) / 2
+        return (snr_ratio * waveform + noise) / 2

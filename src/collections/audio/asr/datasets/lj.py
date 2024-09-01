@@ -20,6 +20,10 @@ LJ_SPEECH_URL = "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2"
 class LJSpeechDataset(ASRDataset):
     """Dataset class for LJSpeech.
 
+    Consists of 13,100 short audio clips of a single speaker reading passages
+    from 7 non-fiction books. Clips vary in length from 1 to 10 seconds and
+    have a total length of approximately 24 hours.
+
     Attributes:
         data_dir (str, Path): Directory to save the dataset.
         data_proportions (list[float]): Proportions for train, val, test sets.
@@ -39,12 +43,13 @@ class LJSpeechDataset(ASRDataset):
     def __attrs_post_init__(self) -> None:
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.tar_path = self.data_dir.joinpath("LJSpeech.tar.bz2")
-        self.meta_path = self.data_dir.joinpath("LJSpeech-1.1/metadata.csv")
-        self.wavs_path = self.data_dir.joinpath("LJSpeech-1.1/wavs")
+        self.extracted_dir = self.data_dir.joinpath("LJSpeech-1.1")
+        self.wavs_dir = self.extracted_dir.joinpath("wavs")
+        self.meta_path = self.extracted_dir.joinpath("metadata.csv")
 
     def download(self) -> None:
         """Download and extract the LJSpeech dataset."""
-        if self.data_dir.exists():
+        if self.extracted_dir.exists():
             logger.info("LJSpeech dataset already exists. Skipping download.")
             return
 
@@ -123,15 +128,16 @@ class LJSpeechDataset(ASRDataset):
         Returns:
             DataFrame: Processed data.
         """
-        final_data = []
+        full_data = []
         for audio_name, _, normalized_text in data.iter_rows():
-            audio_path = self.wavs_path.joinpath(f"{audio_name}.wav")
+            audio_path = self.wavs_dir.joinpath(f"{audio_name}.wav")
             audio_info = torchaudio.info(audio_path)
-            final_data.append(
+            full_data.append(
                 {
-                    "path": str(audio_path),
+                    "audio_path": str(audio_path),
+                    "audio_duration": audio_info.num_frames
+                    / audio_info.sample_rate,
                     "text": normalized_text,  # TODO: look at old code
-                    "duration": audio_info.num_frames / audio_info.sample_rate,
                 }
             )
-        return pl.DataFrame(final_data)
+        return pl.DataFrame(full_data)

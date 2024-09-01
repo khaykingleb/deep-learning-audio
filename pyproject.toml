@@ -54,6 +54,14 @@ exclude = [
     ".git",
 ]
 
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
 [tool.ruff.lint]
 select = [
   "RUF",   # ruff checks
@@ -122,16 +130,11 @@ fixable = [
     "TCH",    # typecheking
 ]
 
+[tool.ruff.per-file-ignores]
+"src/collections/audio/asr/data.py" = ["ARG002", "ANN401"]
+
 [tool.ruff.lint.pydocstyle]
 convention = "google"
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"
-docstring-code-format = true
-docstring-code-line-length = "dynamic"
 
 [build-system]
 requires = ["poetry-core"]

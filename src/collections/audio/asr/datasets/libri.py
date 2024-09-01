@@ -10,6 +10,7 @@ from attrs import define, field
 from loguru import logger
 
 from src.collections.audio.asr.datasets.base import ASRDataset
+from src.collections.common.preprocessing.text import preprocess_text
 
 LIBRI_SPEECH_URL = "https://openslr.elda.org/resources/12"
 STAGES = [
@@ -109,10 +110,11 @@ class LibriSpeechDataset(ASRDataset):
                                 "audio_path": str(audio_path),
                                 "audio_duration": audio_info.num_frames
                                 / audio_info.sample_rate,
-                                "text": text,
+                                "text": preprocess_text(text),
                             }
                         )
 
-        data = pl.DataFrame(data)
-        self.validate_data_before_finalizing(data)
-        return self.finalize_data(data)
+        self._data = pl.DataFrame(data)
+        self.validate_data_before_finalizing()
+        self.finalize_data()
+        return self._data

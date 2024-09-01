@@ -63,6 +63,8 @@ class ASRDataset(Dataset, ABC):
     audio_sample_rate: int = field(default=22050)
     audio_aug_prob: float = field(default=0.0)
 
+    _data: pl.DataFrame = field(init=False)
+
     @abstractmethod
     def download(self) -> None:
         """Download the dataset."""
@@ -71,7 +73,7 @@ class ASRDataset(Dataset, ABC):
 
     @abstractmethod
     def setup(self, stage: tp.Literal["train", "val", "test"]) -> pl.DataFrame:
-        """Set up the dataset.
+        """Set up the dataset for a specific stage (that is, self._data).
 
         Args:
             stage (str): Dataset stage to set up.
@@ -84,7 +86,7 @@ class ASRDataset(Dataset, ABC):
 
     def validate_data_before_finalizing(self) -> None:
         """Validate the dataset before finalizing it."""
-        ASRDataSchema.validate(self.data)
+        ASRDataSchema.validate(self._data)
 
     def finalize_data(self) -> None:
         """Finalize the dataset by filtering, sorting, and limiting data."""
@@ -103,7 +105,7 @@ class ASRDataset(Dataset, ABC):
             dict[str, tp.Any]: A dictionary containing the waveform,
                 transformed audio, and encoded text.
         """
-        audio_path, text, _ = self.data.row(idx)
+        audio_path, _, text = self._data.row(idx)
         waveform = load_waveform(
             audio_path,
             sample_rate=self.audio_sample_rate,
@@ -122,21 +124,21 @@ class ASRDataset(Dataset, ABC):
         Returns:
             int: The number of items in the dataset.
         """
-        return len(self.data)
+        return len(self._data)
 
     def _filter_data(self) -> None:
         """Filter the dataset based on text length and audio duration."""
-        filtered_data = self.data.clone()
+        filtered_data = self._data.clone()
 
         if self.text_max_length is not None:
-            text_filtered_data = self.data.filter(
-                self.data.get_column("text")
+            text_filtered_data = self._data.filter(
+                self._data.get_column("text")
                 .map_elements(lambda x: len(x))
                 .le(self.text_max_length)
             )
             percentage_filtered = (
-                len(self.data) - len(text_filtered_data)
-            ) / len(self.data)
+                len(self._data) - len(text_filtered_data)
+            ) / len(self._data)
             logger.info(
                 f"{percentage_filtered:.2%} of records are longer than "
                 f"{self.text_max_length} characters."
@@ -147,14 +149,14 @@ class ASRDataset(Dataset, ABC):
             )
 
         if self.audio_max_duration is not None:
-            audio_filtered_data = self.data.filter(
-                self.data.get_column("audio_duration").le(
+            audio_filtered_data = self._data.filter(
+                self._data.get_column("audio_duration").le(
                     self.audio_max_duration
                 )
             )
             percentage_filtered = (
-                len(self.data) - len(audio_filtered_data)
-            ) / len(self.data)
+                len(self._data) - len(audio_filtered_data)
+            ) / len(self._data)
             logger.info(
                 f"{percentage_filtered:.2%} of records are longer than "
                 f"{self.audio_max_duration} seconds."
@@ -164,16 +166,16 @@ class ASRDataset(Dataset, ABC):
                 how="inner",
             )
 
-        percentage_filtered = (len(self.data) - len(filtered_data)) / len(
-            self.data
+        percentage_filtered = (len(self._data) - len(filtered_data)) / len(
+            self._data
         )
         logger.info(f"{percentage_filtered:.2%} of records are excluded.")
-        self.data = filtered_data
+        self._data = filtered_data
 
     def _sort_data(self) -> None:
         """Sort the dataset by audio duration."""
-        self.data = self.data.sort(by="audio_duration")
+        self._data = self._data.sort(by="audio_duration")
 
     def _limit_data(self) -> None:
         """Limit the dataset to a specified number of samples."""
-        self.data = self.data.head(self.data_samples_limit)
+        self._data = self._data.head(self.data_samples_limit)

@@ -12,6 +12,7 @@ from attrs import define, field
 from loguru import logger
 
 from src.collections.audio.asr.datasets.base import ASRDataset
+from src.collections.common.preprocessing.text import preprocess_text
 
 LJ_SPEECH_URL = "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2"
 
@@ -77,9 +78,10 @@ class LJSpeechDataset(ASRDataset):
             separator="|",
             new_columns=["audio_name", "text", "normalized_text"],
         ).drop_nulls()
-        data = self._process_data(self._partition_data(data, stage))
-        self.validate_data_before_finalizing(data)
-        return self.finalize_data(data)
+        self._data = self._process_data(self._partition_data(data, stage))
+        self.validate_data_before_finalizing()
+        self.finalize_data()
+        return self._data
 
     def _partition_data(
         self,
@@ -137,7 +139,7 @@ class LJSpeechDataset(ASRDataset):
                     "audio_path": str(audio_path),
                     "audio_duration": audio_info.num_frames
                     / audio_info.sample_rate,
-                    "text": normalized_text,  # TODO: look at old code
+                    "text": preprocess_text(normalized_text),
                 }
             )
         return pl.DataFrame(full_data)

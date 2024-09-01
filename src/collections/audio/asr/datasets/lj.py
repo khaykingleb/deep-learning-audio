@@ -54,7 +54,7 @@ class LJSpeechDataset(ASRDataset):
             return
 
         logger.info("Downloading LJSpeech tar archive.")
-        urllib.request.urlretrieve(LJ_SPEECH_URL, self.tar_path)  # noqa: S310
+        urllib.request.urlretrieve(LJ_SPEECH_URL, self.tar_path)
 
         logger.info("Extracting LJSpeech tar archive.")
         with tarfile.open(self.tar_path, mode="r:bz2") as tar:

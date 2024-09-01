@@ -112,7 +112,8 @@ ignore = [
   "D105",    # missing docstring in magic method
   "PLR0913", # too many arguments in function definition ({c_args} > {max_args})
   "N812",    # imports are non-lowercase
-  "S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
+  "S310",    # audit URL open for permitted schemes
+  "S311",    # standard pseudo-random generators are not suitable for cryptographic purposes
   "ISC001",  # implicit string concatenation
 ]
 fixable = [

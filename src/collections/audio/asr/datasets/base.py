@@ -3,7 +3,6 @@
 import random
 import typing as tp
 from abc import ABC, abstractmethod
-from pathlib import Path
 
 import pandera.polars as pa
 import polars as pl
@@ -44,42 +43,25 @@ class ASRDataset(Dataset, ABC):
     """Base dataset for training an ASR model.
 
     Attributes:
-        data_url (str): URL to the dataset.
-        data_dir (Path): Directory to save the dataset.
         tokenizer (TextTokenizer): Tokenizer for text encoding.
         augmenter (AudioAugmenter): Augmenter for audio signals.
         transformer (Transformer): Audio transformation.
-        samples_limit (int): Maximum number of samples.
+        data_samples_limit (int): Maximum number of samples.
         text_max_length (int): Maximum length of text.
         audio_max_duration (int): Maximum duration of audio.
         audio_sample_rate (int): Sample rate in Hz.
         audio_aug_prob (float): Probability of audio augmentation.
     """
 
-    data_url: str = field()
-    data_dir: Path = field()
-
     tokenizer: TextTokenizer = field(repr=False)
     augmenter: AudioAugmenter = field(repr=False)
     transformer: Transformer = field(repr=False)
 
-    samples_limit: int = field(default=None)
+    data_samples_limit: int = field(default=None)
     text_max_length: int = field(default=None)
     audio_max_duration: int = field(default=None)
     audio_sample_rate: int = field(default=22050)
     audio_aug_prob: float = field(default=0.0)
-
-    def __attrs_post_init__(self):
-        self.data_dir.mkdir(parents=True, exist_ok=True)
-        self.download()
-
-        self.data = self.setup()
-        ASRDataSchema.validate(self.data)
-
-        self._filter_data()
-        self._sort_data()
-        if self.samples_limit is not None:
-            self._limit_data()
 
     @abstractmethod
     def download(self) -> None:
@@ -88,10 +70,28 @@ class ASRDataset(Dataset, ABC):
         raise NotImplementedError(msg)
 
     @abstractmethod
-    def setup(self) -> pl.DataFrame:
-        """Set up the dataset."""
+    def setup(self, stage: tp.Literal["train", "val", "test"]) -> pl.DataFrame:
+        """Set up the dataset.
+
+        Args:
+            stage (str): Dataset stage to set up.
+
+        Returns:
+            pl.DataFrame: The dataset.
+        """
         msg = "Method 'setup' must be implemented in a subclass."
         raise NotImplementedError(msg)
+
+    def validate_data_before_finalizing(self) -> None:
+        """Validate the dataset before finalizing it."""
+        ASRDataSchema.validate(self.data)
+
+    def finalize_data(self) -> None:
+        """Finalize the dataset by filtering, sorting, and limiting data."""
+        self._filter_data()
+        self._sort_data()
+        if self.data_samples_limit is not None:
+            self._limit_data()
 
     def __getitem__(self, idx: int) -> dict[str, tp.Any]:
         """Get a single item from the dataset.
@@ -174,4 +174,4 @@ class ASRDataset(Dataset, ABC):
 
     def _limit_data(self) -> None:
         """Limit the dataset to a specified number of samples."""
-        self.data = self.data.head(self.samples_limit)
+        self.data = self.data.head(self.data_samples_limit)

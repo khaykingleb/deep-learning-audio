@@ -16,6 +16,7 @@ class TextTokenizer:
     """
 
     alphabet: list[str] = field()
+
     _token2char: dict = field(init=False)
     _char2token: dict = field(init=False)
 

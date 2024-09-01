@@ -2,6 +2,7 @@
 
 import math
 import tarfile
+import typing as tp
 import urllib.request
 from pathlib import Path
 
@@ -20,10 +21,8 @@ class LJSpeechDataset(ASRDataset):
     """Dataset class for LJSpeech.
 
     Attributes:
-        data_dir (Path): Directory to save the dataset.
-        data_url (str): URL to the dataset.
-        data_part (str): Part of the dataset to use.
-        proportions (list[float]): Proportions for train, val, and test sets.
+        data_dir (str, Path): Directory to save the dataset.
+        data_proportions (list[float]): Proportions for train, val, test sets.
         tokenizer (TextTokenizer): Tokenizer for text encoding.
         augmenter (AudioAugmenter): Augmenter for audio signals.
         transformer (Transformer): Audio transformation.
@@ -34,16 +33,14 @@ class LJSpeechDataset(ASRDataset):
         audio_aug_prob (float): Probability of audio augmentation.
     """
 
-    data_dir: Path = field()
-    data_url: str = field(default=LJ_SPEECH_URL)
-    data_part: str = field(default="train")
-    proportions: list[float] = field(default=[0.7, 0.15, 0.15])
+    data_dir: Path = field(converter=Path)
+    data_proportions: list[float] = field(default=[0.7, 0.15, 0.15])
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
+        self.data_dir.mkdir(parents=True, exist_ok=True)
         self.tar_path = self.data_dir.joinpath("LJSpeech.tar.bz2")
         self.meta_path = self.data_dir.joinpath("LJSpeech-1.1/metadata.csv")
         self.wavs_path = self.data_dir.joinpath("LJSpeech-1.1/wavs")
-        super().__attrs_post_init__()
 
     def download(self) -> None:
         """Download and extract the LJSpeech dataset."""
@@ -52,10 +49,7 @@ class LJSpeechDataset(ASRDataset):
             return
 
         logger.info("Downloading LJSpeech tar archive.")
-        if self.data_url.startswith(("http:", "https:")):
-            msg = "URL must start with 'http:' or 'https:'."
-            raise ValueError(msg)
-        urllib.request.urlretrieve(self.data_url, self.tar_path)  # noqa: S310
+        urllib.request.urlretrieve(LJ_SPEECH_URL, self.tar_path)  # noqa: S310
 
         logger.info("Extracting LJSpeech tar archive.")
         with tarfile.open(self.tar_path, mode="r:bz2") as tar:
@@ -63,27 +57,51 @@ class LJSpeechDataset(ASRDataset):
 
         self.tar_path.unlink()
 
-    def setup(self) -> pl.DataFrame:
-        """Set up the LJSpeech dataset."""
+    def setup(self, stage: tp.Literal["train", "val", "test"]) -> pl.DataFrame:
+        """Set up the LJSpeech dataset.
+
+        Args:
+            stage (str): Dataset stage to set up.
+
+        Returns:
+            DataFrame: The dataset.
+        """
         data = pl.read_csv(
             self.meta_path,
             has_header=False,
             separator="|",
             new_columns=["audio_name", "text", "normalized_text"],
         ).drop_nulls()
+        data = self._process_data(self._partition_data(data, stage))
+        self.validate_data_before_finalizing(data)
+        return self.finalize_data(data)
 
-        return self._process_data(self._partition_data(data))
+    def _partition_data(
+        self,
+        data: pl.DataFrame,
+        stage: tp.Literal["train", "val", "test"],
+    ) -> pl.DataFrame:
+        """Partition the data into train, val, and test sets.
 
-    def _partition_data(self, data: pl.DataFrame) -> pl.DataFrame:
-        if not math.isclose(sum(self.proportions), 1.0):
-            msg = f"Proportions must sum to 1.0, got {sum(self.proportions)}."
+        Args:
+            data (DataFrame): Data to partition.
+            stage (str): Dataset stage to set up.
+
+        Returns:
+            DataFrame: Partitioned data.
+        """
+        if not math.isclose(sum(self.data_proportions), 1.0):
+            msg = (
+                "Proportions must sum to 1.0, "
+                f"got {sum(self.data_proportions)}."
+            )
             raise ValueError(msg)
 
         n = len(data)
-        last_train_idx = math.ceil(n * self.proportions[0])
-        last_val_idx = last_train_idx + math.ceil(n * self.proportions[1])
+        last_train_idx = math.ceil(n * self.data_proportions[0])
+        last_val_idx = last_train_idx + math.ceil(n * self.data_proportions[1])
 
-        match self.data_part:
+        match stage:
             case "train":
                 data = data[:last_train_idx]
             case "val":
@@ -91,12 +109,20 @@ class LJSpeechDataset(ASRDataset):
             case "test":
                 data = data[last_val_idx:]
             case _:
-                msg = f"Invalid data part: {self.data_part}."
+                msg = f"Invalid data part: {stage}."
                 raise ValueError(msg)
 
         return data
 
     def _process_data(self, data: pl.DataFrame) -> pl.DataFrame:
+        """Process the data by adding audio paths and durations.
+
+        Args:
+            data (DataFrame): Data to process.
+
+        Returns:
+            DataFrame: Processed data.
+        """
         final_data = []
         for audio_name, _, normalized_text in data.iter_rows():
             audio_path = self.wavs_path.joinpath(f"{audio_name}.wav")

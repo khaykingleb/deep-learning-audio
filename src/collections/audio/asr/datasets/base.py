@@ -24,17 +24,17 @@ Transformer = T.Spectrogram | T.MelSpectrogram | T.MFCC | T.LFCC
 class ASRDataSchema(pa.DataFrameModel):
     """Schema for ASR data."""
 
-    path: Series[str] = pa.Field(
+    audio_path: Series[str] = pa.Field(
         description="Path to the audio file.",
         regex=r".+\.(wav|mp3|flac)$",
+    )
+    audio_duration: Series[float] = pa.Field(
+        description="Duration of the audio in seconds.",
+        gt=0,
     )
     text: Series[str] = pa.Field(
         description="Transcription of the audio.",
         nullable=False,
-    )
-    duration: Series[float] = pa.Field(
-        description="Duration of the audio in seconds.",
-        gt=0,
     )
 
 
@@ -148,7 +148,9 @@ class ASRDataset(Dataset, ABC):
 
         if self.audio_max_duration is not None:
             audio_filtered_data = self.data.filter(
-                self.data.get_column("duration").le(self.audio_max_duration)
+                self.data.get_column("audio_duration").le(
+                    self.audio_max_duration
+                )
             )
             percentage_filtered = (
                 len(self.data) - len(audio_filtered_data)
@@ -170,7 +172,7 @@ class ASRDataset(Dataset, ABC):
 
     def _sort_data(self) -> None:
         """Sort the dataset by audio duration."""
-        self.data = self.data.sort(by="duration")
+        self.data = self.data.sort(by="audio_duration")
 
     def _limit_data(self) -> None:
         """Limit the dataset to a specified number of samples."""

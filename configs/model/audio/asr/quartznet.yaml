@@ -1,0 +1,39 @@
+_target_: src.collections.audio.asr.model.ASRModel
+_recursive_: false 
+
+model:
+  _target_: src.collections.audio.asr.models.quartznet.QuartzNet
+  in_channels: ${data.dataset.transformer.n_mels}
+  out_channels: null  # alphabet size, will be set in the trainer
+  n_blocks: 5
+  n_repeats: 3
+  n_subblocks: 5
+  block_channels:
+    - [256, 256]
+    - [256, 512]
+    - [512, 512]
+    - [512, 512]
+    - [512, 512]
+  block_kernel_sizes:
+    - 33
+    - 39
+    - 51
+    - 63
+    - 75
+  normalization_name: BatchNorm1d
+  activation_name: ReLU
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 0.001
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  factor: 0.5
+  patience: 5
+
+loss:
+  _target_: torch.nn.CTCLoss
+  blank: null  # blank_token, will be set in the trainer
+
+tokenizer: ${data.dataset.tokenizer} 

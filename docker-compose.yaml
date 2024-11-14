@@ -1,0 +1,12 @@
+services:
+  dori:
+    container_name: dori
+    image: dori:${VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+    env_file:
+      - .env

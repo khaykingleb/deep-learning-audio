@@ -1,5 +1,6 @@
 """Data module for ASR model."""
 
+import math
 import typing as tp
 
 import hydra
@@ -8,8 +9,61 @@ import torch
 from omegaconf import ListConfig
 from torch.utils.data import DataLoader
 
+from src.utils.loggers import logger
+
 if tp.TYPE_CHECKING:
     from src.collections.audio.asr.datasets import ASRDataset
+
+
+class ASRDataCollator:
+    """Collator for ASR data."""
+
+    def __init__(self, downsize: int) -> None:
+        self.downsize = downsize
+
+    def __call__(
+        self,
+        batch: list[dict[str, torch.Tensor]],
+    ) -> dict[str, torch.Tensor | list[int] | list[torch.Tensor]]:
+        max_tokens_len = max(x["tokens"].shape[-1] for x in batch)
+        max_transform_len = max(x["transform"].shape[-1] for x in batch)
+
+        tokens = torch.empty(size=(0, max_tokens_len))
+        tokens_lengths = []
+        transforms_freq_len = batch[0]["transform"].shape[1]
+        transforms = torch.empty(
+            size=(0, transforms_freq_len, max_transform_len),
+        )
+        probs_lengths = []
+        waveforms = []
+        for sample in batch:
+            tokens_padded = torch.nn.functional.pad(
+                sample["tokens"],
+                (0, max_tokens_len - sample["tokens"].shape[-1]),
+            )
+            tokens = torch.cat([tokens, tokens_padded], dim=0)
+            tokens_lengths.append(tokens_padded.shape[-1])
+
+            transforms_padded = torch.nn.functional.pad(
+                sample["transform"],
+                (0, max_transform_len - sample["transform"].shape[-1]),
+            )
+            transforms = torch.cat([transforms, transforms_padded], dim=0)
+
+            probs_length = math.ceil(
+                sample["transform"].shape[-1] / self.downsize
+            )
+            probs_lengths.append(probs_length)
+
+            waveforms.append(sample["waveform"])
+
+        return {
+            "tokens": tokens,
+            "tokens_lengths": tokens_lengths,
+            "transforms": transforms,
+            "probs_lengths": probs_lengths,
+            "waveforms": waveforms,
+        }
 
 
 class ASRData(L.LightningDataModule):
@@ -19,37 +73,36 @@ class ASRData(L.LightningDataModule):
         self,
         *,
         dataset: ListConfig,
-        batch_size: int | None = 32,
-        num_workers: int | None = 0,
-        pin_memory: bool | None = False,
+        batch_size: int = 32,
+        num_workers: int = 0,
+        pin_memory: bool = False,
+        persistent_workers: bool = False,
+        downsize: int = 2,
     ) -> None:
         """Constructor.
 
         Args:
-            dataset (ListConfig): Configuration for the dataset.
-            data_dir (str): Directory to save the data.
-            data_proportions (list): Proportions for train, val, test sets.
-            batch_size (int): Batch size for the dataloaders.
-            num_workers (int): Number of workers for the dataloaders.
-            pin_memory (bool): Whether to pin memory for the dataloaders.
+            dataset: Configuration for the dataset.
+            batch_size: Batch size for the dataloaders.
+            num_workers: Number of workers for the dataloaders.
+            pin_memory: Whether to pin memory for the dataloaders.
         """
         super().__init__()
-        self.save_hyperparameters(logger=True)
+        self.save_hyperparameters()
 
-        self._train_data: ASRDataset | None = None
-        self._val_data: ASRDataset | None = None
-        self._test_data: ASRDataset | None = None
+        # self._train_data: ASRDataset = None
+        # self._val_data: ASRDataset = None
+        # self._test_data: ASRDataset = None
 
     def prepare_data(self) -> None:
         """Download and save the datasets to disk with a single process.
 
         Note:
-            Downloading and saving data with multiple processes (distributed
-            settings) will result in corrupted data. Lightning ensures the
-            prepare_data() is called only within a single process on CPU, so
-            you can safely add your downloading logic within. In case of
-            multi-node training, the execution of this hook depends upon
-            prepare_data_per_node.
+            Downloading and saving data with multiple processes will result in
+            corrupted data. Lightning ensures the prepare_data() is called only
+            within a single process on CPU, so you can safely add your
+            downloading logic within. In case of multi-node training, the
+            execution of this hook depends upon prepare_data_per_node.
 
             setup() is called after prepare_data and there is a barrier in
             between which ensures that all the processes proceed to setup once
@@ -60,18 +113,18 @@ class ASRData(L.LightningDataModule):
             called on a single process and if you assign states here then they
             won't be available for other processes.
         """
-        dataset: ASRDataset = hydra.utils.instantiate(self.hparams["dataset"])
+        dataset: ASRDataset = self.hparams["dataset"]
         dataset.download()
 
-    def setup(self, stage: str) -> None:
+    def setup(self, stage: tp.Literal["fit", "validate", "test"]) -> None:
         """Setup the datasets on every GPU.
 
         Supposed to do things like:
-            - count number of classes
-            - build vocabulary
-            - perform train/val/test splits
-            - create datasets
-            - apply transforms
+            - Count number of classes
+            - Build vocabulary
+            - Perform train/val/test splits
+            - Create datasets
+            - Apply transforms
             - etc.
 
         Note:
@@ -79,17 +132,19 @@ class ASRData(L.LightningDataModule):
             Setting state here is recommended.
 
         Args:
-            stage (str): Stage of experiment (fit, validate, test, predict).
+            stage: Stage of experiment (fit, validate, test, predict).
         """
-        dataset: ASRDataset = hydra.utils.instantiate(self.hparams["dataset"])
+        dataset: ASRDataset = self.hparams["dataset"]
         match stage:
             case "fit":
                 self._train_data = dataset.setup("train")
                 self._val_data = dataset.setup("val")
             case "test":
                 self._test_data = dataset.setup("test")
+            case _:
+                raise ValueError(f"Invalid stage: {stage}")
 
-    def teardown(self, stage: str) -> None:
+    def teardown(self, stage: tp.Literal["fit", "validate", "test"]) -> None:
         """Cleanup the state after the experiment.
 
         Args:
@@ -97,7 +152,6 @@ class ASRData(L.LightningDataModule):
         """
         return super().teardown(stage)
 
-    # TODO: set up sampler?
     def train_dataloader(self) -> DataLoader:
         """Return the train dataloader.
 
@@ -105,11 +159,14 @@ class ASRData(L.LightningDataModule):
             DataLoader: Train dataloader.
         """
         return DataLoader(
-            self.train_dataset,
+            dataset=self._train_data,
             batch_size=self.hparams["batch_size"],
-            num_workers=self.hparams["num_workers"],
-            pin_memory=self.hparams["pin_memory"],
             # shuffle=True,
+            # sampler
+            num_workers=self.hparams["num_workers"],
+            collate_fn=ASRDataCollator(self.hparams["downsize"]),
+            pin_memory=self.hparams["pin_memory"],
+            persistent_workers=self.hparams["persistent_workers"],
         )
 
     def val_dataloader(self) -> DataLoader:
@@ -119,11 +176,12 @@ class ASRData(L.LightningDataModule):
             DataLoader: Validation dataloader.
         """
         return DataLoader(
-            self.val_dataset,
+            dataset=self._val_data,
             batch_size=self.hparams["batch_size"],
             num_workers=self.hparams["num_workers"],
+            collate_fn=ASRDataCollator(self.hparams["downsize"]),
             pin_memory=self.hparams["pin_memory"],
-            # shuffle=False,
+            persistent_workers=self.hparams["persistent_workers"],
         )
 
     def test_dataloader(self) -> DataLoader:
@@ -133,116 +191,116 @@ class ASRData(L.LightningDataModule):
             DataLoader: Test dataloader.
         """
         return DataLoader(
-            self.test_dataset,
+            dataset=self._test_data,
             batch_size=self.hparams["batch_size"],
             num_workers=self.hparams["num_workers"],
+            collate_fn=ASRDataCollator(self.hparams["downsize"]),
             pin_memory=self.hparams["pin_memory"],
-            # shuffle=False,
+            persistent_workers=self.hparams["persistent_workers"],
         )
 
-    def on_before_batch_transfer(
-        self,
-        batch: tp.Any,
-        dataloader_idx: int,
-    ) -> None:
-        """Alter or apply batch augmentations before transfer to device.
+    # def on_before_batch_transfer(
+    #     self,
+    #     batch: tp.Any,
+    #     dataloader_idx: int,
+    # ) -> None:
+    #     """Alter or apply batch augmentations before transfer to device.
 
-        Note:
-            To check the current state of execution of this hook you can use
-            self.trainer.training/testing/validating/predicting so that you can
-            add different logic as per your requirement.
+    #     Note:
+    #         To check the current state of execution of this hook you can use
+    #         self.trainer.training/testing/validating/predicting so that you can
+    #         add different logic as per your requirement.
 
-        Example:
-            >>> def on_before_batch_transfer(self, batch, dataloader_idx):
-            >>>     batch['x'] = transforms(batch['x'])
-            >>>     return batch
+    #     Example:
+    #         >>> def on_before_batch_transfer(self, batch, dataloader_idx):
+    #         >>>     batch['x'] = transforms(batch['x'])
+    #         >>>     return batch
 
-        Args:
-            batch (Any): Batch of data.
-            dataloader_idx (int): Index of the dataloader.
-        """
+    #     Args:
+    #         batch (Any): Batch of data.
+    #         dataloader_idx (int): Index of the dataloader.
+    #     """
 
-    def transfer_batch_to_device(
-        self,
-        batch: tp.Any,
-        device: torch.device,
-        dataloader_idx: int,
-    ) -> tp.Any:
-        """Override the default transfer to device behavior.
+    # def transfer_batch_to_device(
+    #     self,
+    #     batch: tp.Any,
+    #     device: torch.device,
+    #     dataloader_idx: int,
+    # ) -> tp.Any:
+    #     """Override the default transfer to device behavior.
 
-        The data types listed below (and any arbitrary nesting of them) are
-        supported out of the box:
-        - `torch.Tensor` or anything that implements `.to(...)`
-        - `list`
-        - `dict`
-        - `tuple`
+    #     The data types listed below (and any arbitrary nesting of them) are
+    #     supported out of the box:
+    #     - `torch.Tensor` or anything that implements `.to(...)`
+    #     - `list`
+    #     - `dict`
+    #     - `tuple`
 
-        For anything else, you need to define how the data is moved to the
-        target device (CPU, GPU, TPU).
+    #     For anything else, you need to define how the data is moved to the
+    #     target device (CPU, GPU, TPU).
 
-        Note:
-            This hook should only transfer the data and not modify it, nor
-            should it move the data to any other device than the one passed in
-            as argument (unless you know what you are doing). To check the
-            current state of execution of this hook you can use
-            self.trainer.training/testing/validating/predicting so that you
-            can add different logic as per your requirement.
+    #     Note:
+    #         This hook should only transfer the data and not modify it, nor
+    #         should it move the data to any other device than the one passed in
+    #         as argument (unless you know what you are doing). To check the
+    #         current state of execution of this hook you can use
+    #         self.trainer.training/testing/validating/predicting so that you
+    #         can add different logic as per your requirement.
 
+    #     Example:
+    #         >>> def transfer_batch_to_device(
+    #         >>>     self,
+    #         >>>     batch,
+    #         >>>     device,
+    #         >>>     dataloader_idx,
+    #         >>> ):
+    #         >>>     if isinstance(batch, CustomBatch):
+    #         >>> # move all tensors in your custom data
+    #         >>> # structure to the device
+    #         >>>         batch.samples = batch.samples.to(device)
+    #         >>>         batch.targets = batch.targets.to(device)
+    #         >>>     elif dataloader_idx == 0:
+    #         >>> # skip device transfer for the first dataloader or
+    #         >>> # anything you wish
+    #         >>>         pass
+    #         >>>     else:
+    #         >>>         batch = super().transfer_batch_to_device(
+    #         >>>             batch,
+    #         >>>             device,
+    #         >>>             dataloader_idx,
+    #         >>>         )
+    #         >>>     return batch
 
-        Example:
-            >>> def transfer_batch_to_device(
-            >>>     self,
-            >>>     batch,
-            >>>     device,
-            >>>     dataloader_idx,
-            >>> ):
-            >>>     if isinstance(batch, CustomBatch):
-            >>> # move all tensors in your custom data
-            >>> # structure to the device
-            >>>         batch.samples = batch.samples.to(device)
-            >>>         batch.targets = batch.targets.to(device)
-            >>>     elif dataloader_idx == 0:
-            >>> # skip device transfer for the first dataloader or
-            >>> # anything you wish
-            >>>         pass
-            >>>     else:
-            >>>         batch = super().transfer_batch_to_device(
-            >>>             batch,
-            >>>             device,
-            >>>             dataloader_idx,
-            >>>         )
-            >>>     return batch
+    #     Args:
+    #         batch (Any): Batch of data.
+    #         device (torch.device): Device to transfer the data to.
+    #         dataloader_idx (int): Index of the dataloader.
 
-        Args:
-            batch (Any): Batch of data.
-            device (torch.device): Device to transfer the data to.
-            dataloader_idx (int): Index of the dataloader.
+    #     Returns:
+    #         Any: Transferred batch of data.
+    #     """
 
-        Returns:
-            Any: Transferred batch of data.
-        """
+    # def on_after_batch_transfer(
+    #     self,
+    #     batch: tp.Any,
+    #     dataloader_idx: int,
+    # ) -> None:
+    #     """Alter or apply batch augmentations after transfer to device.
 
-    def on_after_batch_transfer(
-        self,
-        batch: tp.Any,
-        dataloader_idx: int,
-    ) -> None:
-        """Alter or apply batch augmentations after transfer to device.
+    #     Note:
+    #         To check the current state of execution of this hook you can use
+    #         self.trainer.training/testing/validating/predicting so that you can
+    #         add different logic as per your requirement.
 
-        Note:
-            To check the current state of execution of this hook you can use
-            self.trainer.training/testing/validating/predicting so that you can
-            add different logic as per your requirement.
+    #     Example:
+    #         >>> def on_after_batch_transfer(self, batch, dataloader_idx):
+    #         >>>     batch['x'] = gpu_transforms(batch['x'])
+    #         >>>     return batch
 
-        Example:
-            >>> def on_after_batch_transfer(self, batch, dataloader_idx):
-            >>>     batch['x'] = gpu_transforms(batch['x'])
-            >>>     return batch
-
-        Args:
-            batch (Any): Batch of data.
-            dataloader_idx (int): Index of the dataloader.
-        """
+    #     Args:
+    #         batch (Any): Batch of data.
+    #         dataloader_idx (int): Index of the dataloader.
+    #     """
 
     def state_dict(self) -> dict[str, tp.Any]:
         """Called when saving a checkpoint.

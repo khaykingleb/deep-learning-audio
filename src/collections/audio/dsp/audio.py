@@ -7,15 +7,15 @@ import torchaudio
 
 
 def load_waveform(
-    path: Path | str,
+    path: str,
     *,
     sample_rate: int | None = None,
 ) -> torch.Tensor:
     """Load and optionally resample an audio file.
 
     Args:
-        path (Path, str): Path to the audio file.
-        sample_rate (int): Sample rate to resample the audio to.
+        path: Path to the audio file.
+        sample_rate: Sample rate to resample the audio to.
             If None, the original sample rate is used.
 
     Returns:

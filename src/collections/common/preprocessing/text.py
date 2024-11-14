@@ -7,8 +7,8 @@ import string
 def preprocess_text(
     text: str,
     *,
-    remove_punctuation: bool | None = True,
-    remove_spaces: bool | None = True,
+    remove_punctuation: bool = True,
+    remove_spaces: bool = True,
 ) -> str:
     """Preprocess text before using it with the tokenizer or model.
 
@@ -22,7 +22,9 @@ def preprocess_text(
     """
     text = text.lower()
     if remove_punctuation:
-        text = text.translate(str.maketrans("", "", string.punctuation))
+        additional_punctuation = "“”"
+        punctuation = string.punctuation + additional_punctuation
+        text = text.translate(str.maketrans("", "", punctuation))
     if remove_spaces:
         text = re.sub(r"\s+", " ", text)
     return text.strip()

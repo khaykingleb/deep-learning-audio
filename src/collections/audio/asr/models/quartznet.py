@@ -3,6 +3,8 @@
 https://arxiv.org/abs/1910.10261
 """
 
+# TODO: Запихнуть инициализацию весов в модель?
+
 from collections import OrderedDict
 
 import torch
@@ -191,7 +193,7 @@ class QuartzNet(nn.Module):
                 padding=33 // 2,
                 groups=in_channels,
             ),
-            normalization(num_features=256),
+            normalization(num_features=initial_channels),
             activation(inplace=True),
         )
 
@@ -199,11 +201,14 @@ class QuartzNet(nn.Module):
         blocks = OrderedDict()
         for i in range(n_blocks):  # B
             for j in range(n_repeats):  # S
-                in_channels, out_channels = block_channels[i]
+                block_in_channels, block_out_channels = block_channels[i]
+                block_in_channels = (
+                    block_in_channels if j == 0 else block_out_channels
+                )  # adjust in_channels for repeats
                 blocks[f"B_{i}{j}"] = QuartzBlock(
                     n_subblocks,  # R
-                    in_channels,
-                    out_channels,
+                    block_in_channels,
+                    block_out_channels,
                     block_kernel_sizes[i],
                     normalization,
                     activation,

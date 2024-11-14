@@ -37,7 +37,6 @@ class LibriSpeechDataset(ASRDataset):
         data_include_other (bool): Whether to include the 'other' quality data.
         data_part (str): Part of the dataset to use.
         data_proportions (list[float]): Proportions for train, val, test sets.
-        data_samples_limit (int): Maximum number of samples.
         tokenizer (TextTokenizer): Tokenizer for text encoding.
         augmenter (AudioAugmenter): Augmenter for audio signals.
         transformer (Transformer): Audio transformation.
@@ -83,7 +82,11 @@ class LibriSpeechDataset(ASRDataset):
 
             tar_path.unlink()
 
-    def setup(self, stage: str) -> pl.DataFrame:
+    def remove(self) -> None:
+        """Remove the LibriSpeech dataset."""
+        self.extracted_dir.rmdir()
+
+    def setup(self, stage: str) -> type["LibriSpeechDataset"]:
         """Set up the LibriSpeech dataset.
 
         Args:
@@ -115,6 +118,5 @@ class LibriSpeechDataset(ASRDataset):
                         )
 
         self._data = pl.DataFrame(data)
-        self.validate_data_before_finalizing()
         self.finalize_data()
-        return self._data
+        return self

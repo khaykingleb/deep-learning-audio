@@ -1,0 +1,74 @@
+# https://lightning.ai/docs/pytorch/stable/visualize/logging_advanced.html
+
+# Use multiple experiment managers by passing a list to the Trainer's logger argument.
+# Example:
+# from lightning.pytorch.loggers import TensorBoardLogger, WandbLogger
+# logger1 = TensorBoardLogger()
+# logger2 = WandbLogger()
+# trainer = Trainer(logger=[logger1, logger2])
+
+# Track hyperparameters by calling save_hyperparameters in LightningModule's init.
+# If your logger supports tracked hyperparameters, the hyperparameters will automatically show up on the logger dashboard.
+# Example:
+# class MyLightningModule(LightningModule):
+#     def __init__(self, learning_rate, another_parameter, *args, **kwargs):
+#         super().__init__()
+#         self.save_hyperparameters()
+
+# Log to a custom cloud filesystem by specifying a protocol in save_dir.
+# Example:
+# from lightning.pytorch.loggers import TensorBoardLogger
+# logger = TensorBoardLogger(save_dir="s3://my_bucket/logs/")
+# trainer = Trainer(logger=logger)
+# trainer.fit(model)
+
+# Loggers may buffer metrics to improve efficiency. 
+# Example: Adjust TensorBoard's flush settings:
+# * Default: logger = TensorBoardLogger(..., max_queue=10, flush_secs=120)
+# * Faster training, more memory used: logger = TensorBoardLogger(..., max_queue=100)
+# * Slower training, less memory used: logger = TensorBoardLogger(..., max_queue=1)
+
+# When using multiple dataloaders, the index of the current dataloader is appended to the name of the logged metrics.
+# If False, user needs to give unique names for each dataloader to not mix the values.
+# self.log(add_dataloader_idx=True)
+
+# Current batch size used for accumulating logs logged with on_epoch=True.
+# This will be directly inferred from the loaded batch, but for some data structures you might need to explicitly provide it.
+# self.log(batch_size=32)
+
+# If True, will not auto detach the graph
+# self.log(enable_graph=True)
+
+# Send logs to the logger like Tensorboard, or any other custom logger passed to the Trainer 
+# (Default: True)
+# self.log(logger=True)
+
+# If on_epoch is True, the specific self.log call accumulates and reduces all metrics to the end of the epoch.
+# def training_step(self, batch, batch_idx):
+#     # Default: False
+#     self.log(on_epoch=False)
+# def validation_step(self, batch, batch_idx):
+#     # Default: True
+#     self.log(on_epoch=True)
+# def test_step(self, batch, batch_idx):
+#     # Default: True
+#     self.log(on_epoch=True)
+
+# If on_step is True, the specific self.log call will NOT accumulate metrics. Instead it will generate a timeseries across steps.
+# def training_step(self, batch, batch_idx):
+#     # Default: True
+#     self.log(on_step=True)
+# def validation_step(self, batch, batch_idx):
+#     # Default: False
+#     self.log(on_step=False)
+# def test_step(self, batch, batch_idx):
+#     # Default: False
+#     self.log(on_step=False)
+
+# To track the timeseries over steps (on_step) as well as the accumulated epoch metric (on_epoch), set both to True
+# self.log(on_step=True, on_epoch=True)
+# Setting both to True will generate two graphs with _step for the timeseries over steps and _epoch for the epoch metric.
+
+defaults:
+  - _self_
+  - wandb

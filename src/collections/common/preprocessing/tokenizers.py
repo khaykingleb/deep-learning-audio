@@ -1,5 +1,7 @@
 """Text tokenizers for preprocessing text data."""
 
+import string
+
 import torch
 from attrs import define, field
 
@@ -12,7 +14,7 @@ class TextTokenizer:
         alphabet (list[str]): List of characters in the alphabet.
     """
 
-    alphabet: list[str] = field()
+    alphabet: list[str] = field(default=list(string.ascii_lowercase))
 
     _token2char: dict = field(init=False)
     _char2token: dict = field(init=False)
@@ -20,6 +22,10 @@ class TextTokenizer:
     def __attrs_post_init__(self):
         self._token2char = dict(enumerate(sorted(self.alphabet)))
         self._char2token = {v: k for k, v in self._token2char.items()}
+
+    @property
+    def alphabet_size(self) -> int:
+        return len(self.alphabet)
 
     def encode(self, text: str) -> torch.Tensor:
         """Encode text according to char2token mapping.
@@ -56,12 +62,17 @@ class CTCTextTokenizer(TextTokenizer):
     """
 
     blank_symbol: str = field(default="ϵ")
+
     _blank_token: int = field(init=False)
 
     def __attrs_post_init__(self):
         self.alphabet.append(self.blank_symbol)
         super().__attrs_post_init__()
         self._blank_token = self._char2token[self.blank_symbol]
+
+    @property
+    def blank_token(self) -> int:
+        return self._blank_token
 
     def raw_decode(self, tokens: torch.Tensor) -> str:
         """Decode tokens according to token2char mapping.

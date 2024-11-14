@@ -1,32 +1,9 @@
-# Deep-Learning-for-Audio
+use make help for getting updated on the build commands
 
-![release][release]
+make init-local for local development
 
-# Getting Started
-
-Make sure that you have `make --version` greater than 3.81.
-
-* Cloning the repository:
-  ```shell
-  git clone https://github.com/khaykingleb/Deep-Learning-for-Audio.git && cd Deep-Learning-for-Audio
-  ```
-
-* Looking up targets:
-  ```shell
-  make help
-  ```
-
-* Training models:
-  ```shell
-  poetry shell
-  python3 -m src.core.<TASK> --config_path=<CONFIG>.yaml
-  ```
+make init for development inside a docker container
 
 
-[release]: https://github.com/khaykingleb/Deep-Learning-for-Audio/actions/workflows/release.yaml/badge.svg
 
-# To Be Added
-
-* [Attention model for KWS](https://github.com/khaykingleb/KWS).
-* [Acoustic model for TTS](https://github.com/khaykingleb/FastSpeech).
-* [Vocoder for TTS](https://github.com/khaykingleb/HiFi-GAN).
+Попробовать флеймгаф тут

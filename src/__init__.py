@@ -1,3 +1,3 @@
-"""Entrypoing for the package."""
+"""Entrypoint for the package."""
 
 __version__ = "0.1.0"

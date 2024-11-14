@@ -2,10 +2,10 @@
 
 import typing as tp
 
-import wandb
 from loguru._logger import Logger
 from omegaconf import DictConfig
 
+import wandb
 from src.utils import env
 
 wandb.login(key=env.WANDB_API_KEY)
@@ -70,7 +70,9 @@ class WBLogger:
             part (Literal, optional): Part of logging.
         """
         formatted_data = {
-            " ".join(map(lambda w: w.capitalize(), (part + " " + k).split())): v
+            " ".join(
+                map(lambda w: w.capitalize(), (part + " " + k).split())
+            ): v
             for k, v in data.items()
         }
         self.wandb.log(formatted_data, step=self._levels[level][part])

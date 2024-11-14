@@ -1,24 +1,14 @@
-# Python files
+# Python
 __pycache__/
-*.egg-info/
-dist/
+.pytest_cache/
 .coverage
-.venv
-.pytest_cache
-.mypy_cache
-pytest-coverage.txt
+.ruff_cache/
+.venv/
 
-# IDE
-.vscode
-
-# Terraform
-.terraform
-*.tfvars
-*.tfstate
-*.tfstate.backup
-.terraform.lock.hcl
-
-# Logging
-logs
-wandb
-notebooks
+# Misc
+.DS_Store
+.git/
+.github/
+.env
+data/
+logs/

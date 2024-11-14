@@ -1,71 +1,83 @@
+---
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-        exclude: .*\.tsv|.*\.md
-      - id: check-toml
-      - id: check-yaml
-      - id: check-json
-      - id: pretty-format-json
-        exclude: .*.ipynb
-        args:
-          - --autofix
-      - id: check-executables-have-shebangs
-      - id: check-shebang-scripts-are-executable
-      - id: check-added-large-files
-        args:
-          - --maxkb=50000
-      - id: no-commit-to-branch
-        args:
-          - --branch=master
-      - id: debug-statements
-      - id: name-tests-test
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v5.0.0
+      hooks:
+          - id: trailing-whitespace
+          - id: end-of-file-fixer
+            exclude: .*\.tsv|.*\.md
+          - id: check-toml
+          - id: check-yaml
+          - id: check-json
+          - id: pretty-format-json
+            exclude: .*.ipynb
+            args:
+                - --autofix
+          - id: check-executables-have-shebangs
+          - id: check-shebang-scripts-are-executable
+          - id: check-added-large-files
+            args:
+                - --maxkb=50000
+          - id: no-commit-to-branch
+            args:
+                - --branch=master
+          - id: debug-statements
+          - id: name-tests-test
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.2
-    hooks:
-      - id: ruff
-        args: [ --fix ]
-      - id: ruff-format
+    - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+      rev: 0.2.3
+      hooks:
+          - id: yamlfmt
 
-  - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.8.7
-    hooks:
-      - id: nbqa-ruff
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.7.3
+      hooks:
+          - id: ruff
+            args: [--fix]
+          - id: ruff-format
 
-  - repo: local
-    hooks:
-      - id: poetry_lock
-        name: Check if poetry is updated
-        entry: |
-          python -c "
-          from poetry.factory import Factory
-          l = Factory().create_poetry('.').locker
-          if l.is_locked() and l.is_fresh():
-            exit(0)
-          else:
-            print('run `poetry update` to fix')
-            exit(1)
-          "
-        language: python
-        additional_dependencies:
-          - poetry
-        verbose: True
-        files: pyproject.toml
+    - repo: https://github.com/nbQA-dev/nbQA
+      rev: 1.9.1
+      hooks:
+          - id: nbqa-ruff
 
-  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.16.0
-    hooks:
-      - id: commitlint
-        stages: [commit-msg]
-        additional_dependencies:
-          - "@commitlint/config-conventional"
-          - "@commitlint/ensure"
-          - "commitlint-plugin-function-rules"
+    - repo: local
+      hooks:
+          - id: poetry_lock
+            name: Check if poetry is updated
+            entry: |
+                python -c "
+                from poetry.factory import Factory
+                l = Factory().create_poetry('.').locker
+                if l.is_locked() and l.is_fresh():
+                  exit(0)
+                else:
+                  print('run `poetry update` to fix')
+                  exit(1)
+                "
+            language: python
+            additional_dependencies:
+                - poetry
+            verbose: true
+            files: pyproject.toml
 
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
-    hooks:
-    - id: hadolint-docker
+    - repo: https://github.com/Yelp/detect-secrets
+      rev: v1.5.0
+      hooks:
+          - id: detect-secrets
+            args: [--baseline, .secrets.baseline]
+
+    - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+      rev: v9.18.0
+      hooks:
+          - id: commitlint
+            stages: [commit-msg]
+            additional_dependencies:
+                - '@commitlint/config-conventional'
+                - '@commitlint/ensure'
+                - commitlint-plugin-function-rules
+
+    - repo: https://github.com/hadolint/hadolint
+      rev: v2.13.1-beta
+      hooks:
+          - id: hadolint-docker

@@ -6,6 +6,7 @@ import typing as tp
 import urllib.request
 from pathlib import Path
 
+import pandas as pd
 import polars as pl
 import torchaudio
 from attrs import define, field
@@ -31,7 +32,6 @@ class LJSpeechDataset(ASRDataset):
         tokenizer (TextTokenizer): Tokenizer for text encoding.
         augmenter (AudioAugmenter): Augmenter for audio signals.
         transformer (Transformer): Audio transformation.
-        samples_limit (int): Maximum number of samples.
         text_max_length (int): Maximum length of text.
         audio_max_duration (int): Maximum duration of audio.
         audio_sample_rate (int): Sample rate in Hz.
@@ -63,7 +63,14 @@ class LJSpeechDataset(ASRDataset):
 
         self.tar_path.unlink()
 
-    def setup(self, stage: tp.Literal["train", "val", "test"]) -> pl.DataFrame:
+    def remove(self) -> None:
+        """Remove the LJSpeech dataset."""
+        self.extracted_dir.rmdir()
+
+    def setup(
+        self,
+        stage: tp.Literal["train", "val", "test"],
+    ) -> type["LJSpeechDataset"]:
         """Set up the LJSpeech dataset.
 
         Args:
@@ -72,21 +79,24 @@ class LJSpeechDataset(ASRDataset):
         Returns:
             DataFrame: The dataset.
         """
-        data = pl.read_csv(
+        logger.info(
+            f"Setting up '{stage}' partition of the '{LJSpeechDataset.__name__}' dataset."
+        )
+        data = pd.read_csv(
             self.meta_path,
-            has_header=False,
-            separator="|",
-            new_columns=["audio_name", "text", "normalized_text"],
-        ).drop_nulls()
+            sep="|",
+            header=None,
+            names=["audio_name", "text", "normalized_text"],
+        )
+        data = pl.from_pandas(data).drop_nulls()
         self._data = self._process_data(self._partition_data(data, stage))
-        self.validate_data_before_finalizing()
         self.finalize_data()
-        return self._data
+        return self
 
     def _partition_data(
         self,
         data: pl.DataFrame,
-        stage: tp.Literal["train", "val", "test"],
+        stage: tp.Literal["train", "val", "test", "all"],
     ) -> pl.DataFrame:
         """Partition the data into train, val, and test sets.
 
@@ -104,22 +114,23 @@ class LJSpeechDataset(ASRDataset):
             )
             raise ValueError(msg)
 
-        n = len(data)
-        last_train_idx = math.ceil(n * self.data_proportions[0])
-        last_val_idx = last_train_idx + math.ceil(n * self.data_proportions[1])
+        total_samples = len(data)
+        last_train_idx = math.ceil(total_samples * self.data_proportions[0])
+        last_val_idx = last_train_idx + math.ceil(
+            total_samples * self.data_proportions[1]
+        )
 
-        match stage:
-            case "train":
-                data = data[:last_train_idx]
-            case "val":
-                data = data[last_train_idx:last_val_idx]
-            case "test":
-                data = data[last_val_idx:]
-            case _:
-                msg = f"Invalid data part: {stage}."
-                raise ValueError(msg)
+        slices = {
+            "all": slice(None),
+            "train": slice(0, last_train_idx),
+            "val": slice(last_train_idx, last_val_idx),
+            "test": slice(last_val_idx, None),
+        }
+        if stage not in slices.keys():
+            msg = f"Invalid data part: {stage}."
+            raise ValueError(msg)
 
-        return data
+        return data[slices[stage]]
 
     def _process_data(self, data: pl.DataFrame) -> pl.DataFrame:
         """Process the data by adding audio paths and durations.
@@ -132,14 +143,21 @@ class LJSpeechDataset(ASRDataset):
         """
         full_data = []
         for audio_name, _, normalized_text in data.iter_rows():
-            audio_path = self.wavs_dir.joinpath(f"{audio_name}.wav")
+            text = preprocess_text(normalized_text, remove_punctuation=True)
+            if not all(char in self.tokenizer.alphabet for char in text):
+                logger.warning(
+                    f"Skipping '{audio_name}' due to invalid text: '{text}'."
+                )
+                continue
+
+            audio_path = self.wavs_dir.joinpath(f"{audio_name}.wav").as_posix()
             audio_info = torchaudio.info(audio_path)
             full_data.append(
                 {
-                    "audio_path": str(audio_path),
+                    "audio_path": audio_path,
                     "audio_duration": audio_info.num_frames
                     / audio_info.sample_rate,
-                    "text": preprocess_text(normalized_text),
+                    "text": text,
                 }
             )
         return pl.DataFrame(full_data)

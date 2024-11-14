@@ -1,33 +1,108 @@
 """Entry point for the loggers module."""
 
+import datetime
+import logging
 import sys
+from logging import Handler, LogRecord
 
 from loguru import logger
 
 from src.utils import env
 
-if env.LOGGING_FORMAT == "HUMAN":
-    handler = {
-        "level": env.LOGGING_LEVEL,
-        "sink": sys.stdout,
-        "format": (
-            "<level>{level}</level>: {time:YYYY-MM-DD at HH:mm:ss} | <blue>{name}</blue> | "
-            "<level>{message}</level>"
-        ),
-        "colorize": True,
-        "enqueue": True,
-    }
+# class InterceptHandler(Handler):
+# Standard Library Log → InterceptHandler → Loguru → Console/File Output
+# (PyTorch, Lightning)    (Interceptor)    (Logger)   (Handlers)
 
-elif env.LOGGING_FORMAT == "JSONL":
-    handler = {
-        "level": env.LOGGING_LEVEL,
-        "sink": sys.stdout,
-        "format": "{message}",
-        "serialize": True,
-        "enqueue": True,
-    }
+#     def emit(self, record: LogRecord) -> None:
+#         # Get corresponding Loguru level if it exists.
+#         level = logger.level(record.levelname).name if record.levelname in logger._core.levels else record.levelno
 
-else:
-    raise ValueError("LOGGING_FORMAT can be only HUMAN or JSONL")
+#         # Find caller from where the log call was issued.
+#         frame, depth = logging.currentframe(), 6
+#         while frame and frame.f_code.co_filename == logging.__file__:
+#             frame = frame.f_back
+#             depth += 1
 
-logger.configure(handlers=[handler])
+#         # Log the message
+#         logger.opt(
+#             depth=depth,
+#             exception=record.exc_info,
+#         ).log(
+#             level,
+#             record.getMessage(),
+#         )
+
+# # Configure standard logging to pass through the interceptor
+# logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+# for name in ["lightning.pytorch"]:
+#     logging.getLogger(name).handlers = [InterceptHandler()]
+
+# Configure loguru handlers
+# log_file_name = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+# logger.configure(
+#     handlers=[
+#         {
+#             "sink": sys.stdout,
+#             "level": env.LOGGING_LEVEL,
+#             "format": (
+#                 "{time:YYYY-MM-DD HH:mm:ss} | {name} | "
+#                 "<level>{level}: {message}</level> | {extra}"
+#             ),
+#             "colorize": True,
+#             "enqueue": True,
+#         },
+#         {
+#             "sink": env.BASE_DIR.joinpath(f"logs/{log_file_name}.log"),
+#             "level": env.LOGGING_LEVEL,
+#             "format": (
+#                 "{time:YYYY-MM-DD HH:mm:ss} | {name} | "
+#                 "<level>{level}: {message}</level> | {extra}"
+#             ),
+#             "colorize": True,
+#             "enqueue": True,
+#         }
+#         if env.LOGGING_SINK_TO_FILE
+#         else None,
+#     ]
+# )
+
+
+console_handler = {
+    "level": env.LOGGING_LEVEL,
+    "sink": sys.stdout,
+    "format": (
+        "{time:YYYY-MM-DD HH:mm:ss} | {name} | "
+        "<level>{level}: {message}</level> | {extra}"
+    ),
+    "colorize": True,
+    "enqueue": True,
+}
+
+file_handler = {
+    "level": env.LOGGING_LEVEL,
+    "sink": env.BASE_DIR.joinpath("logs/application.log"),
+    "format": (
+        "{time:YYYY-MM-DD HH:mm:ss} | {name} | "
+        "<level>{level}: {message}</level> | {extra}"
+    ),
+    "colorize": True,
+    "enqueue": True,
+}
+
+# logger.configure(handlers=[{
+#     "sink": sys.stdout,
+#     "level": env.LOGGING_LEVEL,
+#     "format": (
+#         "{time:YYYY-MM-DD HH:mm:ss} | {name} | "
+#         "<level>{level}: {message}</level> | {extra}"
+#     ),
+#     "colorize": True,
+#     "enqueue": True,
+# }])
+
+log_config = {
+    "handlers": [console_handler, file_handler]
+    if env.LOGGING_SINK_TO_FILE
+    else [console_handler]
+}
+logger.configure(**log_config)

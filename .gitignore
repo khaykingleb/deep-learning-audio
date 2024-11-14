@@ -1,28 +1,15 @@
-# Environment variables
-.env
-.envrc
-
 # Python files
 __pycache__/
-*.egg-info/
-dist/
+.ruff_cache/
+.pytest_cache/
 .coverage
-.venv
-.pytest_cache
-.mypy_cache
-pytest-coverage.txt
+.coverage.*
 
-# IDE
-.vscode
-
-# Terraform
-.terraform
-terraform/ssh
-*.tfvars
-*.tfstate
-*.tfstate.backup
-.terraform.lock.hcl
-
-# Logging
-logs
-wandb
+# Misc
+*.log
+wandb/**/*
+!wandb/.gitkeep
+data/*
+!data/.gitkeep
+.env
+.venv/

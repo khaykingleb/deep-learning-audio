@@ -46,7 +46,6 @@ class ASRDataset(Dataset, ABC):
         tokenizer (TextTokenizer): Tokenizer for text encoding.
         augmenter (AudioAugmenter): Augmenter for audio signals.
         transformer (Transformer): Audio transformation.
-        data_samples_limit (int): Maximum number of samples.
         text_max_length (int): Maximum length of text.
         audio_max_duration (int): Maximum duration of audio.
         audio_sample_rate (int): Sample rate in Hz.
@@ -57,13 +56,12 @@ class ASRDataset(Dataset, ABC):
     augmenter: AudioAugmenter = field(repr=False)
     transformer: Transformer = field(repr=False)
 
-    data_samples_limit: int = field(default=None)
-    text_max_length: int = field(default=None)
-    audio_max_duration: int = field(default=None)
+    text_max_length: int | None = field(default=None)
+    audio_max_duration: int | None = field(default=None)
     audio_sample_rate: int = field(default=22050)
     audio_aug_prob: float = field(default=0.0)
 
-    _data: pl.DataFrame = field(init=False)
+    _data: pl.DataFrame = field(default=None, init=False, repr=False)
 
     @abstractmethod
     def download(self) -> None:
@@ -72,7 +70,15 @@ class ASRDataset(Dataset, ABC):
         raise NotImplementedError(msg)
 
     @abstractmethod
-    def setup(self, stage: tp.Literal["train", "val", "test"]) -> pl.DataFrame:
+    def remove(self) -> None:
+        """Remove the dataset."""
+        msg = "Method 'remove' must be implemented in a subclass."
+        raise NotImplementedError(msg)
+
+    @abstractmethod
+    def setup(
+        self, stage: tp.Literal["train", "val", "test"]
+    ) -> type["ASRDataset"]:
         """Set up the dataset for a specific stage (that is, self._data).
 
         Args:
@@ -83,17 +89,6 @@ class ASRDataset(Dataset, ABC):
         """
         msg = "Method 'setup' must be implemented in a subclass."
         raise NotImplementedError(msg)
-
-    def validate_data_before_finalizing(self) -> None:
-        """Validate the dataset before finalizing it."""
-        ASRDataSchema.validate(self._data)
-
-    def finalize_data(self) -> None:
-        """Finalize the dataset by filtering, sorting, and limiting data."""
-        self._filter_data()
-        self._sort_data()
-        if self.data_samples_limit is not None:
-            self._limit_data()
 
     def __getitem__(self, idx: int) -> dict[str, tp.Any]:
         """Get a single item from the dataset.
@@ -126,56 +121,60 @@ class ASRDataset(Dataset, ABC):
         """
         return len(self._data)
 
+    def finalize_data(self) -> None:
+        """Finalize the dataset by validating, filtering, and sorting data."""
+        self._validate_data()
+        self._filter_data()
+        self._sort_data()
+
+    def _validate_data(self) -> None:
+        """Validate the dataset to ensure it conforms to the schema."""
+        ASRDataSchema.validate(self._data)
+
     def _filter_data(self) -> None:
         """Filter the dataset based on text length and audio duration."""
         filtered_data = self._data.clone()
 
         if self.text_max_length is not None:
-            text_filtered_data = self._data.filter(
+            text_filtered = self._data.filter(
                 self._data.get_column("text")
-                .map_elements(lambda x: len(x))
+                .map_elements(lambda x: len(x), return_dtype=pl.Int64)
                 .le(self.text_max_length)
             )
-            percentage_filtered = (
-                len(self._data) - len(text_filtered_data)
-            ) / len(self._data)
+            percentage_filtered = 1 - len(text_filtered) / len(self._data)
             logger.info(
-                f"{percentage_filtered:.2%} of records are longer than "
+                f"{percentage_filtered:.2%} of valid records are longer than "
                 f"{self.text_max_length} characters."
             )
             filtered_data = filtered_data.join(
-                text_filtered_data,
+                text_filtered,
+                on=["audio_path", "audio_duration", "text"],
                 how="inner",
             )
 
         if self.audio_max_duration is not None:
-            audio_filtered_data = self._data.filter(
+            audio_filtered = self._data.filter(
                 self._data.get_column("audio_duration").le(
                     self.audio_max_duration
                 )
             )
-            percentage_filtered = (
-                len(self._data) - len(audio_filtered_data)
-            ) / len(self._data)
+            percentage_filtered = 1 - len(audio_filtered) / len(self._data)
             logger.info(
-                f"{percentage_filtered:.2%} of records are longer than "
+                f"{percentage_filtered:.2%} of valid records are longer than "
                 f"{self.audio_max_duration} seconds."
             )
             filtered_data = filtered_data.join(
-                audio_filtered_data,
+                audio_filtered,
+                on=["audio_path", "audio_duration", "text"],
                 how="inner",
             )
 
-        percentage_filtered = (len(self._data) - len(filtered_data)) / len(
-            self._data
+        percentage_filtered = 1 - len(filtered_data) / len(self._data)
+        logger.info(
+            f"{percentage_filtered:.2%} of valid records are excluded."
         )
-        logger.info(f"{percentage_filtered:.2%} of records are excluded.")
         self._data = filtered_data
 
     def _sort_data(self) -> None:
         """Sort the dataset by audio duration."""
         self._data = self._data.sort(by="audio_duration")
-
-    def _limit_data(self) -> None:
-        """Limit the dataset to a specified number of samples."""
-        self._data = self._data.head(self.data_samples_limit)

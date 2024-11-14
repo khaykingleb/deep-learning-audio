@@ -49,11 +49,11 @@ deps: ## Install dependencies
 	poetry install --no-cache
 .PHONY: deps
 
-init: prerequisites pre-commit ## Initialize repository for development in Docker
-.PHONY: init
-
 init-local: prerequisites pre-commit deps ## Initialize repository for development outside of Docker
 .PHONY: init-local
+
+init: prerequisites pre-commit ## Initialize repository for development in Docker
+.PHONY: init
 
 ##=============================================================================
 ##@ Macros

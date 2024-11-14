@@ -1,4 +1,3 @@
-
 import math
 import typing as tp
 
@@ -6,9 +5,10 @@ import torch
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 
+
 class WarmupLRScheduler(LRScheduler):
     """Warmups learning rate until warmup_steps."""
-    
+
     def __init__(
         self,
         optimizer: Optimizer,
@@ -23,10 +23,10 @@ class WarmupLRScheduler(LRScheduler):
         self.initial_lr = initial_lr
         self.peak_lr = peak_lr
         self.lr = initial_lr
-        
+
         self.warmup_steps = warmup_steps
         self.warmup_rate = (peak_lr - initial_lr) / warmup_steps
-        
+
         self.step_count = 1
 
     def __check_args(
@@ -41,7 +41,7 @@ class WarmupLRScheduler(LRScheduler):
             raise ValueError(f"Invalid peak learning rate: {peak_lr}")
         if warmup_steps <= 0:
             raise ValueError(f"Invalid warmup steps: {warmup_steps}")
-        
+
     def step(self) -> None:
         """Make a step in learning rate."""
         if self.step_count <= self.warmup_steps:
@@ -49,7 +49,7 @@ class WarmupLRScheduler(LRScheduler):
             for g in self.optimizer.param_groups:
                 g["lr"] = self.lr
         self.step_count += 1
-        
+
     def get_lr(self) -> list[float]:
         """Get the learning rates from each parameter group.
 

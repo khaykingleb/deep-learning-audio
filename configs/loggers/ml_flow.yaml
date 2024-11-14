@@ -1,5 +1,0 @@
-# https://lightning.ai/docs/pytorch/stable/logging/mlflow.html
-
-# from lightning.pytorch.loggers import MLFlowLogger
-# mlf_logger = MLFlowLogger(experiment_name="lightning_logs", tracking_uri="file:./ml-runs")
-# trainer = Trainer(logger=mlf_logger)

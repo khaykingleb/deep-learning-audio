@@ -99,7 +99,7 @@ class ASRModel(L.LightningModule):
                 "monitor": "val_loss",
                 # If set to `True`, will enforce that the value specified 'monitor'
                 # is available when the scheduler is updated, thus stopping
-                # training if not found. If set to `False`, it will only 
+                # training if not found. If set to `False`, it will only
                 # produce a warning
                 "strict": True,
                 # If using the `LearningRateMonitor` callback to monitor the
@@ -116,7 +116,7 @@ class ASRModel(L.LightningModule):
         """Compute and return the training loss.
 
         Note:
-            Add sync_dist=True to sync logging across all GPU workers 
+            Add sync_dist=True to sync logging across all GPU workers
             (may have performance impact):
             >>> self.log(
             ...     "train_loss",

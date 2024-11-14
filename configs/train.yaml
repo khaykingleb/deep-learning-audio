@@ -1,3 +1,4 @@
+---
 # Order of defaults determines the order in which configs override each other
 defaults:
   - _self_
@@ -9,16 +10,15 @@ defaults:
   - /tuner: default
 
 # Set to True to train the model. Otherwise, the model will not be trained.
-train: True
+train: true
 
 # Set to True to evaluate the model on the test set using the best model weights achieved during training
 # Lightning chooses best weights based on the metric specified in checkpoint callback
-test: True
+test: true
 
 # Seed for random number generators in pytorch, numpy, and random
-seed: 42  
+seed: 42
 
 # ckpt_path: null  # path to a checkpoint to load
 # pretrained: False  # load a pretrained model
 # path_to_save: null  # path to save the model
-

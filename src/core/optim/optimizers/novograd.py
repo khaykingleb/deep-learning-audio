@@ -9,14 +9,14 @@ from torch.optim.optimizer import ParamsT
 
 class Novograd(Optimizer):
     """Novograd optimization algorithm.
-    
+
     It has been proposed in "Stochastic Gradient Methods with Layer-wise
     Adaptive Moments for Training of Deep Networks"
     (https://arxiv.org/abs/1905.11286)
-    
+
     Taken from https://github.com/jettify/pytorch-optimizer/blob/master/torch_optimizer/novograd.py
     """
-    
+
     def __init__(
         self,
         params: ParamsT,
@@ -28,7 +28,7 @@ class Novograd(Optimizer):
         amsgrad: bool = False,
     ) -> None:
         """Initialize Novograd optimizer.
-        
+
         Args:
             params: Iterable of parameters to optimize or dicts defining
                 parameter groups
@@ -82,14 +82,14 @@ class Novograd(Optimizer):
         closure: tp.Optional[tp.Callable[[], float]] = None,
     ) -> float:
         """Perform a single optimization step.
-        
+
         Arguments:
             closure: A closure that reevaluates the model and returns the loss
         """
         loss = None
         if closure is not None:
             loss = closure()
-        
+
         for group in self.param_groups:
             for p in group["params"]:
                 if p.grad is None:
@@ -101,24 +101,24 @@ class Novograd(Optimizer):
                         "please consider SparseAdam instead"
                     )
                     raise RuntimeError(msg)
-                
+
                 # State initialization
                 state = self.state[p]
                 if len(state) == 0:
                     state["step"] = 0
-                
+
                     # Exponential moving average of gradient values
                     state["exp_avg"] = torch.zeros_like(
                         p.data,
                         memory_format=torch.preserve_format,
                     )
-                    
+
                     # Exponential moving average of squared gradient values
                     state["exp_avg_sq"] = torch.zeros(
                         [],
                         device=state["exp_avg"].device,
                     )
-                    
+
                     if group["amsgrad"]:
                         # Maintains max of all exp. moving avg. of sq.
                         # grad. values
@@ -130,16 +130,16 @@ class Novograd(Optimizer):
                 exp_avg, exp_avg_sq = state["exp_avg"], state["exp_avg_sq"]
                 if group["amsgrad"]:
                     max_exp_avg_sq = state["max_exp_avg_sq"]
-                    
+
                 state["step"] += 1
-                
+
                 beta1, beta2 = group["betas"]
                 norm = torch.sum(torch.pow(grad, 2))
                 if exp_avg_sq == 0:
                     exp_avg_sq.copy_(norm)
                 else:
                     exp_avg_sq.mul_(beta2).add_(norm, alpha=1 - beta2)
-                    
+
                 if group["amsgrad"]:
                     # Maintains the maximum of all 2nd moment running avg.
                     # till now
@@ -148,7 +148,7 @@ class Novograd(Optimizer):
                     denom = max_exp_avg_sq.sqrt().add_(group["eps"])
                 else:
                     denom = exp_avg_sq.sqrt().add_(group["eps"])
-                
+
                 grad.div_(denom)
                 if group["weight_decay"] != 0:
                     grad.add_(p.data, alpha=group["weight_decay"])
@@ -159,7 +159,3 @@ class Novograd(Optimizer):
                 p.data.add_(exp_avg, alpha=-group["lr"])
 
         return loss
-                
-
-                
-                

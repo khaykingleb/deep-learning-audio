@@ -1,3 +1,4 @@
+---
 # https://lightning.ai/docs/pytorch/stable/advanced/model_parallel.html
 
 defaults:
@@ -9,4 +10,4 @@ accelerator: gpu
 strategy: ddp
 devices: 4
 num_nodes: 1
-sync_batchnorm: True
+sync_batchnorm: true

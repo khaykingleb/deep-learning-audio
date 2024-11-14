@@ -1,3 +1,4 @@
+---
 _target_: src.collections.audio.asr.data.ASRData
 
 batch_size: 16  # needs to be divisible by the number of devices (e.g., if in a distributed setup)
@@ -9,14 +10,11 @@ downsize: 2
 dataset:
   _target_: src.collections.audio.asr.datasets.LJSpeechDataset
   data_dir: data/
-  data_proportions: [0.75, 0.2, 0.05]  # TODO(khaykingleb): make train/val/test
+  data_proportions: [0.75, 0.2, 0.05]   # TODO(khaykingleb): make train/val/test
   tokenizer:
     _target_: src.collections.common.preprocessing.tokenizers.CTCTextTokenizer
-    blank_symbol: "ϵ"
-    alphabet: [
-      "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-      "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " ",
-    ]
+    blank_symbol: ϵ
+    alphabet: [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, ' ']
 
   augmenter:
     _target_: src.collections.audio.dsp.augmentation.AudioAugmenter
@@ -31,8 +29,8 @@ dataset:
   transformer:
     _target_: torchaudio.transforms.MelSpectrogram
     sample_rate: 16_000
-    n_mels: 64 # mumber of mel filterbanks
-    mel_scale: htk  # mel = 2595.0 * np.log10(1.0 + f / 700.0)
+    n_mels: 64     # mumber of mel filterbanks
+    mel_scale: htk     # mel = 2595.0 * np.log10(1.0 + f / 700.0)
 
   text_max_length: 100
   audio_max_duration: 10.0

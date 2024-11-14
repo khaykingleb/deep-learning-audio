@@ -1,7 +1,8 @@
-from src.collections.audio.dsp.audio import load_waveform
 import pytest
 
+from src.collections.audio.dsp.audio import load_waveform
 from src.utils.env import BASE_DIR
+
 
 @pytest.mark.parametrize("sample_rate", [None, 8000, 16000])
 def test_load_waveform(sample_rate: int):

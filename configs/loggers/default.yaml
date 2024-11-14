@@ -1,3 +1,4 @@
+---
 # https://lightning.ai/docs/pytorch/stable/visualize/logging_advanced.html
 
 # Use multiple experiment managers by passing a list to the Trainer's logger argument.
@@ -22,7 +23,7 @@
 # trainer = Trainer(logger=logger)
 # trainer.fit(model)
 
-# Loggers may buffer metrics to improve efficiency. 
+# Loggers may buffer metrics to improve efficiency.
 # Example: Adjust TensorBoard's flush settings:
 # * Default: logger = TensorBoardLogger(..., max_queue=10, flush_secs=120)
 # * Faster training, more memory used: logger = TensorBoardLogger(..., max_queue=100)
@@ -39,7 +40,7 @@
 # If True, will not auto detach the graph
 # self.log(enable_graph=True)
 
-# Send logs to the logger like Tensorboard, or any other custom logger passed to the Trainer 
+# Send logs to the logger like Tensorboard, or any other custom logger passed to the Trainer
 # (Default: True)
 # self.log(logger=True)
 

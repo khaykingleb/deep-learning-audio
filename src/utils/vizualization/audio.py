@@ -32,8 +32,8 @@ def plot_transform(
         Buffer containing the plot image.
     """
     plt.title(title)
-    plt.x_label(x_label)
-    plt.y_label(y_label)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     plt.imshow(
         x.squeeze().detach().cpu().numpy(),
         origin="lower",

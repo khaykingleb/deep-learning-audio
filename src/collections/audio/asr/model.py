@@ -25,6 +25,8 @@ Tokenizer = TextTokenizer | CTCTextTokenizer
 
 
 class ASRModel(L.LightningModule):
+    """PyTorch Lightning ASR model."""
+
     def __init__(
         self,
         tokenizer: DictConfig,
@@ -56,6 +58,16 @@ class ASRModel(L.LightningModule):
         Note:
             For more information on optimization, see
             https://lightning.ai/docs/pytorch/stable/common/optimization.html
+
+        Args:
+            tokenizer: Tokenizer configuration
+            model: Model configuration
+            loss: Loss configuration
+            sample_rate: Sample rate
+            optimizer: Optimizer configuration
+            scheduler: Scheduler configuration
+            compile_model: Whether to compile the model
+            rank_zero_only: Whether to log only on rank zero
         """
         super().__init__()
         self.save_hyperparameters()

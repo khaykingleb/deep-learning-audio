@@ -116,6 +116,7 @@ select = [
 ignore = [
   "ANN101",  # missing type annotation for `self` in method
   "ANN204",  # missing return type annotation for special method
+  "ARG002",  # unused argument
   "D105",    # missing docstring in magic method
   "PLR0913", # too many arguments in function definition ({c_args} > {max_args})
   "N812",    # imports are non-lowercase

@@ -16,6 +16,11 @@ class ASRDataCollator:
     """Collator for ASR data."""
 
     def __init__(self, downsize: int) -> None:
+        """Constructor.
+
+        Args:
+            downsize: Downsize factor for the transforms
+        """
         self.downsize = downsize
 
     def __call__(
@@ -79,17 +84,15 @@ class ASRData(L.LightningDataModule):
         """Constructor.
 
         Args:
-            dataset: Configuration for the dataset.
-            batch_size: Batch size for the dataloaders.
-            num_workers: Number of workers for the dataloaders.
-            pin_memory: Whether to pin memory for the dataloaders.
+            dataset: Configuration for the dataset
+            batch_size: Batch size for the dataloaders
+            num_workers: Number of workers for the dataloaders
+            pin_memory: Whether to pin memory for the dataloaders
+            persistent_workers: Whether to use persistent workers
+            downsize: Downsize factor for the transforms
         """
         super().__init__()
         self.save_hyperparameters()
-
-        # self._train_data: ASRDataset = None
-        # self._val_data: ASRDataset = None
-        # self._test_data: ASRDataset = None
 
     def prepare_data(self) -> None:
         """Download and save the datasets to disk with a single process.
@@ -139,7 +142,8 @@ class ASRData(L.LightningDataModule):
             case "test":
                 self._test_data = dataset.setup("test")
             case _:
-                raise ValueError(f"Invalid stage: {stage}")
+                msg = f"Invalid stage: {stage}"
+                raise ValueError(msg)
 
     def teardown(self, stage: tp.Literal["fit", "validate", "test"]) -> None:
         """Cleanup the state after the experiment.
@@ -195,138 +199,3 @@ class ASRData(L.LightningDataModule):
             pin_memory=self.hparams["pin_memory"],
             persistent_workers=self.hparams["persistent_workers"],
         )
-
-    # def on_before_batch_transfer(
-    #     self,
-    #     batch: tp.Any,
-    #     dataloader_idx: int,
-    # ) -> None:
-    #     """Alter or apply batch augmentations before transfer to device.
-
-    #     Note:
-    #         To check the current state of execution of this hook you can use
-    #         self.trainer.training/testing/validating/predicting so that you can
-    #         add different logic as per your requirement.
-
-    #     Example:
-    #         >>> def on_before_batch_transfer(self, batch, dataloader_idx):
-    #         >>>     batch['x'] = transforms(batch['x'])
-    #         >>>     return batch
-
-    #     Args:
-    #         batch (Any): Batch of data.
-    #         dataloader_idx (int): Index of the dataloader.
-    #     """
-
-    # def transfer_batch_to_device(
-    #     self,
-    #     batch: tp.Any,
-    #     device: torch.device,
-    #     dataloader_idx: int,
-    # ) -> tp.Any:
-    #     """Override the default transfer to device behavior.
-
-    #     The data types listed below (and any arbitrary nesting of them) are
-    #     supported out of the box:
-    #     - `torch.Tensor` or anything that implements `.to(...)`
-    #     - `list`
-    #     - `dict`
-    #     - `tuple`
-
-    #     For anything else, you need to define how the data is moved to the
-    #     target device (CPU, GPU, TPU).
-
-    #     Note:
-    #         This hook should only transfer the data and not modify it, nor
-    #         should it move the data to any other device than the one passed in
-    #         as argument (unless you know what you are doing). To check the
-    #         current state of execution of this hook you can use
-    #         self.trainer.training/testing/validating/predicting so that you
-    #         can add different logic as per your requirement.
-
-    #     Example:
-    #         >>> def transfer_batch_to_device(
-    #         >>>     self,
-    #         >>>     batch,
-    #         >>>     device,
-    #         >>>     dataloader_idx,
-    #         >>> ):
-    #         >>>     if isinstance(batch, CustomBatch):
-    #         >>> # move all tensors in your custom data
-    #         >>> # structure to the device
-    #         >>>         batch.samples = batch.samples.to(device)
-    #         >>>         batch.targets = batch.targets.to(device)
-    #         >>>     elif dataloader_idx == 0:
-    #         >>> # skip device transfer for the first dataloader or
-    #         >>> # anything you wish
-    #         >>>         pass
-    #         >>>     else:
-    #         >>>         batch = super().transfer_batch_to_device(
-    #         >>>             batch,
-    #         >>>             device,
-    #         >>>             dataloader_idx,
-    #         >>>         )
-    #         >>>     return batch
-
-    #     Args:
-    #         batch (Any): Batch of data.
-    #         device (torch.device): Device to transfer the data to.
-    #         dataloader_idx (int): Index of the dataloader.
-
-    #     Returns:
-    #         Any: Transferred batch of data.
-    #     """
-
-    # def on_after_batch_transfer(
-    #     self,
-    #     batch: tp.Any,
-    #     dataloader_idx: int,
-    # ) -> None:
-    #     """Alter or apply batch augmentations after transfer to device.
-
-    #     Note:
-    #         To check the current state of execution of this hook you can use
-    #         self.trainer.training/testing/validating/predicting so that you can
-    #         add different logic as per your requirement.
-
-    #     Example:
-    #         >>> def on_after_batch_transfer(self, batch, dataloader_idx):
-    #         >>>     batch['x'] = gpu_transforms(batch['x'])
-    #         >>>     return batch
-
-    #     Args:
-    #         batch (Any): Batch of data.
-    #         dataloader_idx (int): Index of the dataloader.
-    #     """
-
-    def state_dict(self) -> dict[str, tp.Any]:
-        """Called when saving a checkpoint.
-
-        Implement to generate and save the datamodule state.
-
-        Example:
-            >>> def state_dict(self):
-            >>>     return {
-            >>>         "current_train_batch_index":
-            >>>         self.current_train_batch_index
-            >>>     }
-
-        Returns:
-            dict: State of the datamodule.
-        """
-        return super().state_dict()
-
-    def load_state_dict(self, state_dict: dict[str, tp.Any]) -> None:
-        """Called when loading a checkpoint.
-
-        Implement to load the datamodule state.
-
-        Example:
-            >>> def load_state_dict(self, state_dict):
-            >>>     self.current_train_batch_index = \
-            >>>         state_dict["current_train_batch_index"]
-
-        Args:
-            state_dict (dict): Datamodule state returned by self.state_dict().
-        """
-        return super().load_state_dict(state_dict)

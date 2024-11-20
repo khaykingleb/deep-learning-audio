@@ -80,7 +80,8 @@ class LJSpeechDataset(ASRDataset):
             DataFrame: The dataset.
         """
         logger.info(
-            f"Setting up '{stage}' partition of the '{LJSpeechDataset.__name__}' dataset."
+            f"Setting up '{stage}' partition "
+            f"of the '{LJSpeechDataset.__name__}' dataset."
         )
         data = pd.read_csv(
             self.meta_path,
@@ -126,7 +127,7 @@ class LJSpeechDataset(ASRDataset):
             "val": slice(last_train_idx, last_val_idx),
             "test": slice(last_val_idx, None),
         }
-        if stage not in slices.keys():
+        if stage not in slices:
             msg = f"Invalid data part: {stage}."
             raise ValueError(msg)
 

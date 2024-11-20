@@ -1,0 +1,69 @@
+---
+_target_: src.collections.audio.asr.model.ASRModel
+_recursive_: false
+
+model:
+  _target_: src.collections.audio.asr.models.quartznet.QuartzNet
+  in_channels: ${data.dataset.transformer.n_mels}
+  out_channels:        # alphabet size, will be set in the trainer
+  n_blocks: 5
+  n_repeats: 3
+  n_subblocks: 5
+  block_channels:
+    - [256, 256]
+    - [256, 512]
+    - [512, 512]
+    - [512, 512]
+    - [512, 512]
+  block_kernel_sizes:
+    - 33
+    - 39
+    - 51
+    - 63
+    - 75
+  normalization_name: BatchNorm1d
+  activation_name: ReLU
+  dropout_rate: 0.2
+
+optimizer:
+  _target_: src.core.optim.optimizers.Novograd
+  betas: [0.95, 0.5]
+  lr: 0.05
+  weight_decay: 0.001
+
+
+scheduler:
+  _target_: src.core.optim.lr_schedulers.CosineAnnealingWarmupLRScheduler
+  first_cycle_steps: 1000
+  min_lr: 0.001
+  max_lr: ${models.optimizer.lr}
+  lightning:
+    # The unit of the scheduler's step size, could also be 'step'.
+    # 'epoch' updates the scheduler on epoch end whereas 'step'
+    # updates it after a optimizer update.
+    interval: step
+    # How many epochs/steps should pass between calls to
+    # `scheduler.step()`. 1 corresponds to updating the learning
+    # rate after every epoch/step.
+    frequency: 1
+    # Metric to to monitor for schedulers like `ReduceLROnPlateau`
+    monitor:      #val_loss
+    # If set to `True`, will enforce that the value specified 'monitor'
+    # is available when the scheduler is updated, thus stopping
+    # training if not found. If set to `False`, it will only
+    # produce a warning
+    strict: false #true
+    # If using the `LearningRateMonitor` callback to monitor the
+    # learning rate progress, this keyword can be used to specify
+    # a custom logged name
+    name: lr
+
+loss:
+  _target_: torch.nn.CTCLoss
+  blank:       # blank_token, will be set in the trainer
+  reduction: mean
+
+tokenizer: ${data.dataset.tokenizer}
+sample_rate: ${data.dataset.audio_sample_rate}
+# Compile model for faster training with pytorch 2.0
+compile_model: false

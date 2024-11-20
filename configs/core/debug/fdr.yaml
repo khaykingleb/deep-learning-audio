@@ -1,0 +1,13 @@
+---
+# @package _global_
+# Runs 1 train, 1 validation and 1 test step
+
+defaults:
+  - default
+  - _self_
+
+trainer:
+  # Runs n batches of training, validation, test and prediction data through trainer to see if there are any bugs.
+  # To change how many batches to use, change the argument to an integer.
+  # Eg. with fast_dev_run: 10, we run 10 batches of training, validation, test and prediction data.
+  fast_dev_run: true

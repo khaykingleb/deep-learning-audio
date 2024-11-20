@@ -1,18 +1,25 @@
+"""ASR model."""
+
+import random
+import typing as tp
+
 import hydra
 import lightning as L
 import torch
 from lightning.pytorch.utilities.types import OptimizerLRScheduler
 from omegaconf import DictConfig
-from torch import nn
+from PIL import Image
 from torch.nn.modules.loss import CTCLoss
 from torchmetrics.text import CharErrorRate, WordErrorRate
 
+import wandb
 from src.collections.common.preprocessing.tokenizers import (
     CTCTextTokenizer,
     TextTokenizer,
 )
 from src.utils import env
-from src.utils.loggers import logger
+from src.utils.logger import logger
+from src.utils.vizualization.audio import plot_transform
 
 Tokenizer = TextTokenizer | CTCTextTokenizer
 
@@ -23,9 +30,12 @@ class ASRModel(L.LightningModule):
         tokenizer: DictConfig,
         model: DictConfig,
         loss: DictConfig,
+        sample_rate: int,
         optimizer: DictConfig,
-        scheduler: DictConfig,
-        rank_zero_only: bool | None = env.LOGGING_ONLY_RANK_ZERO,
+        scheduler: DictConfig | None = None,
+        *,
+        compile_model: bool = False,
+        rank_zero_only: bool = env.LOGGING_ONLY_RANK_ZERO,
     ) -> None:
         """Constructor.
 
@@ -36,12 +46,16 @@ class ASRModel(L.LightningModule):
             LightningModule knows what device it is on.
             You can access the reference via self.device.
             Sometimes it is necessary to store tensors as module attributes.
-            However, if they are not parameters they **will remain** on the CPU even if the module gets moved to a new device.
-            To prevent that and remain device agnostic, register the tensor as a buffer in your modules’ __init__ method with register_buffer().
-            By using self.register_buffer("sigma", torch.eye(3)), you can now access self.sigma anywhere in your module.
+            However, if they are not parameters they **will remain** on the CPU
+            even if the module gets moved to a new device. To prevent that and
+            remain device agnostic, register the tensor as a buffer in your
+            modules' __init__ method with register_buffer(). By using
+            self.register_buffer("sigma", torch.eye(3)), you can now access
+            self.sigma anywhere in your module.
 
         Note:
-            For more information on optimization, see https://lightning.ai/docs/pytorch/stable/common/optimization.html
+            For more information on optimization, see
+            https://lightning.ai/docs/pytorch/stable/common/optimization.html
         """
         super().__init__()
         self.save_hyperparameters()
@@ -68,7 +82,39 @@ class ASRModel(L.LightningModule):
         self.wer = WordErrorRate()
         self.cer = CharErrorRate()
 
+    def setup(
+        self,
+        stage: tp.Literal["fit", "validate", "test", "predict"],
+    ) -> None:
+        """Lightning hook that is called at the beginning of each stage.
+
+        Stages:
+            * fit (train + validate)
+            * validate
+            * test
+            * predict
+
+        This is a good hook when you need to build models dynamically or
+        adjust something about them. This hook is called on every process
+        when using DDP. Normally you'd need one, but in the case of GANs or
+        similar you might need multiple.
+
+        Args:
+            stage: Stage of the Lightning process.
+        """
+        if self.hparams["compile_model"] and stage == "fit":
+            self.model = torch.compile(self.model)
+
     def configure_optimizers(self) -> OptimizerLRScheduler:
+        """Choose optimizers and lr schedulers to use in your optimization.
+
+        Normally you'd need one. But in the case of GANs or similar you
+        might have multiple. Optimization with multiple optimizers only
+        works in the manual optimization mode.
+
+        Returns:
+            Optimizer and scheduler
+        """
         logger.info(
             f"Instantiating optimizer: {self.hparams['optimizer']['_target_']}"
         )
@@ -76,9 +122,16 @@ class ASRModel(L.LightningModule):
             self.hparams["optimizer"],
             params=self.parameters(),
         )
+
+        if self.hparams["scheduler"] is None:
+            return {
+                "optimizer": optimizer,
+            }
+
         logger.info(
             f"Instantiating scheduler: {self.hparams['scheduler']['_target_']}"
         )
+        lightning_config = self.hparams["scheduler"].pop("lightning")
         scheduler = hydra.utils.instantiate(
             self.hparams["scheduler"],
             optimizer=optimizer,
@@ -87,25 +140,7 @@ class ASRModel(L.LightningModule):
             "optimizer": optimizer,
             "lr_scheduler": {
                 "scheduler": scheduler,
-                # The unit of the scheduler's step size, could also be 'step'.
-                # 'epoch' updates the scheduler on epoch end whereas 'step'
-                # updates it after a optimizer update.
-                "interval": "epoch",
-                # How many epochs/steps should pass between calls to
-                # `scheduler.step()`. 1 corresponds to updating the learning
-                # rate after every epoch/step.
-                "frequency": 1,
-                # Metric to to monitor for schedulers like `ReduceLROnPlateau`
-                "monitor": "val_loss",
-                # If set to `True`, will enforce that the value specified 'monitor'
-                # is available when the scheduler is updated, thus stopping
-                # training if not found. If set to `False`, it will only
-                # produce a warning
-                "strict": True,
-                # If using the `LearningRateMonitor` callback to monitor the
-                # learning rate progress, this keyword can be used to specify
-                # a custom logged name
-                "name": None,
+                **lightning_config,
             },
         }
 
@@ -126,17 +161,25 @@ class ASRModel(L.LightningModule):
             ...     sync_dist=True,
             ... )
 
-            It is possible to perform some computation manually and log the reduced result on rank 0 as follows:
+            It is possible to perform some computation manually and log
+            the reduced result on rank 0 as follows:
             >>> if self.trainer.is_global_zero:
             >>>     self.log("my_reduced_metric", mean, rank_zero_only=True)
-            When you call `self.log` only on rank 0, don't forget to add `rank_zero_only=True` to avoid deadlocks on synchronization.
-            Caveat: monitoring this is unimplemented, see https://github.com/Lightning-AI/lightning/issues/15852
+            When you call `self.log` only on rank 0, don't forget to add
+            `rank_zero_only=True` to avoid deadlocks on synchronization.
+            Caveat: monitoring this is unimplemented, see
+            https://github.com/Lightning-AI/lightning/issues/15852
+
+        Args:
+            batch: Batch of data sampled from the training set
         """
+        self._log_audio(batch, stage="train")
+
         probs: torch.Tensor = self.model(batch["transforms"])
         loss = self._compute_loss(probs, batch)
 
         pred_tokens = probs.argmax(dim=1)
-        metrics = self._compute_metrics(pred_tokens, batch)
+        metrics = self._compute_metrics(pred_tokens, batch, stage="train")
 
         values = {"train_loss": loss, **metrics}
         self.log_dict(
@@ -155,11 +198,18 @@ class ASRModel(L.LightningModule):
         self,
         batch: dict[str, torch.Tensor],
     ) -> torch.Tensor:
+        """Compute and return the validation loss.
+
+        Args:
+            batch: Batch of data sampled from the validation set
+        """
+        self._log_audio(batch, stage="val")
+
         probs: torch.Tensor = self.model(batch["transforms"])
         loss = self._compute_loss(probs, batch)
 
         pred_tokens = probs.argmax(dim=1)
-        metrics = self._compute_metrics(pred_tokens, batch)
+        metrics = self._compute_metrics(pred_tokens, batch, stage="val")
 
         values = {"val_loss": loss, **metrics}
         self.log_dict(
@@ -177,12 +227,19 @@ class ASRModel(L.LightningModule):
     def test_step(
         self,
         batch: dict[str, torch.Tensor],
-    ):
+    ) -> torch.Tensor:
+        """Compute and return the test loss.
+
+        Args:
+            batch: Batch of data sampled from the test set
+        """
+        self._log_audio(batch, stage="test")
+
         probs: torch.Tensor = self.model(batch["transforms"])
         loss = self._compute_loss(probs, batch)
 
         pred_tokens = probs.argmax(dim=1)
-        metrics = self._compute_metrics(pred_tokens, batch)
+        metrics = self._compute_metrics(pred_tokens, batch, stage="test")
 
         values = {"test_loss": loss, **metrics}
         self.log_dict(
@@ -210,33 +267,106 @@ class ASRModel(L.LightningModule):
                 target_lengths=batch["tokens_lengths"],
             )
         else:
-            raise ValueError(f"Loss {self.loss} is not supported")
+            msg = f"Loss {self.loss} is not supported"
+            raise TypeError(msg)
         return loss
 
     def _compute_metrics(
         self,
         pred_tokens: torch.Tensor,
         batch: dict[str, torch.Tensor],
+        stage: tp.Literal["train", "val", "test"] = "train",
     ) -> dict[str, torch.Tensor]:
-        # if isinstance(self.tokenizer, CTCTextTokenizer):
-        #     pred_raw_texts = [
-        #         self.tokenizer.raw_decode(tokens) for tokens in pred_tokens
-        #     ]
+        if isinstance(self.tokenizer, CTCTextTokenizer):
+            pred_raw_texts = [
+                self.tokenizer.raw_decode(tokens) for tokens in pred_tokens
+            ]
         pred_texts = [self.tokenizer.decode(tokens) for tokens in pred_tokens]
         target_texts = [
             self.tokenizer.decode(tokens).strip() for tokens in batch["tokens"]
         ]
+        self._log_naive_predictions(
+            target_texts,
+            pred_texts,
+            pred_raw_texts,
+            stage,
+        )
         return {
-            "wer": self.wer(pred_texts, target_texts),
-            "cer": self.cer(pred_texts, target_texts),
+            f"{stage}_wer": self.wer(pred_texts, target_texts),
+            f"{stage}_cer": self.cer(pred_texts, target_texts),
         }
 
-    # # https://lightning.ai/docs/pytorch/stable/common/checkpointing_intermediate.html#modify-a-checkpoint-anywhere
-    # def on_save_checkpoint(self, checkpoint):
-    #     # checkpoint["something_cool_i_want_to_save"] = my_cool_pickable_object
-    #     pass
+    def _log_audio(
+        self,
+        batch: dict[str, torch.Tensor],
+        stage: tp.Literal["train", "val", "test"],
+    ) -> None:
+        if (
+            self.global_step == 0
+            or self.global_step % self.trainer.log_every_n_steps != 0
+        ):
+            return
 
-    # # https://lightning.ai/docs/pytorch/stable/common/checkpointing_intermediate.html#modify-a-checkpoint-anywhere
-    # def on_load_checkpoint(self, checkpoint):
-    #     # my_cool_pickable_object = checkpoint["something_cool_i_want_to_save"]
-    #     pass
+        idx = random.randint(0, len(batch["waveforms"]) - 1)
+        waveform: torch.Tensor = batch["waveforms"][idx]
+
+        audio_name = " ".join(
+            word.capitalize() for word in f"{stage} audio".split()
+        )
+        audio_caption = self.tokenizer.decode(batch["tokens"][idx])
+
+        self.logger.experiment.log(
+            {
+                audio_name: wandb.Audio(
+                    waveform.squeeze().detach().cpu().numpy(),
+                    caption=audio_caption,
+                    sample_rate=self.hparams["sample_rate"],
+                )
+            }
+        )
+
+        transform = batch["transforms"][idx]
+        transform_image_buffer = plot_transform(
+            transform,
+            title="",
+            x_label="Time (seconds)",
+            y_label="",
+            sample_rate=self.hparams["sample_rate"],
+            audio_size=waveform.shape[-1],
+            show_fig=False,
+        )
+        with Image.open(transform_image_buffer) as transform_image:
+            transform_name = " ".join(
+                word.capitalize() for word in f"{stage} transform".split()
+            )
+            self.logger.experiment.log(
+                {transform_name: wandb.Image(transform_image)}
+            )
+
+    def _log_naive_predictions(
+        self,
+        target_texts: list[str],
+        pred_texts: list[str],
+        pred_raw_texts: list[str] | None = None,
+        stage: tp.Literal["train", "val", "test"] = "train",
+    ) -> None:
+        if (
+            self.global_step == 0
+            or self.global_step % self.trainer.log_every_n_steps != 0
+        ):
+            return
+
+        table = wandb.Table(
+            columns=["Reference", "Hypothesis Raw", "Hypothesis"]
+        )
+
+        for ref_text, hypo_raw_text, hypo_text in zip(
+            target_texts,
+            pred_raw_texts,
+            pred_texts,
+            strict=True,
+        ):
+            table.add_data(ref_text, hypo_raw_text, hypo_text)
+
+        logs_name = f"{stage.capitalize()} Naive Predictions"
+        self.logger.experiment.log({logs_name: table})

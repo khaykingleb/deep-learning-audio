@@ -1,0 +1,28 @@
+---
+# @package _global_
+
+# Order of defaults determines the order in which configs override each other
+defaults:
+  - _self_
+  - callbacks: default
+  - loggers: default
+  - trainer: default
+  - tuner: default
+  - debug:
+  - finetune:
+
+# Set to True to train the model. Otherwise, the model will not be trained.
+train: true
+
+# Set to True to evaluate the model on the test set using the best model weights achieved during training
+# Lightning chooses best weights based on the metric specified in checkpoint callback
+test: true
+
+# Seed for random number generators in pytorch, numpy, and random
+seed: 42
+
+# Root directory for the project
+root_dir: /app
+
+# Path to a checkpoint to load
+ckpt_path:

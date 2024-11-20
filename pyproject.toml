@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-typer = "^0.13.0"
+typer = "^0.13.1"
 attrs = "^24.2.0"
 loguru = "^0.7.2"
 pydantic = "^2.8.2"
@@ -26,6 +26,7 @@ einops = "^0.8.0"
 #triton = { version = "^3.0.0", markers = "sys_platform == 'linux'" }
 tiktoken = "^0.8.0"
 pyarrow = "^18.0.0"
+matplotlib = "^3.9.2"
 
 [tool.poetry.group.audio.dependencies]
 soundfile = "^0.12.1"
@@ -33,9 +34,9 @@ torchaudio = "^2.5.1"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
-jupyterlab = "^4.2.5"
+jupyterlab = "^4.3.1"
 plotly = "^5.23.0"
-matplotlib = "^3.9.2"
+gpustat = "^1.1.1"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.2"
@@ -114,6 +115,7 @@ select = [
 ]
 ignore = [
   "ANN101",  # missing type annotation for `self` in method
+  "ANN204",  # missing return type annotation for special method
   "D105",    # missing docstring in magic method
   "PLR0913", # too many arguments in function definition ({c_args} > {max_args})
   "N812",    # imports are non-lowercase
@@ -125,10 +127,18 @@ fixable = [
     "I",      # isort
     "D",      # pydocstyle
     "TCH",    # typecheking
+    "F401",   # unused import
 ]
 
-[tool.ruff.per-file-ignores]
-"src/collections/audio/asr/data.py" = ["ARG002", "ANN401"]
+[tool.ruff.lint.per-file-ignores]
+# "src/collections/audio/asr/data.py" = ["ARG002", "ANN401"]
+"tests/*" = [
+  "ANN201",  # missing return type annotation for public function
+  "D100",    # missing docstring in module
+  "D103",    # missing docstring in public function
+  "S101",    # use of `assert` detected
+  "PLR2004", # magic value used in comparison
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

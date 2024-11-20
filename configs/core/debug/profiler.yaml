@@ -1,0 +1,20 @@
+---
+# @package _global_
+# Runs with execution time profiling
+
+defaults:
+  - default
+  - _self_
+
+trainer:
+  max_epochs: 1
+  # Find training loop bottlenecks
+  # https://lightning.ai/docs/pytorch/stable/tuning/profiler_basic.html
+  # * "simple" profiler measures all the key methods across Callbacks, DataModules and the LightningModule in the training loop.
+  # * "advanced" profiler the time within every function, use the AdvancedProfiler built on top of Python’s cProfiler.
+  # * "pytorch" profiler measures the time within every function, use the PyTorch profiler (not sure here)
+  # If the profiler report becomes too long, you can stream the report to a file:
+  # from lightning.pytorch.profilers import AdvancedProfiler
+  # profiler = AdvancedProfiler(dirpath=".", filename="perf_logs")
+  # trainer = Trainer(profiler=profiler)
+  profiler: simple

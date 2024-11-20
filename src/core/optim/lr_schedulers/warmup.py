@@ -1,7 +1,5 @@
-import math
-import typing as tp
+"""Learning rate scheduler with warmup."""
 
-import torch
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
 
@@ -17,6 +15,15 @@ class WarmupLRScheduler(LRScheduler):
         warmup_steps: int,
         last_epoch: int = -1,
     ) -> None:
+        """Initialize WarmupLRScheduler.
+
+        Args:
+            optimizer: Optimizer to update the learning rate.
+            initial_lr: Initial learning rate.
+            peak_lr: Peak learning rate.
+            warmup_steps: Number of warmup steps.
+            last_epoch: The index of the last epoch.
+        """
         self.__check_args(initial_lr, peak_lr, warmup_steps)
         super().__init__(optimizer, last_epoch)
 
@@ -36,11 +43,14 @@ class WarmupLRScheduler(LRScheduler):
         warmup_steps: int,
     ) -> None:
         if initial_lr <= 0:
-            raise ValueError(f"Invalid learning rate: {initial_lr}")
+            msg = f"Invalid learning rate: {initial_lr}"
+            raise ValueError(msg)
         if peak_lr <= 0:
-            raise ValueError(f"Invalid peak learning rate: {peak_lr}")
+            msg = f"Invalid peak learning rate: {peak_lr}"
+            raise ValueError(msg)
         if warmup_steps <= 0:
-            raise ValueError(f"Invalid warmup steps: {warmup_steps}")
+            msg = f"Invalid warmup steps: {warmup_steps}"
+            raise ValueError(msg)
 
     def step(self) -> None:
         """Make a step in learning rate."""
@@ -56,7 +66,6 @@ class WarmupLRScheduler(LRScheduler):
         Returns:
             Learning rates for param_groups.
         """
-        lrs = []
-        for param_group in self.optimizer.param_groups:
-            lrs.append(param_group["lr"])
-        return lrs
+        return [
+            param_group["lr"] for param_group in self.optimizer.param_groups
+        ]

@@ -6,7 +6,6 @@ __pycache__/
 .coverage.*
 
 # Misc
-*.log
 wandb/**/*
 !wandb/.gitkeep
 data/*

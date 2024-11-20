@@ -25,6 +25,11 @@ class TextTokenizer:
 
     @property
     def alphabet_size(self) -> int:
+        """Get the size of the alphabet.
+
+        Returns:
+            Size of the alphabet.
+        """
         return len(self.alphabet)
 
     def encode(self, text: str) -> torch.Tensor:
@@ -72,6 +77,11 @@ class CTCTextTokenizer(TextTokenizer):
 
     @property
     def blank_token(self) -> int:
+        """Get the blank token.
+
+        Returns:
+            Blank token.
+        """
         return self._blank_token
 
     def raw_decode(self, tokens: torch.Tensor) -> str:

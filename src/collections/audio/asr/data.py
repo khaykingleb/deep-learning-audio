@@ -3,13 +3,10 @@
 import math
 import typing as tp
 
-import hydra
 import lightning as L
 import torch
 from omegaconf import ListConfig
 from torch.utils.data import DataLoader
-
-from src.utils.loggers import logger
 
 if tp.TYPE_CHECKING:
     from src.collections.audio.asr.datasets import ASRDataset
@@ -42,7 +39,7 @@ class ASRDataCollator:
                 (0, max_tokens_len - sample["tokens"].shape[-1]),
             )
             tokens = torch.cat([tokens, tokens_padded], dim=0)
-            tokens_lengths.append(tokens_padded.shape[-1])
+            tokens_lengths.append(sample["tokens"].shape[-1])
 
             transforms_padded = torch.nn.functional.pad(
                 sample["transform"],

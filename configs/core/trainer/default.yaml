@@ -1,0 +1,71 @@
+---
+# https://lightning.ai/docs/pytorch/stable/common/trainer.html
+# https://lightning.ai/docs/pytorch/stable/common/optimization.html
+# https://lightning.ai/docs/pytorch/stable/common/precision_basic.html
+# https://lightning.ai/docs/pytorch/stable/extensions/accelerator.html
+# https://lightning.ai/docs/pytorch/stable/advanced/training_tricks.html
+
+_target_: lightning.pytorch.trainer.Trainer
+min_epochs: 100 # prevents early stopping
+max_epochs: 1200
+
+# Lightning runs 2 steps of validation in the beginning of training.
+# This avoids crashing in the validation loop sometime deep into a lengthy training loop.
+num_sanity_val_steps: 2
+
+# Perform a validation loop every N training epochs
+check_val_every_n_epoch: 1
+
+# Logging a metric on every single batch can slow down training.
+# By default, Lightning logs every 50 rows, or 50 training steps.
+# To change this behaviour, set the log_every_n_steps Trainer flag.
+log_every_n_steps: 10
+
+# Use deterministic algorithms for reproducibility with torch.use_deterministic_algorithms
+# Makes training slower but gives more reproducibility than just setting seeds
+deterministic: false
+
+# Use CuDNN benchmarking for faster training with torch.backends.cudnn.benchmark
+benchmark: false
+
+# Use 16-bit mixed precision to speed up training and inference.
+# If your GPUs have Tensor Cores, you can expect a ~3x speed improvement.
+# In most cases, mixed precision uses FP16.
+# The supported options:
+# * transformer-engine
+# * transformer-engine-float16
+# * 16-true
+# * 16-mixed
+# * bf16-true
+# * bf16-mixed
+# * 32-true
+# * 64-true
+# Supported PyTorch operations automatically run in FP16, saving memory and improving throughput on the supported accelerators.
+# Since computation happens in FP16, which has a very limited “dynamic range”, there is a chance of numerical instability during training.
+# This is handled internally by a **dynamic grad scaler** which skips invalid steps and adjusts the scaler to ensure subsequent steps fall within a finite range.
+# For more information see the autocast docs.
+# With true 16-bit precision you can additionally lower your memory consumption by up to half so that you can train and deploy larger models. However, this setting can sometimes lead to unstable training.
+precision: 32-true
+
+# Accumulated gradients run K small batches of size N before doing a backward pass.
+# The effect is a large effective batch size of size KxN, where N is the batch size.
+# Internally it doesn’t stack up the batches and do a forward pass rather it accumulates
+# the gradients for K batches and then do an optimizer.step to make sure the effective batch size is increased but there is no memory overhead.
+# DEFAULT (ie: no accumulated grads)
+# trainer = Trainer(accumulate_grad_batches=1)
+# Accumulate gradients for 7 batches
+# trainer = Trainer(accumulate_grad_batches=7)
+accumulate_grad_batches: 1
+
+# Gradient clipping can be enabled to avoid exploding gradients.
+# By default, this will clip the gradient norm by calling torch.nn.utils.clip_grad_norm_() computed over all model parameters together.
+# If the Trainer’s gradient_clip_algorithm is set to 'value' ('norm' by default),
+# this will use instead torch.nn.utils.clip_grad_value_() for each parameter instead.
+# DEFAULT (ie: don't clip)
+# trainer = Trainer(gradient_clip_val=0)
+# Clip gradients' global norm to <=0.5 using gradient_clip_algorithm='norm' by default
+# trainer = Trainer(gradient_clip_val=0.5)
+# Clip gradients' maximum magnitude to <=0.5
+# trainer = Trainer(gradient_clip_val=0.5, gradient_clip_algorithm="value")
+gradient_clip_algorithm: norm
+gradient_clip_val: 10.0

@@ -11,7 +11,7 @@ import torchaudio.functional as F
 from attrs import define, field
 
 from src.collections.audio.dsp.audio import load_waveform
-from src.utils.loggers import logger
+from src.utils.logger import logger
 
 RIR_ASSET_URL = (
     "tutorial-assets/Lab41-SRI-VOiCES-rm1-impulse-mc01-stu-clo-8000hz.wav"
@@ -62,8 +62,7 @@ class AudioAugmenter:
             :,
             int(self.sample_rate * 1.01) : int(self.sample_rate * 1.3),
         ]
-        rir = rir / torch.linalg.vector_norm(rir, ord=2)
-        return rir
+        return rir / torch.linalg.vector_norm(rir, ord=2)
 
     @_noise.default
     def _load_noise(self) -> torch.Tensor:
@@ -143,7 +142,6 @@ class AudioAugmenter:
         effects_to_choose = [
             ["pitch", str(random.randint(0, self.max_pitch_shift))],
             ["tempo", str(1 + self.max_tempo_change * random.uniform(-1, 1))],
-            # ["reverb", "-w"],
         ]
         selected_effect = effect or random.choice(effects_to_choose)
         waveform, _ = torchaudio.sox_effects.apply_effects_tensor(

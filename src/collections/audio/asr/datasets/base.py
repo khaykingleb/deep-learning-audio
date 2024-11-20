@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 
 import pandera.polars as pa
 import polars as pl
+import torchaudio
 import torchaudio.transforms as T
 from attrs import define, field
 from loguru import logger
@@ -53,8 +54,8 @@ class ASRDataset(Dataset, ABC):
     """
 
     tokenizer: TextTokenizer = field(repr=False)
-    augmenter: AudioAugmenter = field(repr=False)
     transformer: Transformer = field(repr=False)
+    augmenter: AudioAugmenter = field(repr=False)
 
     text_max_length: int | None = field(default=None)
     audio_max_duration: int | None = field(default=None)
@@ -62,6 +63,9 @@ class ASRDataset(Dataset, ABC):
     audio_aug_prob: float = field(default=0.0)
 
     _data: pl.DataFrame = field(default=None, init=False, repr=False)
+
+    # TODO: REWORK, JUST TESTING NOW
+    amplitude_to_db = torchaudio.transforms.AmplitudeToDB(top_db=80)
 
     @abstractmethod
     def download(self) -> None:
@@ -109,7 +113,7 @@ class ASRDataset(Dataset, ABC):
             waveform = self.augmenter(waveform)
         return {
             "waveform": waveform,
-            "transform": self.transformer(waveform),
+            "transform": self.amplitude_to_db(self.transformer(waveform)),
             "tokens": self.tokenizer.encode(text),
         }
 

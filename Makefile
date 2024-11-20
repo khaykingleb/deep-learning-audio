@@ -85,7 +85,7 @@ update-pre-commit-hooks:  ## Update pre-commit hooks
 .PHONY: update-pre-commit-hooks
 
 clean: ## Clean up
-	find logs/ -type f ! -name '.gitkeep' -delete
+	find wandb -mindepth 1 ! -name '.git*' -exec rm -rf {} +
 	find . -type d -name "__pycache__" -exec rm -r {} +
 	rm -rf .pytest_cache .ruff_cache .coverage.*
 .PHONY: clean

@@ -1,7 +1,5 @@
 """Functions for processing digital audio signals."""
 
-from pathlib import Path
-
 import torch
 import torchaudio
 

@@ -7,9 +7,8 @@ SHELL ["/bin/bash", "-l", "-o", "pipefail", "-c"]
 
 # Install general dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        curl=8.5.0-2ubuntu10.4 \
-        git=1:2.43.0-1ubuntu7.1 \
+    && apt-get install --no-install-recommends -y curl=8.5.0-2ubuntu10.5 \
+                                                  git=1:2.43.0-1ubuntu7.1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,14 +21,13 @@ COPY .tool-versions .
 
 # Install Python build dependencies
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1 \
-        libssl-dev=3.0.13-0ubuntu3.4 \
-        libbz2-dev=1.0.8-5.1build0.1 \
-        libsqlite3-dev=3.45.1-1ubuntu2 \
-        libffi-dev=3.4.6-1build1 \
-        libreadline-dev=8.2-4build1 \
-        liblzma-dev=5.6.1+really5.4.5-1build0.1 \
+    && apt-get install --no-install-recommends -y zlib1g-dev=1:1.3.dfsg-3.1ubuntu2.1 \
+                                                  libssl-dev=3.0.13-0ubuntu3.4 \
+                                                  libbz2-dev=1.0.8-5.1build0.1 \
+                                                  libsqlite3-dev=3.45.1-1ubuntu2 \
+                                                  libffi-dev=3.4.6-1build1 \
+                                                  libreadline-dev=8.2-4build1 \
+                                                  liblzma-dev=5.6.1+really5.4.5-1build0.1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -43,6 +41,10 @@ RUN asdf plugin-add poetry https://github.com/asdf-community/asdf-poetry.git \
     && poetry config virtualenvs.create false
 
 # Poetry dependencies installation
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y libsndfile1=1.2.2-1ubuntu5 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 COPY pyproject.toml poetry.lock ./
 RUN --mount=type=cache,target=/$/.cache/pypoetry/cache \
     --mount=type=cache,target=/root/.cache/pypoetry/artifacts \

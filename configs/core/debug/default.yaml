@@ -1,0 +1,23 @@
+---
+# @package _global_
+
+# # disable callbacks and loggers during debugging
+# callbacks: null
+# logger: null
+
+trainer:
+  max_epochs: 1
+  # Debuggers don't like GPUs
+  accelerator: cpu
+  # Debuggers don't like multiprocessing
+  devices: 1
+  # Lightning helps you detect anomalies in the PyTorh autograd engine via PyTorch’s built-in Anomaly Detection Context-manager
+  # Raises exception if NaN or +/-inf is detected in any tensor
+  # https://pytorch.org/docs/2.5/autograd.html#anomaly-detection
+  detect_anomaly: true
+
+data:
+  # Debuggers don't like multiprocessing
+  num_workers: 0
+  # Disable gpu memory pin
+  pin_memory: false

@@ -24,6 +24,7 @@ class Novograd(Optimizer):
         betas: tuple[float, float] = (0.95, 0.98),
         eps: float = 1e-8,
         weight_decay: float = 0,
+        *,
         grad_averaging: bool = False,
         amsgrad: bool = False,
     ) -> None:
@@ -66,20 +67,24 @@ class Novograd(Optimizer):
         weight_decay: float,
     ) -> None:
         if lr < 0.0:
-            raise ValueError(f"Invalid learning rate: {lr}")
+            msg = f"Invalid learning rate: {lr}"
+            raise ValueError(msg)
         if eps < 0.0:
-            raise ValueError(f"Invalid epsilon value: {eps}")
+            msg = f"Invalid epsilon value: {eps}"
+            raise ValueError(msg)
         if not (0.0 <= betas[0] < 1.0 and 0.0 <= betas[1] < 1.0):
-            raise ValueError(
+            msg = (
                 f"Invalid beta parameters at index 0: {betas[0]} "
                 f"and at index 1: {betas[1]}"
             )
+            raise ValueError(msg)
         if weight_decay < 0:
-            raise ValueError(f"Invalid weight_decay value: {weight_decay}")
+            msg = f"Invalid weight_decay value: {weight_decay}"
+            raise ValueError(msg)
 
-    def step(
+    def step(  # noqa: PLR0912, C901
         self,
-        closure: tp.Optional[tp.Callable[[], float]] = None,
+        closure: tp.Callable[[], float] | None = None,
     ) -> float:
         """Perform a single optimization step.
 

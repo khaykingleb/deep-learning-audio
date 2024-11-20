@@ -1,0 +1,11 @@
+---
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.LearningRateMonitor.html
+
+learning_rate_monitor:
+  _target_: lightning.pytorch.callbacks.LearningRateMonitor
+  # Determines at which rate (in number of batches) the learning rate gets logged
+  logging_interval: epoch
+  # Log the momentum values of the optimizer, if the optimizer has the momentum or betas attribute
+  log_momentum: true
+  # Log the weight decay values of the optimizer, if the optimizer has the weight_decay attribute
+  log_weight_decay: true

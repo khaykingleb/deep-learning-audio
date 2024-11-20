@@ -1,4 +1,3 @@
----
 _target_: src.collections.audio.asr.model.ASRModel
 _recursive_: false
 

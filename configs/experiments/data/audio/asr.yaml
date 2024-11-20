@@ -1,4 +1,3 @@
----
 _target_: src.collections.audio.asr.data.ASRData
 
 batch_size: 16 # needs to be divisible by the number of devices (e.g., if in a distributed setup)

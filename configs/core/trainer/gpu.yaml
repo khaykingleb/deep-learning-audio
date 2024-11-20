@@ -1,4 +1,3 @@
----
 # https://lightning.ai/docs/pytorch/stable/accelerators/gpu_basic.html#choosing-gpu-devices
 
 defaults:

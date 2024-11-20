@@ -39,6 +39,10 @@ prerequisites: ## Install prerequisite tools
 	asdf current
 .PHONY: prerequisites
 
+env: ## Create .env file
+	cp .env.example .env
+.PHONY: env
+
 pre-commit: ## Install pre-commit hooks
 	@echo "Installing pre-commit hooks."
 	pre-commit install -t pre-commit -t commit-msg

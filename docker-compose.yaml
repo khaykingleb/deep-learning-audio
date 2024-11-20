@@ -1,4 +1,3 @@
----
 services:
   dori:
     container_name: dori

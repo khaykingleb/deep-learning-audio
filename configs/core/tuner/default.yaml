@@ -1,4 +1,3 @@
----
 # https://www.restack.io/p/pytorch-lightning-answer-tuner-cat-ai
 
 # Batch size auto-scaling: find the largest batch size that fits into memory

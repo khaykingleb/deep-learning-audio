@@ -1,4 +1,3 @@
----
 # @package _global_
 
 # Order of defaults determines the order in which configs override each other

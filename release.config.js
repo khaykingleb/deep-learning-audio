@@ -49,19 +49,19 @@ export default {
     [
       "@semantic-release/exec",
       {
-        prepareCmd: "echo ${nextRelease.version} > .version",
-      },
+        prepareCmd: "echo ${nextRelease.version} > .version"
+      }
     ],
     [
-      "@semantic-release/npm",
+      "@semantic-release/exec",
       {
-        npmPublish: false,
-      },
+        prepareCmd: "poetry version `echo ${nextRelease.version} | sed 's/-.*//'`"
+      }
     ],
     [
       "@semantic-release/git",
       {
-        assets: ["package.json", ".version"],
+        assets: ["pyproject.toml", "poetry.lock", ".version"],
         message:
           "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
       },

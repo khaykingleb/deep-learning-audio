@@ -1,10 +1,8 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL = help
 
-VERSION := 0.14.11
+VERSION := $(shell cat .version)
 CONTAINER_NAME := dori
-
-# export VERSION := $(shell grep -m 1 version pyproject.toml | grep -e '\d.\d.\d' -o)
 
 # Load environment variables from .env
 ifneq (,$(wildcard ./.env))

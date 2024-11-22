@@ -12,13 +12,13 @@ It's a library I created for efficient deep learning research on various tasks (
 
 4. Choose between local development outside or inside Docker container.
 
-    * **Outside of Docker (not recommended)**:
+    * Outside of Docker (not recommended):
 
         ```bash
         make init-local
         poetry shell && python3 src train <experiment_name>
         ```
-    * **Inside Docker**:
+    * Inside Docker:
 
         ```bash
         make init && make build && make run

@@ -6,9 +6,9 @@ services:
       context: .
       dockerfile: Dockerfile
     working_dir: /app
-    # volumes:
-    #   - .:/app
-    #   - /app/.venv
+    volumes:
+      - .:/app
+      - /app/.venv
     env_file:
       - .env
     tty: true

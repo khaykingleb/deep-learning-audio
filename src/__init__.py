@@ -1,3 +1,5 @@
 """Entrypoint for the package."""
 
-__version__ = "0.1.0"
+from pathlib import Path
+
+__version__ = Path(".version").read_text().strip()

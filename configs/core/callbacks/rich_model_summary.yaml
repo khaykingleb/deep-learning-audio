@@ -1,0 +1,10 @@
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.RichModelSummary.html
+# Whenever the .fit() function gets called, the Trainer will print the weights summary for the LightningModule
+
+# from lightning.pytorch.callbacks import ModelSummary
+# trainer = Trainer(callbacks=[ModelSummary(max_depth=-1)])
+
+rich_model_summary:
+  _target_: lightning.pytorch.callbacks.RichModelSummary
+  # Maximum depth of the model summary
+  max_depth: 1

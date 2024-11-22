@@ -1,0 +1,13 @@
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.DeviceStatsMonitor.html
+# Technique to detect bottlenecks.
+# Ensures that you’re using the full capacity of your accelerator (GPU/TPU/HPU).
+# CPU metrics will be tracked by default on the CPU accelerator.
+# To enable it for other accelerators set DeviceStatsMonitor(cpu_stats=True).
+# To disable logging CPU metrics, you can specify DeviceStatsMonitor(cpu_stats=False).
+
+device_stats_monitor:
+  _target_: lightning.pytorch.callbacks.DeviceStatsMonitor
+  # If None, it will log CPU stats only if the accelerator is CPU
+  # If True, it will log CPU stats regardless of the accelerator
+  # If False, it will not log CPU stats regardless of the accelerator
+  cpu_stats: true

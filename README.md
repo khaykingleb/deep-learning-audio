@@ -1,32 +1,32 @@
-# Deep-Learning-for-Audio
+# Efficient Deep Learning
 
-![release][release]
+It's a library I created for efficient deep learning research on various tasks (inspired by [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) and [NVIDIA/NeMo](https://github.com/NVIDIA/NeMo)).
 
-# Getting Started
+## Getting Started
 
-Make sure that you have `make --version` greater than 3.81.
+1. Install [asdf](https://asdf-vm.com/guide/getting-started.html) to manage different tools' runtime versions.
 
-* Cloning the repository:
-  ```shell
-  git clone https://github.com/khaykingleb/Deep-Learning-for-Audio.git && cd Deep-Learning-for-Audio
-  ```
+2. Update `.env.example` to your needs.
 
-* Looking up targets:
-  ```shell
-  make help
-  ```
+3. Setup your training Hydra config in `configs/experiments/` folder.
 
-* Training models:
-  ```shell
-  poetry shell
-  python3 -m src.core.<TASK> --config_path=<CONFIG>.yaml
-  ```
+4. Choose between local development outside or inside Docker container.
 
+    * Outside of Docker (not recommended):
 
-[release]: https://github.com/khaykingleb/Deep-Learning-for-Audio/actions/workflows/release.yaml/badge.svg
+        ```bash
+        make init-local
+        poetry shell && python3 src train <experiment_name>
+        ```
+    * Inside Docker:
 
-# To Be Added
+        ```bash
+        make init && make build && make run
+        python3 src train <experiment_name>
+        ```
 
-* [Attention model for KWS](https://github.com/khaykingleb/KWS).
-* [Acoustic model for TTS](https://github.com/khaykingleb/FastSpeech).
-* [Vocoder for TTS](https://github.com/khaykingleb/HiFi-GAN).
+## Notes
+
+* Use `make help` to see all available commands.
+
+* Use `python3 src --help` to see all available CLI arguments.

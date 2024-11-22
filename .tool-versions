@@ -1,0 +1,5 @@
+direnv 2.35.0
+opentofu 1.7.2
+python 3.12.4
+pre-commit 3.7.1
+poetry 1.8.3

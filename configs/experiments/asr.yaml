@@ -1,0 +1,57 @@
+# @package _global_
+
+# Order of defaults determines the order in which configs override each other
+defaults:
+  - /core/train@_here_
+  # - /core/debug/fdr@_here_
+  - data: audio/asr
+  - models: audio/asr/quartznet
+  - _self_
+
+root_dir: /home/shadeform/pipeline/deep-learning-audio
+
+callbacks:
+  learning_rate_monitor:
+    logging_interval: step
+    log_momentum: true
+    log_weight_decay: true
+
+  model_checkpoint:
+    filename: epoch={epoch}-step={step}-val_wer={val_wer:.2f}
+    monitor: val_wer
+    mode: min
+    save_top_k: 3
+
+  early_stopping:
+    monitor: val_wer
+    patience: 10
+    mode: min
+
+loggers:
+  wandb:
+    project: asr_quartznet
+    tags: []
+
+data:
+  persistent_workers: true
+  pin_memory: true
+  num_workers: 6
+  batch_size: 32
+
+trainer:
+  deterministic: false
+  benchmark: true
+  log_every_n_steps: 10
+  min_epochs: 200
+  max_epochs: 1200
+  precision: 16-mixed
+
+models:
+  optimizer:
+    lr: 0.035
+
+  scheduler:
+    min_lr: 0.001
+    first_cycle_steps: 1200
+    warmup_steps: 1000
+    gamma: 0.5

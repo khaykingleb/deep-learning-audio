@@ -1,0 +1,12 @@
+# https://lightning.ai/docs/pytorch/stable/advanced/model_parallel.html
+
+defaults:
+  - default
+
+# Setting accelerator="gpu" will also automatically choose the “mps” device on Apple sillicon GPUs.
+# If you want to avoid this, you can set accelerator="cuda" instead.
+accelerator: gpu
+strategy: ddp
+devices: 4
+num_nodes: 1
+sync_batchnorm: true

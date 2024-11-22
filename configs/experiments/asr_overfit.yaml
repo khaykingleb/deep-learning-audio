@@ -1,0 +1,37 @@
+# @package _global_
+
+# Order of defaults determines the order in which configs override each other
+# NOTE: need to specify debug to overfit in core/train.yaml
+defaults:
+  - /core/train@_here_
+  - /core/debug/overfit@_here_
+  - data: audio/asr
+  - models: audio/asr/quartznet
+  - _self_
+
+test: false
+
+callbacks:
+  learning_rate_monitor:
+    _target_: lightning.pytorch.callbacks.LearningRateMonitor
+    logging_interval: step
+    log_momentum: true
+    log_weight_decay: true
+
+loggers:
+  wandb:
+    project: asr_quartznet
+    name: overfit
+    prefix: overfit
+
+data:
+  batch_size: 8 #32
+
+trainer:
+  log_every_n_steps: 1
+  max_epochs: 20
+  precision: 32-true #16-mixed
+
+models:
+  model:
+    dropout_rate: 0

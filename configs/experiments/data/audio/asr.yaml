@@ -1,0 +1,42 @@
+_target_: src.collections.audio.asr.data.ASRData
+
+batch_size: 16 # needs to be divisible by the number of devices (e.g., if in a distributed setup)
+num_workers: 2
+persistent_workers: false
+pin_memory: false
+downsize: 2
+
+dataset:
+  _target_: src.collections.audio.asr.datasets.LJSpeechDataset
+  data_dir: ${root_dir}/data
+  data_proportions: [0.75, 0.2, 0.05]  # TODO(khaykingleb): make train/val/test
+
+  text_max_length: 200
+  tokenizer:
+    _target_: src.collections.common.preprocessing.tokenizers.CTCTextTokenizer
+    blank_symbol: ϵ
+    alphabet: [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, ' ']
+
+  audio_max_duration: 20.0
+  audio_sample_rate: 16_000
+  audio_aug_prob: 0.0
+  augmenter:
+    _target_: src.collections.audio.dsp.augmentation.AudioAugmenter
+    sample_rate: ${data.dataset.audio_sample_rate}
+    use_sox_effects: true
+    use_room_reverberation: false
+    use_background_noise: false
+    max_pitch_shift: 50
+    max_tempo_change: 0.3
+    snr_dbs: [20, 15, 10]
+
+  transformer:
+    _target_: torchaudio.transforms.MelSpectrogram
+    sample_rate: ${data.dataset.audio_sample_rate}
+    f_min: 0
+    f_max: 8000  # above 6 kHz sounds become like whines and whistles because they are high pitched
+    n_fft: 1024
+    hop_length: 256
+    n_mels: 128  # number of mel filterbanks
+    mel_scale: htk  # mel = 2595.0 * np.log10(1.0 + f / 700.0)
+    normalized: true  # Whether to normalize by magnitude after stft

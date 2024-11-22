@@ -1,0 +1,26 @@
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.StochasticWeightAveraging.html
+
+# Stochastic Weight Averaging (SWA) can make your models generalize better at virtually no additional cost.
+# This can be used with both non-trained and trained models.
+# The SWA procedure smooths the loss landscape thus making it harder to end up in a local minimum during optimization.
+# For a more detailed explanation of SWA and how it works, read this post by the PyTorch team.
+# https://pytorch.org/blog/pytorch-1.6-now-includes-stochastic-weight-averaging/
+
+# trainer = Trainer(callbacks=[StochasticWeightAveraging(swa_lrs=1e-2)])
+
+stochastic_weight_averaging:
+  _target_: lightning.pytorch.callbacks.StochasticWeightAveraging
+  # The SWA learning rate to use (must be specified)
+  #  - float. Use this value for all parameter groups of the optimizer.
+  #  - List[float]. A list values for each parameter group of the optimizer.
+  swa_lrs:
+  # The epoch at which to start averaging the weights
+  # If provided as int, the procedure will start from
+  # If provided as float between 0 and 1, the procedure will start from ``int(swa_epoch_start * max_epochs)`` epoch
+  swa_epoch_start: 0.8
+  # The number of epochs in the annealing phase
+  annealing_epochs: 10
+  # The annealing strategy to use (cosine or linear annealing)
+  annealing_strategy: cos
+  # The averaging function used to update the parameters
+  avg_fn:

@@ -1,0 +1,81 @@
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.ModelCheckpoint.html
+# For fine-grained control over checkpointing behavior
+
+# class LitModel(L.LightningModule):
+#     def training_step(self, batch, batch_idx):
+#         self.log("val_loss", x)
+
+# saves top-K checkpoints based on "val_loss" metric
+# checkpoint_callback = ModelCheckpoint(
+#     save_top_k=10,
+#     monitor="val_loss",
+#     mode="min",
+#     dirpath="my/path/",
+#     filename="sample-mnist-{epoch:02d}-{val_loss:.2f}",
+# )
+
+# saves last-K checkpoints based on "global_step" metric
+# checkpoint_callback = ModelCheckpoint(
+#     save_top_k=10,
+#     monitor="global_step",
+#     mode="max",
+#     dirpath="my/path/",
+#     filename="sample-mnist-{epoch:02d}-{global_step}",
+# )
+
+# trainer = Trainer(callbacks=[checkpoint_callback])
+# checkpoint_callback.best_model_path
+
+# It is recommended that you pass formatting options to filename to include the monitored metric
+# like shown in the example above. Otherwise, if save_top_k >= 2 and enable_version_counter=True (default),
+# a version is appended to the filename to prevent filename collisions. You should not rely on the appended
+#  version to retrieve the top-k model, since there is no relationship between version count and model
+# performance. For example, filename-v2.ckpt doesn’t necessarily correspond to the top-2 model.
+
+# By default, the ModelCheckpoint callback saves model weights, optimizer states, etc.,
+# but in case you have limited disk space or just need the model weights to be saved you can specify save_weights_only=True.
+
+# By default, the ModelCheckpoint will save files into the Trainer.log_dir.
+# It gives you the ability to specify the dirpath and filename for your checkpoints.
+# Filename can also be dynamic so you can inject the metrics that are being logged using log().
+
+model_checkpoint:
+  _target_: lightning.pytorch.callbacks.ModelCheckpoint
+  # Directory to save the model file
+  dirpath: ${root_dir}/checkpoints
+  # Checkpoint filename. Can contain named formatting options to be auto-filled.
+  # Save any arbitrary metrics like `val_loss`, etc. in name
+  # Saves a file like: my/path/epoch=2-val_loss=0.02-other_metric=0.03.ckpt
+  # >>> checkpoint_callback = ModelCheckpoint(
+  # ...     dirpath='my/path',
+  # ...     filename='{epoch}-{val_loss:.2f}-{other_metric:.2f}'
+  # ... )
+  filename:
+  # Name of the logged metric which determines when model is improving
+  monitor:
+  # Verbosity mode
+  verbose: false
+  # Additionally always save an exact copy of the last checkpoint to a file last.ckpt
+  save_last:
+  # Saves top-K checkpoints based on monitor metric
+  save_top_k: 5
+  # Mode to compare the monitor metric (either "min" or "max")
+  mode: min
+  # Automatically insert the metric name into the filename
+  # For example, ``filename='checkpoint_{epoch:02d}-{acc:02.0f}`` with epoch ``1`` and
+  # acc ``1.12`` will resolve to ``checkpoint_epoch=01-acc=01.ckpt``.
+  # Is useful to set it to ``False`` when metric names contain ``/``
+  # as this will result in extra folders.
+  auto_insert_metric_name: true
+  # If True, then only the model’s weights will be saved
+  save_weights_only: false
+  # Number of training steps between checkpoints
+  every_n_train_steps:
+  # Checkpoints are monitored at the specified time interval
+  train_time_interval:
+  # Number of epochs between checkpoints
+  every_n_epochs:
+  # Whether to run checkpointing at the end of the training epoch
+  save_on_train_epoch_end:
+  # Whether to append a version to the existing file name
+  enable_version_counter: true

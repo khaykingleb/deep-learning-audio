@@ -1,0 +1,16 @@
+# @package _global_
+# Overfits to 1 batch
+
+defaults:
+  - default
+  - _self_
+
+trainer:
+  min_epochs:
+  max_epochs: 20
+  accelerator: auto
+  # Overfit a fraction of training/validation data (float) or a set number of batches (int)
+  overfit_batches: 1
+
+# model ckpt and early stopping need to be disabled during overfitting
+callbacks:

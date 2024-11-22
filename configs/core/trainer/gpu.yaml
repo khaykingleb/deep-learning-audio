@@ -1,0 +1,17 @@
+# https://lightning.ai/docs/pytorch/stable/accelerators/gpu_basic.html#choosing-gpu-devices
+
+defaults:
+  - default
+
+# Setting accelerator="gpu" will also automatically choose the “mps” device on Apple sillicon GPUs.
+# If you want to avoid this, you can set accelerator="cuda" instead.
+accelerator: gpu
+
+# Specifies how many GPUs to use per node
+# Trainer(accelerator="gpu", devices=k)
+# is equivalent to
+# Trainer(accelerator="gpu", devices=list(range(k)))
+# To run on as many GPUs as available by default, use:
+# trainer = Trainer(accelerator="auto", devices="auto", strategy="auto")
+# equivalent to `list(range(torch.cuda.device_count()))
+devices: 1

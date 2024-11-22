@@ -1,0 +1,22 @@
+services:
+  dori:
+    container_name: ${CONTAINER_NAME}
+    image: ${CONTAINER_NAME}:${VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    # volumes:
+    #   - .:/app
+    #   - /app/.venv
+    env_file:
+      - .env
+    tty: true
+    stdin_open: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]

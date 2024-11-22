@@ -1,2 +1,3 @@
-"""Deep Learning for Audio Processing."""
-__version__ = "0.14.11"
+"""Entrypoint for the package."""
+
+__version__ = "0.1.0"

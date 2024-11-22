@@ -2,6 +2,7 @@ SHELL := /bin/bash
 .DEFAULT_GOAL = help
 
 VERSION := 0.14.11
+CONTAINER_NAME := dori
 
 # export VERSION := $(shell grep -m 1 version pyproject.toml | grep -e '\d.\d.\d' -o)
 
@@ -20,8 +21,7 @@ PLUGINS := \
 	python https://github.com/asdf-community/asdf-python.git \
 	pre-commit https://github.com/jonathanmorley/asdf-pre-commit.git \
 	poetry https://github.com/asdf-community/asdf-poetry.git \
-	uv https://github.com/b1-luettje/asdf-uv.git \
-	direnv https://github.com/asdf-community/asdf-direnv.git
+	direnv https://github.com/asdf-community/asdf-direnv.git \
 
 prerequisites: ## Install prerequisite tools
 	@echo "Checking and installing required plugins."
@@ -39,8 +39,11 @@ prerequisites: ## Install prerequisite tools
 	asdf current
 .PHONY: prerequisites
 
-env: ## Create .env file
-	cp .env.example .env
+env: ## Create .env file if it doesn't exist
+	@if ! [ -e .env ]; then \
+		cp .env.example .env; \
+		echo "Created .env file. Please edit it according to your setup."; \
+	fi
 .PHONY: env
 
 pre-commit: ## Install pre-commit hooks
@@ -53,18 +56,22 @@ deps: ## Install dependencies
 	poetry install --no-cache
 .PHONY: deps
 
-init-local: prerequisites pre-commit deps ## Initialize repository for development outside of Docker
+init-local: prerequisites env pre-commit deps ## Initialize repository for development outside of Docker
 .PHONY: init-local
 
-init: prerequisites pre-commit ## Initialize repository for development in Docker
+init: prerequisites env pre-commit ## Initialize repository for development in Docker
 .PHONY: init
 
 ##=============================================================================
 ##@ Macros
 ##=============================================================================
 
+build: ## Build Docker container
+	docker compose -f docker-compose.yaml build
+.PHONY: build
+
 run: ## Run Docker container
-	docker compose -f docker-compose.yaml up --build
+	docker compose -f docker-compose.yaml run --rm $(CONTAINER_NAME) /bin/bash
 .PHONY: run
 
 test: ## Run tests
@@ -89,7 +96,8 @@ update-pre-commit-hooks:  ## Update pre-commit hooks
 .PHONY: update-pre-commit-hooks
 
 clean: ## Clean up
-	find wandb -mindepth 1 ! -name '.git*' -exec rm -rf {} +
+	find wandb -mindepth 1 ! -name '.gitkeep' -exec rm -rf {} +
+	find checkpoints -mindepth 1 ! -name '.gitkeep' -exec rm -rf {} +
 	find . -type d -name "__pycache__" -exec rm -r {} +
 	rm -rf .pytest_cache .ruff_cache .coverage.*
 .PHONY: clean

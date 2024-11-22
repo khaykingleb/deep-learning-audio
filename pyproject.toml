@@ -132,13 +132,17 @@ fixable = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# "src/collections/audio/asr/data.py" = ["ARG002", "ANN401"]
 "tests/*" = [
   "ANN201",  # missing return type annotation for public function
-  "D100",    # missing docstring in module
+  "D100",    # missing docstring in public module
   "D103",    # missing docstring in public function
+  "D104",    # missing docstring in public package
   "S101",    # use of `assert` detected
   "PLR2004", # magic value used in comparison
+]
+"notebooks/*" = [
+  "INP001",  # checks for packages that are missing an __init__.py file
+  "D100",    # missing docstring in public module
 ]
 
 [tool.ruff.lint.pydocstyle]

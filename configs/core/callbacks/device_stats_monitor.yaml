@@ -10,4 +10,4 @@ device_stats_monitor:
   # If None, it will log CPU stats only if the accelerator is CPU
   # If True, it will log CPU stats regardless of the accelerator
   # If False, it will not log CPU stats regardless of the accelerator
-  cpu_stats:
+  cpu_stats: true

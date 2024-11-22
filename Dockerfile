@@ -58,5 +58,3 @@ RUN --mount=type=cache,target=/$/.cache/pypoetry/cache \
 # Install root package
 COPY . .
 RUN poetry install --only-root
-
-CMD ["sleep", "infinity"]

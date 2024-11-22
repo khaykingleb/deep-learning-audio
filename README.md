@@ -1,23 +1,16 @@
-use make help for getting updated on the build commands
+# Efficient Deep Learning
 
-make init-local for local development
-
-make init for development inside a docker container
-
-Попробовать флеймгаф тут
-
-https://huggingface.co/spaces/fishaudio/fish-speech-1/blob/main/fish_speech/train.py
-
-https://github.com/pytorch/ao
-
-https://github.com/mynalabsai/speech/blob/main/examples/tts/train_tts.py
-
-https://github.com/ashleve/lightning-hydra-template/blob/main/src/eval.py
+Library for efficient deep learning research (inspired by [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template)).
 
 
->>> import lightning
->>> dir(lightning.pytorch.callbacks)
->>> ['BackboneFinetuning', 'BaseFinetuning', 'BasePredictionWriter', 'BatchSizeFinder', 'Callback', 'Checkpoint', 'DeviceStatsMonitor', 'EarlyStopping', 'GradientAccumulationScheduler', 'LambdaCallback', 'LearningRateFinder', 'LearningRateMonitor', 'ModelCheckpoint', 'ModelPruning', 'ModelSummary', 'OnExceptionCheckpoint', 'ProgressBar', 'RichModelSummary', 'RichProgressBar', 'SpikeDetection', 'StochasticWeightAveraging', 'TQDMProgressBar', 'ThroughputMonitor', 'Timer', '__all__', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__path__', '__spec__', 'batch_size_finder', 'callback', 'checkpoint', 'device_stats_monitor', 'early_stopping', 'finetuning', 'gradient_accumulation_scheduler', 'lambda_function', 'lr_finder', 'lr_monitor', 'model_checkpoint', 'model_summary', 'on_exception_checkpoint', 'prediction_writer', 'progress', 'pruning', 'rich_model_summary', 'spike', 'stochastic_weight_avg', 'throughput_monitor', 'timer']
->>>
->>
->
+## Getting Started
+
+* Install [asdf](https://asdf-vm.com/guide/getting-started.html) for managing different tool versions.
+* For local development outside of Docker, make sure to run `make init-local` first to install dependencies.
+* For development inside Docker, run the following commands:
+
+    ```bash
+    make init && make build
+    ```
+
+  Then you can use `make run` to start the container and work with it.

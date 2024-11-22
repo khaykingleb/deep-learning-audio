@@ -6,9 +6,11 @@ __pycache__/
 .coverage.*
 
 # Misc
-wandb/**/*
+.venv/
+.env
+wandb/*
 !wandb/.gitkeep
 data/*
 !data/.gitkeep
-.env
-.venv/
+checkpoints/*
+!checkpoints/.gitkeep

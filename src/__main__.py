@@ -72,10 +72,6 @@ def train(
                 logger.info(f"Instantiating logger <{logger_cfg['_target_']}>")
                 lightning_logger = hydra.utils.instantiate(logger_cfg)
                 loggers.append(lightning_logger)
-                # if isinstance(lightning_logger, WandbLogger):
-                #     # TODO(khaykingleb): Почему-то не работает
-                #     logger.info("Watching model with WandbLogger")
-                #     lightning_logger.watch(model)
         else:
             logger.warning("No loggers to instantiate")
 

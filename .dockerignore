@@ -10,5 +10,8 @@ __pycache__/
 .git/
 .github/
 .env
+checkpoints/
 data/
+notebooks/
 logs/
+wandb/

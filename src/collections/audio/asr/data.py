@@ -27,6 +27,14 @@ class ASRDataCollator:
         self,
         batch: list[dict[str, torch.Tensor]],
     ) -> dict[str, torch.Tensor | list[int] | list[torch.Tensor]]:
+        """Collate the batch.
+
+        Args:
+            batch: Batch of data
+
+        Returns:
+            Collated batch
+        """
         max_tokens_len = max(x["tokens"].shape[-1] for x in batch)
         max_transform_len = max(x["transform"].shape[-1] for x in batch)
 
@@ -162,8 +170,7 @@ class ASRData(L.LightningDataModule):
         return DataLoader(
             dataset=self._train_data,
             batch_size=self.hparams["batch_size"],
-            # shuffle=True,
-            # sampler
+            shuffle=True,
             num_workers=self.hparams["num_workers"],
             collate_fn=ASRDataCollator(self.hparams["downsize"]),
             pin_memory=self.hparams["pin_memory"],
@@ -179,6 +186,7 @@ class ASRData(L.LightningDataModule):
         return DataLoader(
             dataset=self._val_data,
             batch_size=self.hparams["batch_size"],
+            shuffle=False,
             num_workers=self.hparams["num_workers"],
             collate_fn=ASRDataCollator(self.hparams["downsize"]),
             pin_memory=self.hparams["pin_memory"],
@@ -194,6 +202,7 @@ class ASRData(L.LightningDataModule):
         return DataLoader(
             dataset=self._test_data,
             batch_size=self.hparams["batch_size"],
+            shuffle=False,
             num_workers=self.hparams["num_workers"],
             collate_fn=ASRDataCollator(self.hparams["downsize"]),
             pin_memory=self.hparams["pin_memory"],

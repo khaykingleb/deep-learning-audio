@@ -16,13 +16,13 @@ It's a library I created for efficient deep learning research on various tasks (
 
         ```bash
         make init-local
-        poetry shell && python3 src train <experiment_name>
+        poetry shell && python3 src train --experiment <experiment_name>
         ```
     * Inside Docker:
 
         ```bash
         make init && make build && make run
-        python3 src train <experiment_name>
+        python3 src train --experiment <experiment_name>
         ```
 
 ## Notes

@@ -1,0 +1,40 @@
+name: Code Quality & Testing
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-22.04
+    name: Check all files with pre-commit
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code so that it is available to use in the executing runner
+        uses: actions/checkout@v4.1.4
+        with:
+          fetch-depth: 0
+
+      - name: Check all files with pre-commit
+        uses: pre-commit/action@v3.0.1
+
+  test:
+    runs-on: ubuntu-22.04
+    name: Unit Test
+    steps:
+      - name: Checkout code so that it is available to use in the executing runner
+        uses: actions/checkout@v4.1.4
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1.4.1
+        with:
+          version: 1.8.3
+          virtualenvs-create: true
+          installer-parallel: true
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Testing
+        run: make test

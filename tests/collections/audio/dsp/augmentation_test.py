@@ -19,7 +19,10 @@ def test_audio_augmenter_no_augmentations(sample_waveform: torch.Tensor):
     """Test that an error is raised if no augmentations are enabled."""
     with pytest.raises(
         ValueError,
-        match="At least one of the following must be enabled",
+        match=(
+            "Invalid initialization: No augmentations selected. At least one "
+            "augmentation method should be enabled."
+        ),
     ):
         augmenter = AudioAugmenter(
             sample_rate=16000,

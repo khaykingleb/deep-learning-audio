@@ -2,101 +2,69 @@
   "branches": [
     "master"
   ],
-  "plugins": [
-    [
-      "@semantic-release/commit-analyzer",
-      {
-        "preset": "angular",
-        "releaseRules": [
-          {
-            "release": "major",
-            "type": "BREAKING CHANGE"
-          },
-          {
-            "release": "major",
-            "type": "feat!"
-          },
-          {
-            "release": "minor",
-            "type": "feat"
-          },
-          {
-            "message": "*",
-            "release": "patch"
-          }
-        ]
-      }
-    ],
-    [
-      "@semantic-release/release-notes-generator",
-      {
-        "preset": "conventionalcommits",
-        "presetConfig": {
-          "header": "CHANGELOG",
-          "types": [
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "angular",
+          "releaseRules": [
             {
-              "section": "Features",
-              "type": "feat"
+              "message": "*",
+              "release": "patch"
             },
             {
-              "section": "Breaking Changes",
-              "type": "BREAKING CHANGE"
+              "message": "feat:*",
+              "release": "minor"
             },
             {
-              "section": "Breaking Changes",
-              "type": "feat!"
+              "message": "BREAKING CHANGE:*",
+              "release": "major"
             },
             {
-              "section": "Bug Fixes",
-              "type": "fix"
-            },
-            {
-              "section": "Performance Improvements",
-              "type": "perf"
-            },
-            {
-              "section": "Tests",
-              "type": "test"
-            },
-            {
-              "section": "Build System",
-              "type": "build"
-            },
-            {
-              "section": "CI/CD",
-              "type": "ci"
-            },
-            {
-              "section": "Reverts",
-              "type": "revert"
+              "message": "feat!:*",
+              "release": "major"
             }
           ]
         }
-      }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "echo ${nextRelease.version} > .version"
-      }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "poetry version `echo ${nextRelease.version} | sed 's/-.*//'`"
-      }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets": [
-          "pyproject.toml",
-          "poetry.lock",
-          ".version"
-        ],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-      }
-    ],
-    "@semantic-release/github"
-  ]
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "presetConfig": {
+            "header": "CHANGELOG",
+            "types": [
+              { "type": "feat", "section": "Features" },
+              { "type": "BREAKING CHANGE", "section": "Breaking Changes" },
+              { "type": "feat!", "section": "Breaking Changes" },
+              { "type": "fix", "section": "Bug Fixes" },
+              { "type": "perf", "section": "Performance Improvements" },
+              { "type": "test", "section": "Tests" },
+              { "type": "build", "section": "Build System" },
+              { "type": "ci", "section": "CI/CD" },
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "echo ${nextRelease.version} > .version"
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "poetry version `echo ${nextRelease.version} | sed 's/-.*//'`"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": ["pyproject.toml", "poetry.lock", ".version"],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
+      "@semantic-release/github"
+    ]
 }

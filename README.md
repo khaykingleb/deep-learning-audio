@@ -1,6 +1,15 @@
-# Efficient Deep Learning
+# Research Playground
 
-It's a library I created for efficient deep learning research on various tasks (inspired by [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) and [NVIDIA/NeMo](https://github.com/NVIDIA/NeMo)).
+It's a library I created for efficient ML/DL research on various tasks (inspired by [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) and [NVIDIA/NeMo](https://github.com/NVIDIA/NeMo)).
+
+## Key features:
+- 🚀 Production-ready training pipelines
+- 🧠 Actual model implementations
+- ⚡️ Easy configuration management with Hydra
+- 📊 Experiment tracking with Weights & Biases
+- 🔧 Modular architecture for quick prototyping
+- 🐳 Docker support for reproducible environments
+- ☸️ Multi-GPU training with K3s and Terraform (soon) 
 
 ## Getting Started
 

@@ -23,7 +23,6 @@ torchmetrics = "^1.6.0"
 lightning = "^2.4.0"
 wandb = "^0.18.7"
 einops = "^0.8.0"
-#triton = { version = "^3.0.0", markers = "sys_platform == 'linux'" }
 tiktoken = "^0.8.0"
 pyarrow = "^18.0.0"
 matplotlib = "^3.9.2"
@@ -51,9 +50,9 @@ indent-width = 4
 
 # Exclude a variety of commonly ignored directories
 exclude = [
-    ".dvc",
-    ".github",
-    ".git",
+  ".dvc",
+  ".github",
+  ".git",
 ]
 
 [tool.ruff.format]

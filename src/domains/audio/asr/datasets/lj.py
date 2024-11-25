@@ -91,7 +91,6 @@ class LJSpeechDataset(ASRDataset):
         )
         data = pl.from_pandas(data).drop_nulls()
         self._data = self._process_data(self._partition_data(data, stage))
-        logger.info(self._data.head())
         self.finalize_data()
         return self
 

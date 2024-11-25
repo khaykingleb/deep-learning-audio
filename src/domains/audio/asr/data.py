@@ -9,7 +9,7 @@ from omegaconf import ListConfig
 from torch.utils.data import DataLoader
 
 if tp.TYPE_CHECKING:
-    from src.collections.audio.asr.datasets import ASRDataset
+    from src.domains.audio.asr.datasets import ASRDataset
 
 
 class ASRDataCollator:
@@ -138,6 +138,9 @@ class ASRData(L.LightningDataModule):
         Note:
             setup() is called from every process across all the nodes.
             Setting state here is recommended.
+
+        Raises:
+            ValueError: If the stage is invalid.
 
         Args:
             stage: Stage of experiment (fit, validate, test, predict).

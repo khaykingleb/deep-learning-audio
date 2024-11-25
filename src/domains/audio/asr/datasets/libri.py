@@ -9,8 +9,8 @@ import torchaudio
 from attrs import define, field
 from loguru import logger
 
-from src.collections.audio.asr.datasets.base import ASRDataset
-from src.collections.common.preprocessing.text import preprocess_text
+from src.domains.audio.asr.datasets.base import ASRDataset
+from src.domains.common.preprocessing.text import preprocess_text
 
 LIBRI_SPEECH_URL = "https://openslr.elda.org/resources/12"
 STAGES = [

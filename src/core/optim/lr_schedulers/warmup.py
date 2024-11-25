@@ -24,7 +24,7 @@ class WarmupLRScheduler(LRScheduler):
             warmup_steps: Number of warmup steps.
             last_epoch: The index of the last epoch.
         """
-        self.__check_args(initial_lr, peak_lr, warmup_steps)
+        self._check_args(initial_lr, peak_lr, warmup_steps)
         super().__init__(optimizer, last_epoch)
 
         self.initial_lr = initial_lr
@@ -36,8 +36,8 @@ class WarmupLRScheduler(LRScheduler):
 
         self.step_count = 1
 
-    def __check_args(
-        self,
+    @staticmethod
+    def _check_args(
         initial_lr: float,
         peak_lr: float,
         warmup_steps: int,

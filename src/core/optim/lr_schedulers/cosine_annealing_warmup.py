@@ -35,7 +35,7 @@ class CosineAnnealingWarmupLRScheduler(LRScheduler):
             gamma: The gamma factor for the learning rate decay.
             last_epoch: The index of last epoch.
         """
-        self.__check_args(
+        self._check_args(
             first_cycle_steps,
             cycle_multiplier,
             min_lr,
@@ -64,8 +64,8 @@ class CosineAnnealingWarmupLRScheduler(LRScheduler):
             param_group["lr"] = min_lr
             self.base_lrs.append(param_group["lr"])
 
-    def __check_args(
-        self,
+    @staticmethod
+    def _check_args(
         first_cycle_steps: int,
         cycle_multiplier: float,
         min_lr: float,
@@ -133,10 +133,10 @@ class CosineAnnealingWarmupLRScheduler(LRScheduler):
         """
         if epoch is None:
             epoch = self.last_epoch + 1
-            self.step_in_cycle = self.step_in_cycle + 1
+            self.step_in_cycle += 1
             if self.step_in_cycle >= self.cur_cycle_steps:
                 self.cycle += 1
-                self.step_in_cycle = self.step_in_cycle - self.cur_cycle_steps
+                self.step_in_cycle -= self.cur_cycle_steps
                 self.cur_cycle_steps = (
                     int(
                         (self.cur_cycle_steps - self.warmup_steps)

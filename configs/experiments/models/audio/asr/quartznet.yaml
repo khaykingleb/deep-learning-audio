@@ -1,8 +1,8 @@
-_target_: src.collections.audio.asr.model.ASRModel
+_target_: src.domains.audio.asr.model.ASRModel
 _recursive_: false
 
 model:
-  _target_: src.collections.audio.asr.models.quartznet.QuartzNet
+  _target_: src.domains.audio.asr.models.quartznet.QuartzNet
   in_channels: ${data.dataset.transformer.n_mels}
   out_channels:        # alphabet size, will be set in the trainer
   n_blocks: 5

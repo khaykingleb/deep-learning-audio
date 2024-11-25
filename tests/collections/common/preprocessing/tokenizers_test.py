@@ -1,6 +1,6 @@
 import pytest
 
-from src.collections.common.preprocessing.tokenizers import CTCTextTokenizer
+from src.domains.common.preprocessing.tokenizers import CTCTextTokenizer
 
 
 @pytest.mark.parametrize(

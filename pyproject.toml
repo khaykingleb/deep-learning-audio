@@ -64,6 +64,7 @@ docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
 [tool.ruff.lint]
+preview = true
 select = [
   "RUF",   # ruff checks
   "F",     # pyflakes
@@ -116,11 +117,11 @@ select = [
   "FURB",  # refurb
 ]
 ignore = [
-  "ANN101",  # missing type annotation for `self` in method
   "ANN204",  # missing return type annotation for special method
   "ARG002",  # unused argument
   "D105",    # missing docstring in magic method
   "PLR0913", # too many arguments in function definition ({c_args} > {max_args})
+  "PLR0917", # too many positional arguments
   "N812",    # imports are non-lowercase
   "S310",    # audit URL open for permitted schemes
   "S311",    # standard pseudo-random generators are not suitable for cryptographic purposes
@@ -146,6 +147,7 @@ fixable = [
 "notebooks/*" = [
   "INP001",  # checks for packages that are missing an __init__.py file
   "D100",    # missing docstring in public module
+  "W391",    # extra newline at end of file
 ]
 
 [tool.ruff.lint.pydocstyle]

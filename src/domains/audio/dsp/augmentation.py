@@ -10,7 +10,7 @@ import torchaudio
 import torchaudio.functional as F
 from attrs import define, field
 
-from src.collections.audio.dsp.audio import load_waveform
+from src.domains.audio.dsp.audio import load_waveform
 from src.utils.logger import logger
 
 RIR_ASSET_URL = (
@@ -55,6 +55,9 @@ class AudioAugmenter:
         in a conference room.
 
         Taken from: https://pytorch.org/audio/master/tutorials/audio_data_augmentation_tutorial.html
+
+        Returns:
+            Room Impulse Response (RIR).
         """
         rir_path = torchaudio.utils.download_asset(RIR_ASSET_URL)
         rir = load_waveform(rir_path, sample_rate=self.sample_rate)
@@ -66,13 +69,24 @@ class AudioAugmenter:
 
     @_noise.default
     def _load_noise(self) -> torch.Tensor:
-        """Load and process the background noise."""
+        """Load and process the background noise.
+
+        Returns:
+            Background noise.
+        """
         noise_path = torchaudio.utils.download_asset(NOISE_ASSET_URL)
         return load_waveform(noise_path, sample_rate=self.sample_rate)
 
     @_augmentations.default
     def _setup_augmentations(self) -> dict[str, Callable]:
-        """Setup augmentations."""
+        """Setup augmentations.
+
+        Raises:
+            ValueError: If no augmentations are enabled.
+
+        Returns:
+            Dictionary of augmentations.
+        """
         augmentations = {}
         if self.use_sox_effects:
             logger.info("Enabling SOX effects.")
@@ -112,6 +126,9 @@ class AudioAugmenter:
             augmentation_type: Type of augmentation to apply if specified.
                 Defaults to a random augmentation.
 
+        Raises:
+            ValueError: If the specified augmentation type is not valid.
+
         Returns:
             Augmented audio signal.
         """
@@ -138,7 +155,11 @@ class AudioAugmenter:
         waveform: torch.Tensor,
         effect: list[str] | None = None,
     ) -> torch.Tensor:
-        """Apply SOX effect to the digital signal."""
+        """Apply SOX effect to the digital signal.
+
+        Returns:
+            Augmented audio signal.
+        """
         effects_to_choose = [
             ["pitch", str(random.randint(0, self.max_pitch_shift))],
             ["tempo", str(1 + self.max_tempo_change * random.uniform(-1, 1))],
@@ -156,7 +177,11 @@ class AudioAugmenter:
         self,
         waveform: torch.Tensor,
     ) -> torch.Tensor:
-        """Simulate room reverberation using Room Impulse Response (RIR)."""
+        """Simulate room reverberation using Room Impulse Response (RIR).
+
+        Returns:
+            Augmented audio signal.
+        """
         return F.fftconvolve(waveform, self._rir, mode="full")
 
     def _add_background_noise(
@@ -164,7 +189,11 @@ class AudioAugmenter:
         waveform: torch.Tensor,
         snr_db: float | None = None,
     ) -> torch.Tensor:
-        """Add background noise to the digital signal."""
+        """Add background noise to the digital signal.
+
+        Returns:
+            Augmented audio signal.
+        """
         n_repeat = math.ceil(waveform.shape[1] / self._noise.shape[1])
         noise = self._noise.repeat([1, n_repeat])[:, : waveform.shape[1]]
         waveform_rms, noise_rms = waveform.norm(p=2), noise.norm(p=2)

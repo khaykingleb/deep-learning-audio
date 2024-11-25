@@ -12,9 +12,9 @@ from loguru import logger
 from pandera.typing import Series
 from torch.utils.data import Dataset
 
-from src.collections.audio.dsp.audio import load_waveform
-from src.collections.audio.dsp.augmentation import AudioAugmenter
-from src.collections.common.preprocessing.tokenizers import TextTokenizer
+from src.domains.audio.dsp.audio import load_waveform
+from src.domains.audio.dsp.augmentation import AudioAugmenter
+from src.domains.common.preprocessing.tokenizers import TextTokenizer
 
 Transformer = T.Spectrogram | T.MelSpectrogram | T.MFCC | T.LFCC
 
@@ -135,11 +135,10 @@ class ASRDataset(Dataset, ABC):
     def _filter_data(self) -> None:
         """Filter the dataset based on text length and audio duration."""
         filtered_data = self._data.clone()
-
         if self.text_max_length is not None:
             text_filtered = self._data.filter(
                 self._data.get_column("text")
-                .map_elements(lambda x: len(x), return_dtype=pl.Int64)
+                .map_elements(len, return_dtype=pl.Int64)
                 .le(self.text_max_length)
             )
             percentage_filtered = 1 - len(text_filtered) / len(self._data)

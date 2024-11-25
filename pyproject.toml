@@ -70,6 +70,7 @@ select = [
   "F",     # pyflakes
   "E",     # pycodestyle
   "W",     # pycodestyle
+  "DOC",   # pydoclint
   "C90",   # mcabbe
   "I",     # isort
   "N",     # pep8-naming
@@ -105,6 +106,7 @@ select = [
   "ARG",   # flake8-unused-arguments
   "PTH",   # flake8-use-pathlib
   "ERA",   # flake8-eradicate
+  "TD",    # flake8-todos
   "PD",    # pandas-vet
   "PGH",   # pygrep
   "PL",    # pylint

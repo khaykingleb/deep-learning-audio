@@ -1,5 +1,5 @@
 """Entrypoint for the package."""
 
-from pathlib import Path
+from src.utils.env import BASE_DIR
 
-__version__ = Path(".version").read_text().strip()
+__version__ = BASE_DIR.joinpath(".version").read_text().strip()

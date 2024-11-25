@@ -9,7 +9,7 @@ It's a library I created for efficient ML/DL research on various tasks (inspired
 - 📊 Experiment tracking with Weights & Biases
 - 🔧 Modular architecture for quick prototyping
 - 🐳 Docker support for reproducible environments
-- ☸️ Multi-GPU training with K3s and Terraform (soon) 
+- ☸️ Multi-GPU training with K3s and Terraform (soon)
 
 ## Getting Started
 

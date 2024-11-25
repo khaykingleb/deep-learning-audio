@@ -141,6 +141,7 @@ fixable = [
   "D104",    # missing docstring in public package
   "S101",    # use of `assert` detected
   "PLR2004", # magic value used in comparison
+  "INP001",  # add an `__init__.py` file
 ]
 "notebooks/*" = [
   "INP001",  # checks for packages that are missing an __init__.py file

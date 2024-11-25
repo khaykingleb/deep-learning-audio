@@ -19,7 +19,7 @@ PLUGINS := \
 	python https://github.com/asdf-community/asdf-python.git \
 	pre-commit https://github.com/jonathanmorley/asdf-pre-commit.git \
 	poetry https://github.com/asdf-community/asdf-poetry.git \
-	direnv https://github.com/asdf-community/asdf-direnv.git \
+	direnv https://github.com/asdf-community/asdf-direnv.git
 
 prerequisites: ## Install prerequisite tools
 	@echo "Checking and installing required plugins."

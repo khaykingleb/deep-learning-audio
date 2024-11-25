@@ -8,6 +8,7 @@ __pycache__/
 # Misc
 .venv/
 .env
+.DS_Store
 wandb/*
 !wandb/.gitkeep
 data/*

@@ -8,7 +8,7 @@ defaults:
   - models: audio/asr/quartznet
   - _self_
 
-root_dir: /home/shadeform/pipeline/deep-learning-audio
+root_dir:
 
 callbacks:
   learning_rate_monitor:

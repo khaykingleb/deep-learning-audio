@@ -121,14 +121,21 @@ class QuartzBlock(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Defines the QuartzNet's block structure."""
+        """Defines the QuartzNet's block structure.
+
+        Args:
+            x: tensor of shape (batch_size, in_channels, transform_length).
+
+        Returns:
+            Tensor of shape (batch_size, out_channels, transform_length).
+        """
         residual = self.skip_connection(x)
         for i, subblock in enumerate(self.quartz_blocks):
-            for _, module in enumerate(subblock):
+            for module in subblock:
                 if i == len(self.quartz_blocks) - 1 and isinstance(
                     module, nn.ReLU
                 ):
-                    x = x + residual
+                    x += residual
                 x = module(x)
         return x
 
@@ -251,7 +258,14 @@ class QuartzNet(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Defines the QuartzNet structure."""
+        """Defines the QuartzNet structure.
+
+        Args:
+            x: audio signal of shape (batch_size, n_channels, n_samples).
+
+        Returns:
+            Log-softmax of the output.
+        """
         x = self.C1(x)
         x = self.Bs(x)
         x = self.C2(x)

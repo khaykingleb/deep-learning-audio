@@ -84,18 +84,7 @@ class CTCTextTokenizer(TextTokenizer):
         """
         return self._blank_token
 
-    def raw_decode(self, tokens: torch.Tensor) -> str:
-        """Decode tokens according to token2char mapping.
-
-        Args:
-            tokens (Tensor): Tokens to decode.
-
-        Returns:
-            Decoded text with blank symbols.
-        """
-        return "".join([self._token2char[token.item()] for token in tokens])
-
-    def decode(self, tokens: torch.Tensor) -> str:
+    def ctc_decode(self, tokens: torch.Tensor) -> str:
         """Decode tokens according to token2char mapping.
 
         Args:

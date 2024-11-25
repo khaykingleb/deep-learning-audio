@@ -12,8 +12,8 @@ import torchaudio
 from attrs import define, field
 from loguru import logger
 
-from src.collections.audio.asr.datasets.base import ASRDataset
-from src.collections.common.preprocessing.text import preprocess_text
+from src.domains.audio.asr.datasets.base import ASRDataset
+from src.domains.common.preprocessing.text import preprocess_text
 
 LJ_SPEECH_URL = "https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2"
 
@@ -91,6 +91,7 @@ class LJSpeechDataset(ASRDataset):
         )
         data = pl.from_pandas(data).drop_nulls()
         self._data = self._process_data(self._partition_data(data, stage))
+        logger.info(self._data.head())
         self.finalize_data()
         return self
 
@@ -104,6 +105,9 @@ class LJSpeechDataset(ASRDataset):
         Args:
             data (DataFrame): Data to partition.
             stage (str): Dataset stage to set up.
+
+        Raises:
+            ValueError: If the proportions do not sum to 1.0.
 
         Returns:
             DataFrame: Partitioned data.

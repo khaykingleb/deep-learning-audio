@@ -1,6 +1,6 @@
 import pytest
 
-from src.collections.audio.dsp.audio import load_waveform
+from src.domains.audio.dsp.audio import load_waveform
 from src.utils.env import BASE_DIR
 
 

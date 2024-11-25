@@ -14,7 +14,7 @@ from torch.nn.modules.loss import CTCLoss
 from torchmetrics.text import CharErrorRate, WordErrorRate
 
 import wandb
-from src.collections.common.preprocessing.tokenizers import (
+from src.domains.common.preprocessing.tokenizers import (
     CTCTextTokenizer,
     TextTokenizer,
 )
@@ -192,6 +192,9 @@ class ASRModel(L.LightningModule):
         Args:
             batch: batch of data sampled from the training set
             batch_idx: index of the batch
+
+        Returns:
+            Training loss.
         """
         self._log_audio(batch, batch_idx, stage="train")
 
@@ -229,6 +232,9 @@ class ASRModel(L.LightningModule):
         Args:
             batch: batch of data sampled from the validation set
             batch_idx: index of the batch
+
+        Returns:
+            Validation loss.
         """
         self._log_audio(batch, batch_idx, stage="val")
 
@@ -264,8 +270,11 @@ class ASRModel(L.LightningModule):
         """Compute and return the test loss.
 
         Args:
-            batch: batch of data sampled from the test set
-            batch_idx: index of the batch
+            batch: batch of data sampled from the test set.
+            batch_idx: index of the batch.
+
+        Returns:
+            Test loss.
         """
         self._log_audio(batch, batch_idx, stage="test")
 
@@ -317,14 +326,17 @@ class ASRModel(L.LightningModule):
         batch_idx: int,
         stage: tp.Literal["train", "val", "test"] = "train",
     ) -> dict[str, torch.Tensor]:
-        if isinstance(self.tokenizer, CTCTextTokenizer):
-            pred_raw_texts = [
-                self.tokenizer.raw_decode(tokens) for tokens in pred_tokens
-            ]
-        pred_texts = [self.tokenizer.decode(tokens) for tokens in pred_tokens]
         target_texts = [
             self.tokenizer.decode(tokens).strip() for tokens in batch["tokens"]
         ]
+        if isinstance(self.tokenizer, CTCTextTokenizer):
+            pred_texts = [
+                self.tokenizer.ctc_decode(tokens) for tokens in pred_tokens
+            ]
+            pred_raw_texts = [
+                self.tokenizer.decode(tokens) for tokens in pred_tokens
+            ]
+
         self._log_naive_predictions(
             batch_idx,
             target_texts,

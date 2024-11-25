@@ -41,7 +41,7 @@ class Novograd(Optimizer):
             grad_averaging: Whether to use grad averaging
             amsgrad: Whether to use the AMSGrad variant of this algorithm
         """
-        self.__check_args(lr, betas, eps, weight_decay)
+        self._check_args(lr, betas, eps, weight_decay)
         super().__init__(
             params,
             defaults={
@@ -59,8 +59,8 @@ class Novograd(Optimizer):
         for group in self.param_groups:
             group.setdefault("amsgrad", False)
 
-    def __check_args(
-        self,
+    @staticmethod
+    def _check_args(
         lr: float,
         betas: tuple[float, float],
         eps: float,
@@ -90,6 +90,12 @@ class Novograd(Optimizer):
 
         Arguments:
             closure: A closure that reevaluates the model and returns the loss
+
+        Raises:
+            RuntimeError: If the optimizer does not support sparse gradients
+
+        Returns:
+            Loss value
         """
         loss = None
         if closure is not None:

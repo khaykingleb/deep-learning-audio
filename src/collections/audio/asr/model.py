@@ -6,6 +6,7 @@ import typing as tp
 import hydra
 import lightning as L
 import torch
+import torchaudio
 from lightning.pytorch.utilities.types import OptimizerLRScheduler
 from omegaconf import DictConfig
 from PIL import Image
@@ -94,6 +95,11 @@ class ASRModel(L.LightningModule):
         self.wer = WordErrorRate()
         self.cer = CharErrorRate()
 
+        self.amplitude_to_db = torchaudio.transforms.AmplitudeToDB(
+            stype="power",
+            top_db=80,
+        )
+
     def setup(
         self,
         stage: tp.Literal["fit", "validate", "test", "predict"],
@@ -159,6 +165,7 @@ class ASRModel(L.LightningModule):
     def training_step(
         self,
         batch: dict[str, torch.Tensor],
+        batch_idx: int,
     ) -> torch.Tensor:
         """Compute and return the training loss.
 
@@ -183,15 +190,21 @@ class ASRModel(L.LightningModule):
             https://github.com/Lightning-AI/lightning/issues/15852
 
         Args:
-            batch: Batch of data sampled from the training set
+            batch: batch of data sampled from the training set
+            batch_idx: index of the batch
         """
-        self._log_audio(batch, stage="train")
+        self._log_audio(batch, batch_idx, stage="train")
 
-        probs: torch.Tensor = self.model(batch["transforms"])
-        loss = self._compute_loss(probs, batch)
+        log_probs: torch.Tensor = self.model(batch["transforms"])
+        loss = self._compute_loss(log_probs, batch)
 
-        pred_tokens = probs.argmax(dim=1)
-        metrics = self._compute_metrics(pred_tokens, batch, stage="train")
+        pred_tokens = log_probs.argmax(dim=1)
+        metrics = self._compute_metrics(
+            pred_tokens,
+            batch,
+            batch_idx,
+            stage="train",
+        )
 
         values = {"train_loss": loss, **metrics}
         self.log_dict(
@@ -209,19 +222,26 @@ class ASRModel(L.LightningModule):
     def validation_step(
         self,
         batch: dict[str, torch.Tensor],
+        batch_idx: int,
     ) -> torch.Tensor:
         """Compute and return the validation loss.
 
         Args:
-            batch: Batch of data sampled from the validation set
+            batch: batch of data sampled from the validation set
+            batch_idx: index of the batch
         """
-        self._log_audio(batch, stage="val")
+        self._log_audio(batch, batch_idx, stage="val")
 
-        probs: torch.Tensor = self.model(batch["transforms"])
-        loss = self._compute_loss(probs, batch)
+        log_probs: torch.Tensor = self.model(batch["transforms"])
+        loss = self._compute_loss(log_probs, batch)
 
-        pred_tokens = probs.argmax(dim=1)
-        metrics = self._compute_metrics(pred_tokens, batch, stage="val")
+        pred_tokens = log_probs.argmax(dim=1)
+        metrics = self._compute_metrics(
+            pred_tokens,
+            batch,
+            batch_idx,
+            stage="val",
+        )
 
         values = {"val_loss": loss, **metrics}
         self.log_dict(
@@ -239,19 +259,26 @@ class ASRModel(L.LightningModule):
     def test_step(
         self,
         batch: dict[str, torch.Tensor],
+        batch_idx: int,
     ) -> torch.Tensor:
         """Compute and return the test loss.
 
         Args:
-            batch: Batch of data sampled from the test set
+            batch: batch of data sampled from the test set
+            batch_idx: index of the batch
         """
-        self._log_audio(batch, stage="test")
+        self._log_audio(batch, batch_idx, stage="test")
 
-        probs: torch.Tensor = self.model(batch["transforms"])
-        loss = self._compute_loss(probs, batch)
+        log_probs: torch.Tensor = self.model(batch["transforms"])
+        loss = self._compute_loss(log_probs, batch)
 
-        pred_tokens = probs.argmax(dim=1)
-        metrics = self._compute_metrics(pred_tokens, batch, stage="test")
+        pred_tokens = log_probs.argmax(dim=1)
+        metrics = self._compute_metrics(
+            pred_tokens,
+            batch,
+            batch_idx,
+            stage="test",
+        )
 
         values = {"test_loss": loss, **metrics}
         self.log_dict(
@@ -268,12 +295,12 @@ class ASRModel(L.LightningModule):
 
     def _compute_loss(
         self,
-        probs: torch.Tensor,
+        log_probs: torch.Tensor,
         batch: dict[str, torch.Tensor],
     ) -> torch.Tensor:
         if isinstance(self.loss, CTCLoss):
             loss = self.loss(
-                log_probs=probs.permute(2, 0, 1).log(),
+                log_probs=log_probs.permute(2, 0, 1),
                 targets=batch["tokens"],
                 input_lengths=batch["probs_lengths"],
                 target_lengths=batch["tokens_lengths"],
@@ -287,6 +314,7 @@ class ASRModel(L.LightningModule):
         self,
         pred_tokens: torch.Tensor,
         batch: dict[str, torch.Tensor],
+        batch_idx: int,
         stage: tp.Literal["train", "val", "test"] = "train",
     ) -> dict[str, torch.Tensor]:
         if isinstance(self.tokenizer, CTCTextTokenizer):
@@ -298,6 +326,7 @@ class ASRModel(L.LightningModule):
             self.tokenizer.decode(tokens).strip() for tokens in batch["tokens"]
         ]
         self._log_naive_predictions(
+            batch_idx,
             target_texts,
             pred_texts,
             pred_raw_texts,
@@ -311,12 +340,10 @@ class ASRModel(L.LightningModule):
     def _log_audio(
         self,
         batch: dict[str, torch.Tensor],
+        batch_idx: int,
         stage: tp.Literal["train", "val", "test"],
     ) -> None:
-        if (
-            self.global_step == 0
-            or self.global_step % self.trainer.log_every_n_steps != 0
-        ):
+        if batch_idx % self.trainer.log_every_n_steps != 0:
             return
 
         idx = random.randint(0, len(batch["waveforms"]) - 1)
@@ -326,7 +353,6 @@ class ASRModel(L.LightningModule):
             word.capitalize() for word in f"{stage} audio".split()
         )
         audio_caption = self.tokenizer.decode(batch["tokens"][idx])
-
         self.logger.experiment.log(
             {
                 audio_name: wandb.Audio(
@@ -338,8 +364,9 @@ class ASRModel(L.LightningModule):
         )
 
         transform = batch["transforms"][idx]
+        transform_db = self.amplitude_to_db(transform)
         transform_image_buffer = plot_transform(
-            transform,
+            transform_db,
             title="",
             x_label="Time (seconds)",
             y_label="",
@@ -357,21 +384,18 @@ class ASRModel(L.LightningModule):
 
     def _log_naive_predictions(
         self,
+        batch_idx: int,
         target_texts: list[str],
         pred_texts: list[str],
         pred_raw_texts: list[str] | None = None,
         stage: tp.Literal["train", "val", "test"] = "train",
     ) -> None:
-        if (
-            self.global_step == 0
-            or self.global_step % self.trainer.log_every_n_steps != 0
-        ):
+        if batch_idx % self.trainer.log_every_n_steps != 0:
             return
 
         table = wandb.Table(
             columns=["Reference", "Hypothesis Raw", "Hypothesis"]
         )
-
         for ref_text, hypo_raw_text, hypo_text in zip(
             target_texts,
             pred_raw_texts,

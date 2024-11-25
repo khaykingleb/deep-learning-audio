@@ -6,7 +6,6 @@ from abc import ABC, abstractmethod
 
 import pandera.polars as pa
 import polars as pl
-import torchaudio
 import torchaudio.transforms as T
 from attrs import define, field
 from loguru import logger
@@ -20,7 +19,8 @@ from src.collections.common.preprocessing.tokenizers import TextTokenizer
 Transformer = T.Spectrogram | T.MelSpectrogram | T.MFCC | T.LFCC
 
 
-# 1. Make streaming dataset: huggingface or https://lightning.ai/lightning-ai/studios/convert-parquets-to-lightning-streaming
+# 1. Make streaming dataset?
+#   Huggingface or https://lightning.ai/lightning-ai/studios/convert-parquets-to-lightning-streaming
 # 2. Some processing on GPU?
 class ASRDataSchema(pa.DataFrameModel):
     """Schema for ASR data."""
@@ -63,9 +63,6 @@ class ASRDataset(Dataset, ABC):
     audio_aug_prob: float = field(default=0.0)
 
     _data: pl.DataFrame = field(default=None, init=False, repr=False)
-
-    # TODO: REWORK, JUST TESTING NOW
-    amplitude_to_db = torchaudio.transforms.AmplitudeToDB(top_db=80)
 
     @abstractmethod
     def download(self) -> None:
@@ -113,7 +110,7 @@ class ASRDataset(Dataset, ABC):
             waveform = self.augmenter(waveform)
         return {
             "waveform": waveform,
-            "transform": self.amplitude_to_db(self.transformer(waveform)),
+            "transform": self.transformer(waveform),
             "tokens": self.tokenizer.encode(text),
         }
 

@@ -17,7 +17,8 @@ callbacks:
     log_weight_decay: true
 
   model_checkpoint:
-    filename: epoch={epoch}-step={step}-val_wer={val_wer:.2f}
+    dirpath: ${root_dir}/checkpoints/quartznet
+    filename: '{epoch}-{val_wer:.2f}'
     monitor: val_wer
     mode: min
     save_top_k: 3
@@ -36,22 +37,23 @@ data:
   persistent_workers: true
   pin_memory: true
   num_workers: 6
-  batch_size: 32
+  batch_size: 64
 
 trainer:
+  accelerator: cuda
   deterministic: false
   benchmark: true
   log_every_n_steps: 10
   min_epochs: 200
   max_epochs: 1200
-  precision: 16-mixed
+  precision: 32-true
 
 models:
   optimizer:
-    lr: 0.035
+    lr: 0.05
 
   scheduler:
     min_lr: 0.001
     first_cycle_steps: 1200
     warmup_steps: 1000
-    gamma: 0.5
+    gamma: 0.6

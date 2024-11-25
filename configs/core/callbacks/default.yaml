@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  # - rich_progress_bar
+  - rich_progress_bar
   - rich_model_summary
   - learning_rate_monitor
   - model_checkpoint

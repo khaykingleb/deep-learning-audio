@@ -20,8 +20,6 @@ model:
     - 51
     - 63
     - 75
-  normalization_name: BatchNorm1d
-  activation_name: ReLU
   dropout_rate: 0.2
 
 optimizer:

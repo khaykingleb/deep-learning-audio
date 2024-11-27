@@ -1,6 +1,7 @@
 # Research Playground
+> Inspired by [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) and [NVIDIA/NeMo](https://github.com/NVIDIA/NeMo)
 
-It's a library I created for efficient ML/DL research on various tasks (inspired by [ashleve/lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template) and [NVIDIA/NeMo](https://github.com/NVIDIA/NeMo)).
+It's a library I created for efficient ML/DL research on various tasks.
 
 ## Key features:
 - 🚀 Production-ready training pipelines

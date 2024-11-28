@@ -10,6 +10,12 @@ defaults:
   - debug:
   - finetune:
 
+# Path to the root directory where all the data will be stored
+root_dir:
+
+# Working directory where all the logs, etc. will be stored
+work_dir:
+
 # Set to True to train the model. Otherwise, the model will not be trained.
 train: true
 

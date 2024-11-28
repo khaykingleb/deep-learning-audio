@@ -9,6 +9,7 @@ defaults:
   - _self_
 
 root_dir:
+work_dir:
 
 ckpt_path: ${root_dir}/checkpoints/quartznet/epoch=179-val_wer=0.11.ckpt
 resume_weights_only: true
@@ -22,7 +23,6 @@ callbacks:
   model_checkpoint:
     dirpath: ${root_dir}/checkpoints/quartznet
     filename: '{epoch}-{val_wer:.2f}'
-    save_weights_only: true
     monitor: val_wer
     mode: min
     save_top_k: 3
@@ -41,7 +41,7 @@ data:
   persistent_workers: true
   pin_memory: true
   num_workers: 6
-  batch_size: 128
+  batch_size: 64
 
 trainer:
   accelerator: cuda

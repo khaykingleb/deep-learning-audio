@@ -76,3 +76,11 @@ repos:
     rev: v2.13.1-beta
     hooks:
       - id: hadolint-docker
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.96.2
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_tflint
+        args:
+          - --args=--fix

@@ -39,6 +39,9 @@ resource "null_resource" "tailscale_activation_for_k3s_servers" {
     when = destroy
     inline = [
       "sudo tailscale logout",
+      "sudo rm -f /usr/local/share/tailscale_ip.txt",
+      "sudo apt-get purge tailscale -y",
+      "sudo apt-get autoremove -y",
     ]
   }
 }
@@ -113,6 +116,9 @@ resource "null_resource" "tailscale_activation_for_k3s_agents" {
     when = destroy
     inline = [
       "sudo tailscale logout",
+      "sudo rm /usr/local/share/tailscale_ip.txt",
+      "sudo apt-get purge tailscale -y",
+      "sudo apt-get autoremove -y",
     ]
   }
 }

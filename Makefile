@@ -19,6 +19,7 @@ PLUGINS := \
 	pre-commit https://github.com/jonathanmorley/asdf-pre-commit.git \
 	python https://github.com/asdf-community/asdf-python.git \
 	poetry https://github.com/asdf-community/asdf-poetry.git \
+	terraform https://github.com/asdf-community/asdf-hashicorp.git \
 	opentofu https://github.com/virtualroot/asdf-opentofu.git \
 	tflint https://github.com/skyzyx/asdf-tflint.git \
 	kubectl https://github.com/asdf-community/asdf-kubectl.git

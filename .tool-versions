@@ -2,6 +2,7 @@ direnv 2.35.0
 pre-commit 3.7.1
 python 3.12.4
 poetry 1.8.3
+terraform 1.10.0
 opentofu 1.8.6
 tflint 0.54.0
 kubectl 1.31.3

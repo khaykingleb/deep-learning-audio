@@ -4,7 +4,7 @@ set -e
 # Install Tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
 
-# Use a normal ASCII dash in the following lines
+# Connect node to the Tailscale network to get a Tailscale IP
 sudo tailscale up \
   --auth-key="${tailscale_auth_key}" \
   --accept-routes \

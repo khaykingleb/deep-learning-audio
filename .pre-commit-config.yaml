@@ -85,3 +85,9 @@ repos:
         args:
           - --args=--fix
           - --hook-config=--tf-path=tofu
+
+  - repo: https://github.com/terraform-docs/terraform-docs
+    rev: v0.19.0
+    hooks:
+      - id: terraform-docs-go
+        args: [markdown, table, --recursive, --hide-empty=true, --output-file, README.md, --output-mode, inject, infrastructure]

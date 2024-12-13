@@ -19,9 +19,11 @@ PLUGINS := \
 	pre-commit https://github.com/jonathanmorley/asdf-pre-commit.git \
 	python https://github.com/asdf-community/asdf-python.git \
 	poetry https://github.com/asdf-community/asdf-poetry.git \
+	golang https://github.com/asdf-community/asdf-golang.git \
 	terraform https://github.com/asdf-community/asdf-hashicorp.git \
-	opentofu https://github.com/virtualroot/asdf-opentofu.git \
+	terraform-docs https://github.com/looztra/asdf-terraform-docs \
 	tflint https://github.com/skyzyx/asdf-tflint.git \
+	opentofu https://github.com/virtualroot/asdf-opentofu.git \
 	kubectl https://github.com/asdf-community/asdf-kubectl.git
 
 prerequisites: ## Install prerequisite tools

@@ -36,6 +36,7 @@
 
 | Name | Description |
 |------|-------------|
+| <a name="output_k3s_servers_ips"></a> [k3s\_servers\_ips](#output\_k3s\_servers\_ips) | IP addresses of the K3s server nodes. |
 | <a name="output_k3s_servers_private_key"></a> [k3s\_servers\_private\_key](#output\_k3s\_servers\_private\_key) | Private key for SSH access to the K3s server nodes. |
 | <a name="output_kube_api_server"></a> [kube\_api\_server](#output\_kube\_api\_server) | API server of the K3s cluster. |
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Kubeconfig in YAML format |

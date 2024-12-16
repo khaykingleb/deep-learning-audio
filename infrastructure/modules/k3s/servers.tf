@@ -25,6 +25,13 @@ module "k3s_servers_security_group" {
 
   ingress_with_cidr_blocks = [
     {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      description = "Allow all internal access to all services."
+      cidr_blocks = "10.0.0.0/16"
+    },
+    {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
@@ -38,6 +45,20 @@ module "k3s_servers_security_group" {
       description = "External kubectl access to nodes."
       cidr_blocks = "0.0.0.0/0"
     },
+    {
+      from_port   = 41641
+      to_port     = 41641
+      protocol    = "udp"
+      description = "Tailscale UDP"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   = 3478
+      to_port     = 3478
+      protocol    = "udp"
+      description = "Tailscale STUN"
+      cidr_blocks = "0.0.0.0/0"
+    }
   ]
 
   egress_with_cidr_blocks = [
@@ -85,19 +106,23 @@ module "k3s_servers" {
 }
 
 resource "null_resource" "k3s_server_installation_for_main_node" {
+  depends_on = [
+    null_resource.tailscale_activation_for_k3s_servers
+  ]
+
   triggers = {
-    k3s_server_host              = module.k3s_servers[0].public_ip
-    k3s_server_private_key       = module.k3s_servers_key_pair.private_key_pem
-    k3s_server_main_ip           = local.k3s_server_main_ip
-    k3s_version                  = var.k3s_version
-    tailscale_k3s_main_server_ip = local.tailscale_k3s_main_server_ip
-    tailscale_auth_key           = var.tailscale_auth_key
+    k3s_version            = var.k3s_version
+    k3s_token              = local.k3s_token
+    k3s_server_public_ip   = local.k3s_main_server_public_ip
+    k3s_server_private_ip  = local.k3s_main_server_private_ip
+    k3s_server_private_key = module.k3s_servers_key_pair.private_key_pem
+    tailscale_auth_key     = var.tailscale_auth_key
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = self.triggers.k3s_server_host
+    host        = self.triggers.k3s_server_public_ip
     private_key = self.triggers.k3s_server_private_key
   }
 
@@ -105,13 +130,13 @@ resource "null_resource" "k3s_server_installation_for_main_node" {
     when        = create
     destination = "/tmp/k3s_server_install.sh"
     content = templatefile("${path.module}/scripts/k3s_server_install.sh.tpl", {
-      k3s_version                  = self.triggers.k3s_version,
-      k3s_token                    = null,
-      k3s_server_main_ip           = self.triggers.k3s_server_main_ip,
-      tailscale_k3s_main_server_ip = self.triggers.tailscale_k3s_main_server_ip,
-      tailscale_k3s_server_ip      = self.triggers.tailscale_k3s_main_server_ip,
-      tailscale_auth_key           = self.triggers.tailscale_auth_key,
-      is_main_node                 = true,
+      k3s_version                = self.triggers.k3s_version,
+      k3s_token                  = self.triggers.k3s_token,
+      k3s_main_server_private_ip = self.triggers.k3s_server_private_ip,
+      k3s_server_private_ip      = self.triggers.k3s_server_private_ip,
+      k3s_server_public_ip       = self.triggers.k3s_server_public_ip,
+      tailscale_auth_key         = self.triggers.tailscale_auth_key,
+      is_main_node               = true,
     })
   }
 
@@ -128,40 +153,33 @@ resource "null_resource" "k3s_server_installation_for_main_node" {
       "/usr/local/bin/k3s-uninstall.sh"
     ]
   }
-}
-
-data "remote_file" "k3s_server_token" {
-  conn {
-    user        = "ubuntu"
-    host        = module.k3s_servers[0].public_ip
-    private_key = module.k3s_servers_key_pair.private_key_pem
-    sudo        = true
-    timeout     = 10000
-  }
-
-  path = "/var/lib/rancher/k3s/server/token"
-
-  depends_on = [null_resource.k3s_server_installation_for_main_node]
 }
 
 resource "null_resource" "k3s_server_installation_for_additional_nodes" {
   for_each = { for server_idx, server_values in module.k3s_servers : server_idx => server_values if server_idx != 0 }
 
+  depends_on = [
+    null_resource.k3s_server_installation_for_main_node,
+  ]
+
   triggers = {
-    k3s_server_host              = each.value.public_ip
-    k3s_server_private_key       = module.k3s_servers_key_pair.private_key_pem
-    k3s_server_main_ip           = local.k3s_server_main_ip
-    k3s_version                  = var.k3s_version
-    k3s_token                    = local.k3s_token
-    tailscale_k3s_main_server_ip = local.tailscale_k3s_main_server_ip
-    tailscale_k3s_server_ip      = local.tailscale_k3s_additional_servers_ips[each.key]
-    tailscale_auth_key           = var.tailscale_auth_key
+    k3s_version                = var.k3s_version
+    k3s_token                  = local.k3s_token
+    k3s_main_server_private_ip = local.k3s_main_server_private_ip
+    k3s_server_private_ip      = each.value.private_ip
+    k3s_server_public_ip       = each.value.public_ip
+    k3s_server_private_key     = module.k3s_servers_key_pair.private_key_pem
+    tailscale_auth_key         = var.tailscale_auth_key
+    # kube_api_server              = local.kube_api_server
+    # kube_client_certificate      = local.kube_client_certificate
+    # kube_client_key              = local.kube_client_key
+    # kube_cluster_ca_certificate  = local.kube_cluster_ca_certificate
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = self.triggers.k3s_server_host
+    host        = self.triggers.k3s_server_public_ip
     private_key = self.triggers.k3s_server_private_key
   }
 
@@ -169,13 +187,13 @@ resource "null_resource" "k3s_server_installation_for_additional_nodes" {
     when        = create
     destination = "/tmp/k3s_server_install.sh"
     content = templatefile("${path.module}/scripts/k3s_server_install.sh.tpl", {
-      k3s_version                  = self.triggers.k3s_version,
-      k3s_token                    = self.triggers.k3s_token,
-      k3s_server_main_ip           = self.triggers.k3s_server_main_ip,
-      tailscale_k3s_main_server_ip = self.triggers.tailscale_k3s_main_server_ip,
-      tailscale_k3s_server_ip      = self.triggers.tailscale_k3s_server_ip,
-      tailscale_auth_key           = self.triggers.tailscale_auth_key,
-      is_main_node                 = false,
+      k3s_version                = self.triggers.k3s_version,
+      k3s_token                  = self.triggers.k3s_token,
+      k3s_main_server_private_ip = self.triggers.k3s_main_server_private_ip,
+      k3s_server_private_ip      = self.triggers.k3s_server_private_ip,
+      k3s_server_public_ip       = self.triggers.k3s_server_public_ip,
+      tailscale_auth_key         = self.triggers.tailscale_auth_key,
+      is_main_node               = false,
     })
   }
 
@@ -186,12 +204,22 @@ resource "null_resource" "k3s_server_installation_for_additional_nodes" {
     ]
   }
 
+  # provisioner "file" {
+  #   when        = destroy
+  #   destination = "/tmp/k3s_delete_node.sh"
+  #   content = templatefile("${path.module}/scripts/k3s_delete_node.sh.tpl", {
+  #     kube_api_server             = self.triggers.kube_api_server,
+  #     kube_client_certificate     = self.triggers.kube_client_certificate,
+  #     kube_client_key             = self.triggers.kube_client_key,
+  #     kube_cluster_ca_certificate = self.triggers.kube_cluster_ca_certificate,
+  #     k3s_node_name         = self.triggers.k3s_agent_node_name,
+  #   })
+  # }
+
   provisioner "remote-exec" {
     when = destroy
     inline = [
       "/usr/local/bin/k3s-uninstall.sh"
     ]
   }
-
-  depends_on = [null_resource.k3s_server_installation_for_main_node]
 }

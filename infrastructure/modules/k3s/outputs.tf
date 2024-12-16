@@ -1,3 +1,8 @@
+output "servers_ips" {
+  value       = module.k3s_servers[*].public_ip
+  description = "IP addresses of the K3s server nodes."
+}
+
 output "servers_private_key" {
   value       = module.k3s_servers_key_pair.private_key_pem
   description = "Private key for SSH access to the K3s server nodes."

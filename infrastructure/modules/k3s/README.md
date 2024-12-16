@@ -6,6 +6,7 @@
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.6 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.80.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.2.3 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.6.3 |
 | <a name="requirement_remote"></a> [remote](#requirement\_remote) | ~> 0.1.3 |
 | <a name="requirement_tailscale"></a> [tailscale](#requirement\_tailscale) | ~> 0.17.2 |
 
@@ -15,6 +16,7 @@
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.80.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.3 |
+| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.6.3 |
 | <a name="provider_remote"></a> [remote](#provider\_remote) | 0.1.3 |
 | <a name="provider_tailscale"></a> [tailscale](#provider\_tailscale) | 0.17.2 |
 
@@ -36,13 +38,11 @@
 | [null_resource.k3s_server_installation_for_main_node](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.tailscale_activation_for_k3s_agents](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.tailscale_activation_for_k3s_servers](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [random_string.k3s_token](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [tailscale_acl.acl](https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/resources/acl) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
-| [remote_file.k3s_server_token](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
+| [remote_file.k3s_main_server_tailscale_ip](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
 | [remote_file.kubeconfig](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
-| [remote_file.tailscale_k3s_additional_servers_ips](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
-| [remote_file.tailscale_k3s_agents_ips](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
-| [remote_file.tailscale_k3s_main_server_ip](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
 
 ## Inputs
 
@@ -67,5 +67,6 @@
 | <a name="output_kube_client_key"></a> [kube\_client\_key](#output\_kube\_client\_key) | Client key for the K3s cluster. |
 | <a name="output_kube_cluster_ca_certificate"></a> [kube\_cluster\_ca\_certificate](#output\_kube\_cluster\_ca\_certificate) | Cluster CA certificate for the K3s cluster. |
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | Kubeconfig file for the K3s cluster. |
+| <a name="output_servers_ips"></a> [servers\_ips](#output\_servers\_ips) | IP addresses of the K3s server nodes. |
 | <a name="output_servers_private_key"></a> [servers\_private\_key](#output\_servers\_private\_key) | Private key for SSH access to the K3s server nodes. |
 <!-- END_TF_DOCS -->

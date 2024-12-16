@@ -41,37 +41,18 @@ resource "null_resource" "tailscale_activation_for_k3s_servers" {
       "sudo tailscale logout",
       "sudo rm -f /usr/local/share/tailscale_ip.txt",
       "sudo apt-get purge tailscale -y",
-      "sudo apt-get autoremove -y",
     ]
   }
 }
 
-data "remote_file" "tailscale_k3s_main_server_ip" {
+data "remote_file" "k3s_main_server_tailscale_ip" {
   depends_on = [
     null_resource.tailscale_activation_for_k3s_servers
   ]
 
   conn {
     user        = "ubuntu"
-    host        = local.k3s_server_main_ip
-    private_key = module.k3s_servers_key_pair.private_key_pem
-    sudo        = true
-    timeout     = 10000
-  }
-
-  path = "/usr/local/share/tailscale_ip.txt"
-}
-
-data "remote_file" "tailscale_k3s_additional_servers_ips" {
-  for_each = { for server_idx, server_values in module.k3s_servers : server_idx => server_values if server_idx != 0 }
-
-  depends_on = [
-    null_resource.tailscale_activation_for_k3s_servers
-  ]
-
-  conn {
-    user        = "ubuntu"
-    host        = each.value.public_ip
+    host        = local.k3s_main_server_public_ip
     private_key = module.k3s_servers_key_pair.private_key_pem
     sudo        = true
     timeout     = 10000
@@ -118,23 +99,6 @@ resource "null_resource" "tailscale_activation_for_k3s_agents" {
       "sudo tailscale logout",
       "sudo rm /usr/local/share/tailscale_ip.txt",
       "sudo apt-get purge tailscale -y",
-      "sudo apt-get autoremove -y",
     ]
   }
-}
-
-data "remote_file" "tailscale_k3s_agents_ips" {
-  for_each = { for agent_name, agent_values in var.k3s_agents : agent_name => agent_values }
-
-  depends_on = [
-    null_resource.tailscale_activation_for_k3s_agents
-  ]
-
-  conn {
-    user        = each.value.user
-    host        = each.value.host
-    private_key = local.k3s_agents_private_keys[each.value.private_key_name]
-  }
-
-  path = "/usr/local/share/tailscale_ip.txt"
 }

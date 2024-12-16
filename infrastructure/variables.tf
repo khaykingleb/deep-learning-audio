@@ -34,13 +34,6 @@ variable "k3s_servers_count" {
   type        = number
   default     = 1
 
-  # TODO(khaykingleb): enable HA
-  # https://docs.k3s.io/datastore/ha-embedded#existing-single-node-clusters
-  # validation {
-  #   condition     = var.k3s_servers_count == 1
-  #   error_message = "High availability is not supported yet"
-  # }
-
   validation {
     condition     = var.k3s_servers_count % 2 == 1
     error_message = "The number of servers must be an odd number."

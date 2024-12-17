@@ -8,14 +8,16 @@ resource "null_resource" "tailscale_activation_for_k3s_servers" {
   for_each = { for server_idx, server_values in module.k3s_servers : server_idx => server_values }
 
   triggers = {
-    tailscale_auth_key = var.tailscale_auth_key
+    tailscale_auth_key     = var.tailscale_auth_key
+    k3s_server_ip          = each.value.public_ip
+    k3s_server_private_key = module.k3s_servers_key_pair.private_key_pem
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    host        = each.value.public_ip
-    private_key = module.k3s_servers_key_pair.private_key_pem
+    host        = self.triggers.k3s_server_ip
+    private_key = self.triggers.k3s_server_private_key
   }
 
   provisioner "file" {
@@ -63,14 +65,17 @@ resource "null_resource" "tailscale_activation_for_k3s_agents" {
   for_each = { for agent_name, agent_values in var.k3s_agents : agent_name => agent_values }
 
   triggers = {
-    tailscale_auth_key = var.tailscale_auth_key
+    tailscale_auth_key    = var.tailscale_auth_key
+    k3s_agent_user        = each.value.user
+    k3s_agent_host        = each.value.host
+    k3s_agent_private_key = local.k3s_agents_private_keys[each.value.private_key_name]
   }
 
   connection {
     type        = "ssh"
-    user        = each.value.user
-    host        = each.value.host
-    private_key = local.k3s_agents_private_keys[each.value.private_key_name]
+    user        = self.triggers.k3s_agent_user
+    host        = self.triggers.k3s_agent_host
+    private_key = self.triggers.k3s_agent_private_key
   }
 
   provisioner "file" {

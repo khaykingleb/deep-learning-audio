@@ -16,6 +16,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.8.6
+
+      - name: Initialize OpenTofu
+        run: make init-tofu
+
       - name: Check all files with pre-commit
         uses: pre-commit/action@v3.0.1
 

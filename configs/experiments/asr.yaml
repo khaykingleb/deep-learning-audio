@@ -9,6 +9,10 @@ defaults:
   - _self_
 
 root_dir:
+work_dir:
+
+ckpt_path: ${root_dir}/checkpoints/quartznet/epoch=179-val_wer=0.11.ckpt
+resume_weights_only: true
 
 callbacks:
   learning_rate_monitor:

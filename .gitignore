@@ -5,6 +5,14 @@ __pycache__/
 .coverage
 .coverage.*
 
+# Terraform/OpenTofu
+.terraform/
+.terraform.lock.hcl
+*.tfvars
+*.tfstate
+*.tfstate.*
+*.pem
+
 # Misc
 .venv/
 .env

@@ -1,20 +1,20 @@
 """Main entrypoint."""
 
-import typing as tp
-
 import hydra
 import lightning as L
 from hydra.errors import ConfigCompositionException, MissingConfigException
-from lightning import Callback, LightningDataModule, LightningModule, Trainer
+from lightning import LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.tuner import Tuner
 from omegaconf import DictConfig, OmegaConf
 from typer import Exit, Option, Typer, echo
 
 from src.utils import env
 from src.utils.logger import logger
-
-if tp.TYPE_CHECKING:
-    from lightning.pytorch.loggers import Logger
+from src.utils.train import (
+    instantiate_callbacks,
+    instantiate_loggers,
+    update_checkpoint_path,
+)
 
 app = Typer()
 
@@ -54,26 +54,11 @@ def train(
         )
         model: LightningModule = hydra.utils.instantiate(cfg["models"])
 
-        callbacks: list[Callback] = []
-        if cfg.get("callbacks"):
-            logger.info("Instantiating callbacks")
-            for callback_cfg in cfg["callbacks"].values():
-                logger.info(
-                    f"Instantiating callback <{callback_cfg['_target_']}>"
-                )
-                callbacks.append(hydra.utils.instantiate(callback_cfg))
-        else:
-            logger.warning("No callbacks to instantiate")
+        logger.info("Instantiating callbacks")
+        callbacks = instantiate_callbacks(cfg)
 
-        loggers: list[Logger] = []
-        if cfg.get("loggers"):
-            logger.info("Instantiating loggers")
-            for logger_cfg in cfg["loggers"].values():
-                logger.info(f"Instantiating logger <{logger_cfg['_target_']}>")
-                lightning_logger = hydra.utils.instantiate(logger_cfg)
-                loggers.append(lightning_logger)
-        else:
-            logger.warning("No loggers to instantiate")
+        logger.info("Instantiating loggers")
+        loggers = instantiate_loggers(cfg)
 
         logger.info(f"Instantiating trainer <{cfg['trainer']['_target_']}>")
         trainer: Trainer = hydra.utils.instantiate(
@@ -98,12 +83,14 @@ def train(
                 mode=cfg["tuner"]["scale_lr"]["mode"],
             )
 
+        ckpt_path = update_checkpoint_path(cfg, model)
+
         if cfg.get("train"):
             logger.info("Starting training")
             trainer.fit(
                 model=model,
                 datamodule=datamodule,
-                ckpt_path=cfg.get("ckpt_path"),
+                ckpt_path=ckpt_path,
             )
 
         if cfg.get("test"):
@@ -111,7 +98,7 @@ def train(
             trainer.test(
                 model=model,
                 datamodule=datamodule,
-                ckpt_path=cfg.get("ckpt_path"),
+                ckpt_path=ckpt_path,
             )
 
 

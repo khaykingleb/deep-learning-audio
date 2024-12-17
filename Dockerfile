@@ -43,6 +43,7 @@ RUN asdf plugin-add poetry https://github.com/asdf-community/asdf-poetry.git \
 # Poetry dependencies installation
 RUN apt-get update \
     && apt-get install --no-install-recommends -y libsndfile1=1.2.2-1ubuntu5 \
+                                                  libsox-dev=14.4.2+git20190427-4build4 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 COPY pyproject.toml poetry.lock ./

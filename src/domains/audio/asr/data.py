@@ -35,28 +35,28 @@ class ASRDataCollator:
         Returns:
             Collated batch
         """
-        max_tokens_len = max(x["tokens"].shape[-1] for x in batch)
-        max_transform_len = max(x["transform"].shape[-1] for x in batch)
+        max_tokens_length = max(x["tokens"].shape[-1] for x in batch)
+        max_transform_length = max(x["transform"].shape[-1] for x in batch)
 
-        tokens = torch.empty(size=(0, max_tokens_len))
+        tokens = torch.empty(size=(0, max_tokens_length))
         tokens_lengths = []
-        transforms_freq_len = batch[0]["transform"].shape[1]
+        transform_frequency_length = batch[0]["transform"].shape[1]
         transforms = torch.empty(
-            size=(0, transforms_freq_len, max_transform_len),
+            size=(0, transform_frequency_length, max_transform_length),
         )
         probs_lengths = []
         waveforms = []
         for sample in batch:
             tokens_padded = torch.nn.functional.pad(
                 sample["tokens"],
-                (0, max_tokens_len - sample["tokens"].shape[-1]),
+                pad=(0, max_tokens_length - sample["tokens"].shape[-1]),
             )
             tokens = torch.cat([tokens, tokens_padded], dim=0)
             tokens_lengths.append(sample["tokens"].shape[-1])
 
             transforms_padded = torch.nn.functional.pad(
                 sample["transform"],
-                (0, max_transform_len - sample["transform"].shape[-1]),
+                pad=(0, max_transform_length - sample["transform"].shape[-1]),
             )
             transforms = torch.cat([transforms, transforms_padded], dim=0)
 

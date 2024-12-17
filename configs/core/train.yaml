@@ -10,6 +10,12 @@ defaults:
   - debug:
   - finetune:
 
+# Path to the root directory where all the data will be stored
+root_dir:
+
+# Working directory where all the logs, etc. will be stored
+work_dir:
+
 # Set to True to train the model. Otherwise, the model will not be trained.
 train: true
 
@@ -22,3 +28,7 @@ seed: 42
 
 # Path to a checkpoint to load
 ckpt_path:
+
+# Set to True to resume weights only from the checkpoint specified in ckpt_path
+# It means that only weights will be loaded and optimizer state will be initialized from scratch
+resume_weights_only: false

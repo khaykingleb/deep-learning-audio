@@ -15,11 +15,16 @@ endif
 ##=============================================================================
 
 PLUGINS := \
-	opentofu https://github.com/defenseunicorns/asdf-opentofu.git \
-	python https://github.com/asdf-community/asdf-python.git \
+	direnv https://github.com/asdf-community/asdf-direnv.git \
 	pre-commit https://github.com/jonathanmorley/asdf-pre-commit.git \
+	python https://github.com/asdf-community/asdf-python.git \
 	poetry https://github.com/asdf-community/asdf-poetry.git \
-	direnv https://github.com/asdf-community/asdf-direnv.git
+	golang https://github.com/asdf-community/asdf-golang.git \
+	terraform https://github.com/asdf-community/asdf-hashicorp.git \
+	terraform-docs https://github.com/looztra/asdf-terraform-docs \
+	tflint https://github.com/skyzyx/asdf-tflint.git \
+	opentofu https://github.com/virtualroot/asdf-opentofu.git \
+	kubectl https://github.com/asdf-community/asdf-kubectl.git
 
 prerequisites: ## Install prerequisite tools
 	@echo "Checking and installing required plugins."
@@ -54,6 +59,13 @@ deps: ## Install dependencies
 	poetry install --no-cache
 .PHONY: deps
 
+init-tofu: ## Initialize OpenTofu
+	@echo "Initializing OpenTofu"
+	@for dir in $(shell find . -name terraform.tf -exec dirname {} \;); do \
+		(cd $$dir && tofu init -backend=false); \
+	done
+.PHONY: init-tofu
+
 init-local: prerequisites env pre-commit deps ## Initialize repository for development outside of Docker
 .PHONY: init-local
 
@@ -75,6 +87,19 @@ run: ## Run Docker container
 test: ## Run tests
 	poetry run pytest
 .PHONY: test
+
+##=============================================================================
+##@ Infrastructure
+##=============================================================================
+
+update-kubeconfig: ## Update kubeconfig
+	cd infrastructure && tofu output -raw kubeconfig > ~/.kube/config
+.PHONY: update-kubeconfig
+
+forward-grafana-alloy: update-kubeconfig ## Forward Grafana Alloy into localhost
+	@echo Grafana Alloy: http://localhost:3001
+	kubectl port-forward -n monitoring service/k8s-monitoring-alloy 3001:12345
+.PHONY: forward-grafana-alloy
 
 ##=============================================================================
 ##@ Miscellaneous

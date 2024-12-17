@@ -6,9 +6,9 @@
     // },
 
     // Define the tags which can be applied to devices and by which users.
-    // "tagOwners": {
-    //  	"tag:example": ["autogroup:admin"],
-    // },
+    "tagOwners": {
+        "tag:k3s-cluster": ["autogroup:admin"],
+    },
 
     // Define access control lists for users, groups, autogroups, tags,
     // Tailscale IP addresses, and subnet ranges.
@@ -73,8 +73,6 @@
         },
     ],
 
-// Test access rules every time they're saved.
-
     // Test access rules every time they're saved.
     // "tests": [
     //  	{
@@ -84,13 +82,12 @@
     //  	},
     // ],
 
-    // TODO: Change to tags?
     // Automatically approve routes for the given accounts.
     // https://docs.k3s.io/networking/distributed-multicloud
     "autoApprovers": {
         "routes": {
-            "10.42.0.0/16": ${jsonencode(emails)},
-            "2001:cafe:42::/56": ${jsonencode(emails)},
+            "10.42.0.0/16": ["tag:k3s-cluster"],
+            "2001:cafe:42::/56": ["tag:k3s-cluster"],
         },
     },
 }

@@ -1,7 +1,5 @@
 resource "tailscale_acl" "acl" {
-  acl = templatefile("${path.module}/config/tailscale/acl.jsonc.tpl", {
-    emails = var.tailscale_emails
-  })
+  acl = file("${path.module}/config/tailscale/acl.jsonc")
 }
 
 resource "null_resource" "tailscale_activation_for_k3s_servers" {

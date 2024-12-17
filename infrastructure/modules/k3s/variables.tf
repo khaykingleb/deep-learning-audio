@@ -17,14 +17,9 @@ variable "tailscale_oauth_secret" {
 }
 
 variable "tailscale_auth_key" {
-  description = "Reusable and ephemeral Tailscale auth key to build a mesh via Tailscale VPN in the K3s cluster."
+  description = "Reusable and ephemeral Tailscale auth key to build a mesh via Tailscale VPN in the K3s cluster. Needs to have the tag `k3s-cluster`."
   type        = string
   sensitive   = true
-}
-
-variable "tailscale_emails" {
-  description = "Emails of the users to automatically approve routes for in Tailscale."
-  type        = list(string)
 }
 
 variable "k3s_version" {

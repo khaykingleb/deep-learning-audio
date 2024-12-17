@@ -12,14 +12,9 @@ variable "tailscale_oauth_secret" {
 }
 
 variable "tailscale_auth_key" {
-  description = "Reusable and ephemeral Tailscale auth key to join the nodes to build a mesh between the nodes via the Tailscale VPN."
+  description = "Reusable and ephemeral Tailscale auth key to join the nodes to build a mesh between the nodes via the Tailscale VPN. Needs to have the tag `k3s-cluster`."
   type        = string
   sensitive   = true
-}
-
-variable "tailscale_emails" {
-  description = "Emails of the users to automatically approve routes for in Tailscale."
-  type        = list(string)
 }
 
 # K3s

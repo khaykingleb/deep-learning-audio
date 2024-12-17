@@ -1,7 +1,3 @@
-resource "tailscale_acl" "acl" {
-  acl = file("${path.module}/config/tailscale/acl.jsonc")
-}
-
 resource "null_resource" "tailscale_activation_for_k3s_servers" {
   for_each = { for server_idx, server_values in module.k3s_servers : server_idx => server_values }
 

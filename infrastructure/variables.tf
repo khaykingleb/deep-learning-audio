@@ -11,12 +11,6 @@ variable "tailscale_oauth_secret" {
   sensitive   = true
 }
 
-variable "tailscale_auth_key" {
-  description = "Reusable and ephemeral Tailscale auth key to join the nodes to build a mesh between the nodes via the Tailscale VPN. Needs to have the tag `k3s-cluster`."
-  type        = string
-  sensitive   = true
-}
-
 # K3s
 
 variable "k3s_version" {

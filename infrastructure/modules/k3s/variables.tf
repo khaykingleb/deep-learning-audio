@@ -4,18 +4,6 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "tailscale_oauth_id" {
-  description = "Tailscale OAuth client ID."
-  type        = string
-  sensitive   = true
-}
-
-variable "tailscale_oauth_secret" {
-  description = "Tailscale OAuth client secret."
-  type        = string
-  sensitive   = true
-}
-
 variable "tailscale_auth_key" {
   description = "Reusable and ephemeral Tailscale auth key to build a mesh via Tailscale VPN in the K3s cluster. Needs to have the tag `k3s-cluster`."
   type        = string

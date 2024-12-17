@@ -14,6 +14,7 @@
 | <a name="module_grafana_cloud"></a> [grafana\_cloud](#module\_grafana\_cloud) | ./modules/grafana | n/a |
 | <a name="module_k3s"></a> [k3s](#module\_k3s) | ./modules/k3s | n/a |
 | <a name="module_k8s_monitoring"></a> [k8s\_monitoring](#module\_k8s\_monitoring) | ./modules/k8s/monitoring | n/a |
+| <a name="module_tailscale"></a> [tailscale](#module\_tailscale) | ./modules/tailscale | n/a |
 
 ## Inputs
 
@@ -26,7 +27,6 @@
 | <a name="input_k3s_servers_count"></a> [k3s\_servers\_count](#input\_k3s\_servers\_count) | Number of K3s servers to deploy to the cluster. | `number` | `1` | no |
 | <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | Version of K3s to install on the nodes. See https://github.com/k3s-io/k3s/releases for available versions. | `string` | n/a | yes |
 | <a name="input_shadeform_private_key"></a> [shadeform\_private\_key](#input\_shadeform\_private\_key) | Private key for Shadeform. | `string` | n/a | yes |
-| <a name="input_tailscale_auth_key"></a> [tailscale\_auth\_key](#input\_tailscale\_auth\_key) | Reusable and ephemeral Tailscale auth key to join the nodes to build a mesh between the nodes via the Tailscale VPN. Needs to have the tag `k3s-cluster`. | `string` | n/a | yes |
 | <a name="input_tailscale_oauth_id"></a> [tailscale\_oauth\_id](#input\_tailscale\_oauth\_id) | Tailscale OAuth client ID. | `string` | n/a | yes |
 | <a name="input_tailscale_oauth_secret"></a> [tailscale\_oauth\_secret](#input\_tailscale\_oauth\_secret) | Tailscale OAuth client secret. | `string` | n/a | yes |
 

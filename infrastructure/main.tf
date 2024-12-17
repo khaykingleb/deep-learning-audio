@@ -1,14 +1,18 @@
-module "k3s" {
-  source = "./modules/k3s"
+module "tailscale" {
+  source = "./modules/tailscale"
 
   tailscale_oauth_id     = var.tailscale_oauth_id
   tailscale_oauth_secret = var.tailscale_oauth_secret
-  tailscale_auth_key     = var.tailscale_auth_key
+}
+
+module "k3s" {
+  source = "./modules/k3s"
 
   k3s_version       = var.k3s_version
   k3s_servers_count = var.k3s_servers_count
   k3s_agents        = var.k3s_agents
 
+  tailscale_auth_key    = module.tailscale.k3s_cluster_auth_key
   shadeform_private_key = var.shadeform_private_key
 }
 

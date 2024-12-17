@@ -8,7 +8,6 @@
 | <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.2.3 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.6.3 |
 | <a name="requirement_remote"></a> [remote](#requirement\_remote) | ~> 0.1.3 |
-| <a name="requirement_tailscale"></a> [tailscale](#requirement\_tailscale) | ~> 0.17.2 |
 
 ## Providers
 
@@ -18,7 +17,6 @@
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.3 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.6.3 |
 | <a name="provider_remote"></a> [remote](#provider\_remote) | 0.1.3 |
-| <a name="provider_tailscale"></a> [tailscale](#provider\_tailscale) | 0.17.2 |
 
 ## Modules
 
@@ -39,7 +37,6 @@
 | [null_resource.tailscale_activation_for_k3s_agents](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.tailscale_activation_for_k3s_servers](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [random_string.k3s_token](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
-| [tailscale_acl.acl](https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/resources/acl) | resource |
 | [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [remote_file.k3s_main_server_tailscale_ip](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
 | [remote_file.kubeconfig](https://registry.terraform.io/providers/tenstad/remote/latest/docs/data-sources/file) | data source |
@@ -54,8 +51,6 @@
 | <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | Version of K3s to install on the nodes. See https://github.com/k3s-io/k3s/releases for available versions. | `string` | n/a | yes |
 | <a name="input_shadeform_private_key"></a> [shadeform\_private\_key](#input\_shadeform\_private\_key) | Private key for Shadeform. | `string` | n/a | yes |
 | <a name="input_tailscale_auth_key"></a> [tailscale\_auth\_key](#input\_tailscale\_auth\_key) | Reusable and ephemeral Tailscale auth key to build a mesh via Tailscale VPN in the K3s cluster. Needs to have the tag `k3s-cluster`. | `string` | n/a | yes |
-| <a name="input_tailscale_oauth_id"></a> [tailscale\_oauth\_id](#input\_tailscale\_oauth\_id) | Tailscale OAuth client ID. | `string` | n/a | yes |
-| <a name="input_tailscale_oauth_secret"></a> [tailscale\_oauth\_secret](#input\_tailscale\_oauth\_secret) | Tailscale OAuth client secret. | `string` | n/a | yes |
 
 ## Outputs
 

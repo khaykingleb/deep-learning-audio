@@ -82,6 +82,7 @@ module "k3s_servers_key_pair" {
 }
 
 # https://github.com/terraform-aws-modules/terraform-aws-ec2-instance
+# TODO(khaykingleb): divide into main and additional nodes
 module "k3s_servers" {
   count = var.k3s_servers_count
 
@@ -111,19 +112,18 @@ resource "null_resource" "k3s_server_installation_for_main_node" {
   ]
 
   triggers = {
-    k3s_version            = var.k3s_version
-    k3s_token              = local.k3s_token
-    k3s_server_public_ip   = local.k3s_main_server_public_ip
-    k3s_server_private_ip  = local.k3s_main_server_private_ip
-    k3s_server_private_key = module.k3s_servers_key_pair.private_key_pem
-    tailscale_auth_key     = var.tailscale_auth_key
+    k3s_version           = var.k3s_version
+    k3s_token             = local.k3s_token
+    k3s_server_public_ip  = local.k3s_main_server_public_ip
+    k3s_server_private_ip = local.k3s_main_server_private_ip
+    tailscale_auth_key    = var.tailscale_auth_key
   }
 
   connection {
     type        = "ssh"
     user        = "ubuntu"
     host        = self.triggers.k3s_server_public_ip
-    private_key = self.triggers.k3s_server_private_key
+    private_key = module.k3s_servers_key_pair.private_key_pem
   }
 
   provisioner "file" {
@@ -168,7 +168,6 @@ resource "null_resource" "k3s_server_installation_for_additional_nodes" {
     k3s_main_server_private_ip  = local.k3s_main_server_private_ip
     k3s_server_private_ip       = each.value.private_ip
     k3s_server_public_ip        = each.value.public_ip
-    k3s_server_private_key      = module.k3s_servers_key_pair.private_key_pem
     k3s_server_node_name        = split(".", each.value.private_dns)[0]
     tailscale_auth_key          = var.tailscale_auth_key
     kube_api_server             = local.kube_api_server
@@ -181,7 +180,7 @@ resource "null_resource" "k3s_server_installation_for_additional_nodes" {
     type        = "ssh"
     user        = "ubuntu"
     host        = self.triggers.k3s_server_public_ip
-    private_key = self.triggers.k3s_server_private_key
+    private_key = module.k3s_servers_key_pair.private_key_pem
   }
 
   provisioner "file" {

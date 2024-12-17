@@ -9,6 +9,8 @@ resource "null_resource" "k3s_installation_for_agents" {
   triggers = {
     k3s_version                  = var.k3s_version
     k3s_token                    = local.k3s_token
+    k3s_main_server_private_ip   = local.k3s_main_server_private_ip
+    k3s_server_private_key       = module.k3s_servers_key_pair.private_key_pem
     k3s_agent_node_name          = each.key
     k3s_agent_user               = each.value.user
     k3s_agent_public_ip          = each.value.host
@@ -46,8 +48,21 @@ resource "null_resource" "k3s_installation_for_agents" {
   provisioner "remote-exec" {
     when = destroy
     inline = [
-      "sudo k3s kubectl delete node ${self.triggers.k3s_agent_node_name}",
       "/usr/local/bin/k3s-agent-uninstall.sh",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    when = destroy
+    # NOTE: this creates a connection to the k3s server, not the agent
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      host        = self.triggers.k3s_main_server_private_ip
+      private_key = self.triggers.k3s_server_private_key
+    }
+    inline = [
+      "sudo k3s kubectl delete node ${self.triggers.k3s_agent_node_name}",
     ]
   }
 }

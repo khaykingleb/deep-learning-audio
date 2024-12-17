@@ -24,6 +24,11 @@ jobs:
       - name: Initialize OpenTofu
         run: make init-tofu
 
+      - uses: terraform-linters/setup-tflint@v4
+        name: Setup TFLint
+        with:
+          tflint_version: v0.54.0
+
       - name: Check all files with pre-commit
         uses: pre-commit/action@v3.0.1
 

@@ -205,8 +205,21 @@ resource "null_resource" "k3s_server_installation_for_additional_nodes" {
   provisioner "remote-exec" {
     when = destroy
     inline = [
-      "sudo k3s kubectl delete node ${self.triggers.k3s_server_node_name}",
       "/usr/local/bin/k3s-uninstall.sh",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    when = destroy
+    # NOTE: this creates a connection to the main k3s server, not the additional one
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      host        = self.triggers.k3s_main_server_private_ip
+      private_key = self.triggers.k3s_server_private_key
+    }
+    inline = [
+      "sudo k3s kubectl delete node ${self.triggers.k3s_server_node_name}",
     ]
   }
 }

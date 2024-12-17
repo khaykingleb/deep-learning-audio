@@ -19,17 +19,16 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_enable_monitoring"></a> [enable\_monitoring](#input\_enable\_monitoring) | Enable monitoring. | `bool` | `false` | no |
+| <a name="input_enable_monitoring"></a> [enable\_monitoring](#input\_enable\_monitoring) | Enable Grafana Cloud monitoring. | `bool` | `false` | no |
 | <a name="input_grafana_cloud_access_policy_token"></a> [grafana\_cloud\_access\_policy\_token](#input\_grafana\_cloud\_access\_policy\_token) | Grafana Cloud access policy token. | `string` | n/a | yes |
 | <a name="input_grafana_cloud_stack_slug"></a> [grafana\_cloud\_stack\_slug](#input\_grafana\_cloud\_stack\_slug) | Grafana Cloud stack slug to use for monitoring. | `string` | n/a | yes |
-| <a name="input_k3s_agents"></a> [k3s\_agents](#input\_k3s\_agents) | The agent nodes to deploy to the K3s cluster. | <pre>map(object({<br/>    host             = string<br/>    user             = string<br/>    private_key_name = string<br/>    provider         = string<br/>    labels           = optional(list(string), [])<br/>    taints           = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
-| <a name="input_k3s_servers_count"></a> [k3s\_servers\_count](#input\_k3s\_servers\_count) | The number of servers to deploy to the cluster. | `number` | `1` | no |
-| <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | The version of k3s to install on the nodes. See https://github.com/k3s-io/k3s/releases for available versions. | `string` | n/a | yes |
-| <a name="input_shadeform_private_key"></a> [shadeform\_private\_key](#input\_shadeform\_private\_key) | The private key for Shadeform. | `string` | n/a | yes |
-| <a name="input_tailscale_auth_key"></a> [tailscale\_auth\_key](#input\_tailscale\_auth\_key) | The reusable and ephemeral auth key to join the nodes to build a mesh via Tailscale VPN. | `string` | n/a | yes |
-| <a name="input_tailscale_emails"></a> [tailscale\_emails](#input\_tailscale\_emails) | The emails of the users to automatically approve routes for. | `list(string)` | n/a | yes |
-| <a name="input_tailscale_oauth_id"></a> [tailscale\_oauth\_id](#input\_tailscale\_oauth\_id) | The OAuth client ID. | `string` | n/a | yes |
-| <a name="input_tailscale_oauth_secret"></a> [tailscale\_oauth\_secret](#input\_tailscale\_oauth\_secret) | The OAuth client secret. | `string` | n/a | yes |
+| <a name="input_k3s_agents"></a> [k3s\_agents](#input\_k3s\_agents) | K3s agent nodes to deploy to the K3s cluster. | <pre>map(object({<br/>    host             = string<br/>    user             = string<br/>    private_key_name = string<br/>    provider         = string<br/>    labels           = optional(list(string), [])<br/>    taints           = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
+| <a name="input_k3s_servers_count"></a> [k3s\_servers\_count](#input\_k3s\_servers\_count) | Number of K3s servers to deploy to the cluster. | `number` | `1` | no |
+| <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | Version of K3s to install on the nodes. See https://github.com/k3s-io/k3s/releases for available versions. | `string` | n/a | yes |
+| <a name="input_shadeform_private_key"></a> [shadeform\_private\_key](#input\_shadeform\_private\_key) | Private key for Shadeform. | `string` | n/a | yes |
+| <a name="input_tailscale_auth_key"></a> [tailscale\_auth\_key](#input\_tailscale\_auth\_key) | Reusable and ephemeral Tailscale auth key to join the nodes to build a mesh between the nodes via the Tailscale VPN. Needs to have the tag `k3s-cluster`. | `string` | n/a | yes |
+| <a name="input_tailscale_oauth_id"></a> [tailscale\_oauth\_id](#input\_tailscale\_oauth\_id) | Tailscale OAuth client ID. | `string` | n/a | yes |
+| <a name="input_tailscale_oauth_secret"></a> [tailscale\_oauth\_secret](#input\_tailscale\_oauth\_secret) | Tailscale OAuth client secret. | `string` | n/a | yes |
 
 ## Outputs
 

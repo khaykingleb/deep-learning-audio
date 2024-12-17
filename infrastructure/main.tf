@@ -4,7 +4,6 @@ module "k3s" {
   tailscale_oauth_id     = var.tailscale_oauth_id
   tailscale_oauth_secret = var.tailscale_oauth_secret
   tailscale_auth_key     = var.tailscale_auth_key
-  tailscale_emails       = var.tailscale_emails
 
   k3s_version       = var.k3s_version
   k3s_servers_count = var.k3s_servers_count

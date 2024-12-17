@@ -1,7 +1,5 @@
 resource "tailscale_acl" "acl" {
-  acl = templatefile("${path.module}/config/tailscale/acl.jsonc.tpl", {
-    emails = var.tailscale_emails
-  })
+  acl = file("${path.module}/config/tailscale/acl.jsonc")
 }
 
 resource "null_resource" "tailscale_activation_for_k3s_servers" {
@@ -67,14 +65,14 @@ resource "null_resource" "tailscale_activation_for_k3s_agents" {
   triggers = {
     tailscale_auth_key    = var.tailscale_auth_key
     k3s_agent_user        = each.value.user
-    k3s_agent_host        = each.value.host
+    k3s_agent_ip          = each.value.host
     k3s_agent_private_key = local.k3s_agents_private_keys[each.value.private_key_name]
   }
 
   connection {
     type        = "ssh"
     user        = self.triggers.k3s_agent_user
-    host        = self.triggers.k3s_agent_host
+    host        = self.triggers.k3s_agent_ip
     private_key = self.triggers.k3s_agent_private_key
   }
 

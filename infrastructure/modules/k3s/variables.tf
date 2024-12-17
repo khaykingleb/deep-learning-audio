@@ -17,7 +17,7 @@ variable "tailscale_oauth_secret" {
 }
 
 variable "tailscale_auth_key" {
-  description = "Reusable auth key to join the nodes to build a mesh via Tailscale VPN."
+  description = "The reusable auth key to build a mesh via Tailscale VPN in the K3s cluster."
   type        = string
   sensitive   = true
 }

@@ -53,7 +53,7 @@
 | <a name="input_k3s_servers_count"></a> [k3s\_servers\_count](#input\_k3s\_servers\_count) | The number of servers to deploy to the cluster. | `number` | `1` | no |
 | <a name="input_k3s_version"></a> [k3s\_version](#input\_k3s\_version) | The version of k3s to install on the nodes. See https://github.com/k3s-io/k3s/releases for available versions. | `string` | n/a | yes |
 | <a name="input_shadeform_private_key"></a> [shadeform\_private\_key](#input\_shadeform\_private\_key) | The private key for Shadeform. | `string` | n/a | yes |
-| <a name="input_tailscale_auth_key"></a> [tailscale\_auth\_key](#input\_tailscale\_auth\_key) | Reusable auth key to join the nodes to build a mesh via Tailscale VPN. | `string` | n/a | yes |
+| <a name="input_tailscale_auth_key"></a> [tailscale\_auth\_key](#input\_tailscale\_auth\_key) | The reusable auth key to build a mesh via Tailscale VPN in the K3s cluster. | `string` | n/a | yes |
 | <a name="input_tailscale_emails"></a> [tailscale\_emails](#input\_tailscale\_emails) | The emails of the users to automatically approve routes for. | `list(string)` | n/a | yes |
 | <a name="input_tailscale_oauth_id"></a> [tailscale\_oauth\_id](#input\_tailscale\_oauth\_id) | The OAuth client ID. | `string` | n/a | yes |
 | <a name="input_tailscale_oauth_secret"></a> [tailscale\_oauth\_secret](#input\_tailscale\_oauth\_secret) | The OAuth client secret. | `string` | n/a | yes |

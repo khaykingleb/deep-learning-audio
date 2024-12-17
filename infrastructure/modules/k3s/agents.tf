@@ -15,10 +15,6 @@ resource "null_resource" "k3s_installation_for_agents" {
     k3s_agent_private_key        = local.k3s_agents_private_keys[each.value.private_key_name]
     k3s_main_server_tailscale_ip = local.k3s_main_server_tailscale_ip
     tailscale_auth_key           = var.tailscale_auth_key
-    kube_api_server              = local.kube_api_server
-    kube_client_certificate      = local.kube_client_certificate
-    kube_client_key              = local.kube_client_key
-    kube_cluster_ca_certificate  = local.kube_cluster_ca_certificate
   }
 
   connection {
@@ -43,28 +39,15 @@ resource "null_resource" "k3s_installation_for_agents" {
   provisioner "remote-exec" {
     when = create
     inline = [
-      "cat /tmp/k3s_agent_install.sh",
       "sh /tmp/k3s_agent_install.sh"
     ]
-  }
-
-  provisioner "file" {
-    when        = destroy
-    destination = "/tmp/k3s_delete_node.sh"
-    content = templatefile("${path.module}/scripts/k3s_delete_node.sh.tpl", {
-      kube_api_server             = self.triggers.kube_api_server,
-      kube_client_certificate     = self.triggers.kube_client_certificate,
-      kube_client_key             = self.triggers.kube_client_key,
-      kube_cluster_ca_certificate = self.triggers.kube_cluster_ca_certificate,
-      k3s_node_name               = self.triggers.k3s_agent_node_name,
-    })
   }
 
   provisioner "remote-exec" {
     when = destroy
     inline = [
+      "sudo k3s kubectl delete node ${self.triggers.k3s_agent_node_name}",
       "/usr/local/bin/k3s-agent-uninstall.sh",
-      "sh /tmp/k3s_delete_node.sh"
     ]
   }
 }

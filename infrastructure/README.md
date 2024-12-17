@@ -6,7 +6,6 @@
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.8.6 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.16.1 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.34.0 |
-| <a name="requirement_remote"></a> [remote](#requirement\_remote) | ~> 0.1.3 |
 
 ## Modules
 

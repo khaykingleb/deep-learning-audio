@@ -16,7 +16,7 @@
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.80.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.3 |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.6.3 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.6.3 |
 | <a name="provider_remote"></a> [remote](#provider\_remote) | 0.1.3 |
 | <a name="provider_tailscale"></a> [tailscale](#provider\_tailscale) | 0.17.2 |
 

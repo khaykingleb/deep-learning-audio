@@ -7,7 +7,6 @@ __pycache__/
 
 # Terraform/OpenTofu
 .terraform/
-.terraform.lock.hcl
 *.tfvars
 *.tfstate
 *.tfstate.*

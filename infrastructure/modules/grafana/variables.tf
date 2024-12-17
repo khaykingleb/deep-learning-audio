@@ -1,5 +1,5 @@
 variable "enable_monitoring" {
-  description = "Enable monitoring."
+  description = "Enable Grafana Cloud monitoring."
   type        = bool
   default     = false
 }

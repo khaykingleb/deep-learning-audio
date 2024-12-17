@@ -34,7 +34,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_enable_monitoring"></a> [enable\_monitoring](#input\_enable\_monitoring) | Enable monitoring. | `bool` | `false` | no |
+| <a name="input_enable_monitoring"></a> [enable\_monitoring](#input\_enable\_monitoring) | Enable Grafana Cloud monitoring. | `bool` | `false` | no |
 | <a name="input_grafana_cloud_access_policy_token"></a> [grafana\_cloud\_access\_policy\_token](#input\_grafana\_cloud\_access\_policy\_token) | Grafana Cloud access policy token. | `string` | n/a | yes |
 | <a name="input_grafana_cloud_stack_slug"></a> [grafana\_cloud\_stack\_slug](#input\_grafana\_cloud\_stack\_slug) | Grafana Cloud stack slug. | `string` | n/a | yes |
 

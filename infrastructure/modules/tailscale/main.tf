@@ -3,6 +3,10 @@ resource "tailscale_acl" "acl" {
 }
 
 resource "tailscale_tailnet_key" "k3s_cluster" {
+  depends_on = [
+    tailscale_acl.acl
+  ]
+
   description = "Auth key for Tailscale VPN in K3s cluster"
 
   reusable      = true

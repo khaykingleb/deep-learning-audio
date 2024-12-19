@@ -41,6 +41,7 @@ resource "null_resource" "k3s_installation_for_agents" {
   provisioner "remote-exec" {
     when = create
     inline = [
+      "sudo hostnamectl set-hostname ${self.triggers.k3s_agent_node_name}",
       "sh /tmp/k3s_agent_install.sh"
     ]
   }
